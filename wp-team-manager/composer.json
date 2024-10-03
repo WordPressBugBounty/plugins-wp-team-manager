@@ -1,0 +1,16 @@
+{
+    "name": "dwl/wp-team-manager",
+    "description": "Showcase your team memebers",
+    "autoload": {
+        "psr-4": {
+            "DWL\\Wtm\\": "includes/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dynamic Web Lab",
+            "email": "dynamicweblab@gmail.com"
+        }
+    ],
+    "require": {}
+}

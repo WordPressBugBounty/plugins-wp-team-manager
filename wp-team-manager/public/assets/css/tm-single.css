@@ -1,0 +1,115 @@
+:root {
+	--wtm-color-white: #fff;
+	--wtm-color-red : #D00000;
+	--wtm-color-yellow: #ffba08;
+	--wtm-color-light_blue: #3F88C5;
+	--wtm-color-dark_blue: #032B43;
+	--wtm-color-green: #136F63;
+	--wtm-color-black:#000000;
+}
+/* Team Member */
+
+.team-member-socials{
+    display: flex;
+    margin-top: 15px;
+}
+.team-member-socials a {
+    color: var(--wtm-color-white);
+}
+.team-member-socials a{
+	background-color: var(--wtm-color-light_blue);
+	font-size: 15px;
+	display: block;
+	border-radius: 50%;
+	height: 30px;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin-right: 5px;
+}
+.team-member-socials a:hover{
+    transition: .5s ease;
+    background-color: var(--wtm-color-dark_blue);
+}
+/* Other info */
+
+.team-member-other-info {
+    margin: 10px 0;
+    display: flex;
+}
+
+.team-member-other-info .fas{
+	font-size:18px;
+	color:var(--wtm-color-light_blue);
+}
+
+.team-member-other-info div {
+    margin-right: 10px;
+}
+
+
+.team-member-other-info a {
+    color: var(--wtm-color-dark_blue);
+    text-decoration: none;
+    font-size: 18px;
+}
+.team-member-other-info a:hover{
+	text-decoration:underline;
+}
+
+.team-member-other-info span {
+    font-weight: 400;
+}
+
+.team-member-other-info div::before{
+	font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+	font-size: 16px;
+	margin-right: 10px;
+    color: var(--wtm-color-light_blue);
+}
+
+.team-member-other-info div:last-child::before{
+	font-size: 14px;
+	margin-right: 6px;
+}
+
+.team-member-other-info div:nth-child(2){
+	margin-right: 14px;
+}
+
+.team-bio-image img{
+	max-width: 100%;
+	height: auto;
+	max-height: 100%;
+	min-width: 100%;
+	object-fit: cover;
+	vertical-align: bottom;
+}
+/* Gallery */
+
+.wtm-image-gallery-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+  }
+  
+  .wtm-image-gallery-wrapper .wtm-single-image {
+	padding: 10px;
+	overflow: hidden;
+  }
+  
+  .wtm-image-gallery-wrapper .wtm-single-image img {
+	max-height: 100%;
+	min-width: 100%;
+	object-fit: cover;
+	vertical-align: bottom;
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+  }
+
+  .wtm-image-gallery-wrapper .wtm-single-image img:hover {
+	-webkit-transform: scale(1.1);
+	transform: scale(1.1);
+}
