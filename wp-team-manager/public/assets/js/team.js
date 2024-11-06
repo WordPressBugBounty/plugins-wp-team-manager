@@ -98,10 +98,6 @@
         if( slider.length == 0){
             return;
         }
-        
-        console.log(slider.data("dots"));
-        console.log(slider.data("arrows"));
-        console.log(slider.data("autoplay"));
 
         slider.each( function( index, element ) {
 

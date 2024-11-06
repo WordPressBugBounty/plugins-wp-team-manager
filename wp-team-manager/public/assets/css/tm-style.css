@@ -1,3 +1,4 @@
+
 /* Global */
 :root {
 	--wtm-color-white: #fff;
@@ -5399,8 +5400,6 @@ text-align: center;
 
 /* style 2  */
 
-
-
 .style-2 .team-member-head {
   padding: 15px 10px;
   background: #2449DD;
@@ -5695,12 +5694,12 @@ text-align: center;
 
 /* Team table Layout */
 
-.dwl-team-elementor-layout-table table {
+.dwl-team-elementor-layout-table .team-table-style-1 table {
   border-collapse: collapse;
   width: 100%;
   border:1px solid #eeeeee;
 }
-.dwl-team-elementor-layout-table table thead th {
+.dwl-team-elementor-layout-table .team-table-style-1 table thead th {
   background-color: #7d817f;
   color: white;
   padding: 15px;
@@ -5710,7 +5709,7 @@ text-align: center;
   line-height: 1.5;
   text-transform: uppercase;
 }
-.dwl-team-elementor-layout-table .dwl-table-img-wraper {
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-img-wraper {
   width: 100%;
   padding: 10px 10px 4px 10px;
   border: 1px solid #eee;
@@ -5723,7 +5722,7 @@ text-align: center;
   padding-top: 4px;
   padding-bottom: 4px;
 }
-.dwl-team-elementor-layout-table .dwl-table-data .team-member-title{
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-data .team-member-title{
   font-size: 20px;
   font-weight: 600;
 }
@@ -5734,37 +5733,37 @@ text-align: center;
   color: var(--wtm-color-light_blue);
 }
 
-.dwl-team-elementor-layout-table .dwl-table-img-wraper a{
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-img-wraper a{
   margin: 0;
 }
-.dwl-team-elementor-layout-table .dwl-table-img-wraper a img{
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-img-wraper a img{
   width: 100%;
   height: auto;
 }
-.dwl-team-elementor-layout-table .team-member-socials {
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-socials {
   margin-top: 0;
 }
-.dwl-team-elementor-layout-table .team-member-socials a {
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-socials a {
   margin-top: 0;
   font-size: 11px;
   height: 20px;
   width: 20px;
   border-radius: 0;
 }
-.dwl-team-elementor-layout-table th,
-.dwl-team-elementor-layout-table td {
+.dwl-team-elementor-layout-table .team-table-style-1 th,
+.dwl-team-elementor-layout-table .team-table-style-1 td {
   text-align: left;
   padding: 10px;
 }
 
-.dwl-team-elementor-layout-table tr:nth-child(even){
+.dwl-team-elementor-layout-table .team-table-style-1 tr:nth-child(even){
   background-color: #f2f2f2;
 }
-.dwl-team-elementor-layout-table tr:nth-child(even) .dwl-table-img-wraper{
+.dwl-team-elementor-layout-table .team-table-style-1 tr:nth-child(even) .dwl-table-img-wraper{
   border: 1px solid #ffffff;
 }
 
-.dwl-team-elementor-layout-table .team-member-info a {
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-info a {
   display: flex;
   align-items: center;
   padding: 10px;
@@ -5772,11 +5771,11 @@ text-align: center;
   font-weight: 300;
 }
 
-.dwl-team-elementor-layout-table .team-member-info a .fas{
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-info a .fas{
   padding: 10px;
 }
 
-.dwl-team-elementor-layout-table .dwl-table-data .team-position {
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-data .team-position {
   text-align: center;
   font-size: 16px;
   font-weight: 300;
@@ -5792,5 +5791,205 @@ text-align: center;
 
 .dwl-team-elementor-layout-table {
   overflow-x: auto;
+}
+
+/* Team table style-2 */
+.dwl-team-elementor-layout-table .team-table-style-2 table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2  table thead {
+  background: #F2F4FF;
+  border-radius: 10px 10px 0px 0px;
+}
+.dwl-team-elementor-layout-table .team-table-style-2  table thead th {
+  /* background-color: #F2F4FF; */
+  color: #2E3A67;
+  font-family: 'Open Sans';
+  padding: 20px 20px 20px 20px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  font-style: normal;
+}
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-img-wraper a img{
+  max-width: 40px;
+  max-height: 40px;
+  border-radius: 50%;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-member-title{
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0px;
+  color: #000000;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .dwl-table-img-wraper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: center;
+  padding: 10px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 tbody tr{
+  border-bottom: 1px solid #999999;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-icon-wraper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-icon-wraper a{
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: center;
+  color: #FFFFFF;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-icon-wraper .dwl-table-full-biograph{
+  padding: 0px 20px;
+  background: #1782FF;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 td {
+  text-align: left;
+  padding: 5px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 td .team-team_department,
+.dwl-team-elementor-layout-table .team-table-style-2 td .dwl-table-icon-wraper,
+.dwl-team-elementor-layout-table .team-table-style-2 td .team-team_designation{
+  padding: 10px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-position {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  color: #000000;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .team-member-mobile-info a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-member-socials {
+  max-width: 160px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .team-member-socials a{
+	border-radius: 20%;
+}
+
+
+
+/* team grid style-2 shortcode genaretor */
+
+.dwl-team-grid-style-2 .team-member-grid-style-two{
+  position: relative;
+  min-height: 308px;
+}
+.dwl-team-grid-style-2 .team-member-grid-style-two .team-member-grid-content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(65, 109, 137, 0.85);
+  color: #fff; 
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  opacity: 1; 
+  transition: opacity 0.3s ease; 
+  cursor: pointer;
+
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two .grid-team-inner:hover .team-member-grid-content-overlay {
+  transition: all 0.4s;
+  background-color: rgb(65,109,137,0.76);  
+
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two .grid-team-inner .team-member-grid-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+}
+.dwl-team-grid-style-2 .team-member-grid-style-two .team-member-grid-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  transition: 2s ;
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two .team-member-title {
+  margin: 0; 
+  font-size: 24px ;
+  text-transform: uppercase ;
+  font-family: "Avenir medium", Sans-serif;
+  font-size: 23px;
+  line-height: 1.2em;
+  color: #ffffff;
+  letter-spacing: 2;
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two .team-position {
+  color: #fff;
+  font-size: 19px;
+  display: block;
+  margin-top: 8px;
+  letter-spacing: 2px;
+  color: #fff ;
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two .team-member-grid-arrow {
+  width: 35px;
+}
+.dwl-team-grid-style-2 .team-member-grid-style-two i::before {
+ color: #ffffff;
+}
+
+.dwl-team-grid-style-2 .team-member-grid-style-two:hover .team-member-grid-info {
+  margin-bottom: -5px; 
 }
 

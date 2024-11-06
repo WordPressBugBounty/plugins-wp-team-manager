@@ -31,9 +31,11 @@ class TeamMetabox {
     }
 
     function create_meta_for_dwl_team_generator_post_type(){
-        $post_id = isset($_GET['post']) ? trim($_GET['post']) : 0;
+
+        $post_id = isset($_GET['post']) && is_string($_GET['post']) ? trim($_GET['post']) : "0";
+
         $title = 'Copy and Past this on page or post<br/><br/><code>[dwl_create_team id="'.$post_id.'"]</code>';
-        $documentation = '<a href="https://wpteammanager.com/document/">Documentation</a>';
+        $documentation = '<a href="https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/">Documentation</a>';
         $support = '<a href="https://dynamicweblab.com/submit-a-request/">Support</a>';
 
         $dwl_instructions = new_cmb2_box( 
@@ -112,6 +114,77 @@ class TeamMetabox {
                 'classes'        => 'col-12',
         	) 
 		);
+
+
+        $dwl_layout->add_field( 
+			array(
+				'name'           => __( 'Style Type', 'wp-team-manager' ),
+				'desc'           => __( 'Select Style Layout Type', 'wp-team-manager' ),
+				'id'             => $this->prefix . 'grid_style_option',
+				'type'           => 'radio_image',
+				'options'        => array(
+					'style-1'        => __('Style One', 'wp-team-manager'),
+					'style-2'        => __('Style Two', 'wp-team-manager'),
+				),
+				'images_path'    => TM_ADMIN_ASSETS,
+				'images'         => array(
+					'style-1'     => 'icons/short-code-layout/Grid-1.svg',
+					'style-2'     => 'icons/short-code-layout/Grid-2.svg',
+				),
+				'default'        => 'style-1',
+                'classes'        => 'col-12',
+                'attributes'                 => array(
+                    'data-conditional-id'    => $this->prefix . 'layout_option',
+                   'data-conditional-value' => wp_json_encode( array( 'grid') ),
+                ),
+        	) 
+		);
+
+        $dwl_layout->add_field( 
+			array(
+				'name'           => __( 'Style Type', 'wp-team-manager' ),
+				'desc'           => __( 'Select Style Layout Type', 'wp-team-manager' ),
+				'id'             => $this->prefix . 'list_style_option',
+				'type'           => 'radio_image',
+				'options'        => array(
+					'style-1'        => __('Style One', 'wp-team-manager'),
+				),
+				'images_path'    => TM_ADMIN_ASSETS,
+				'images'         => array(
+					'style-1'     => 'icons/short-code-layout/List-1.svg',
+				),
+				'default'        => 'style-1',
+                'classes'        => 'col-12',
+                'attributes'                 => array(
+                    'data-conditional-id'    => $this->prefix . 'layout_option',
+                   'data-conditional-value' => wp_json_encode( array( 'list' ) ),
+                ),
+        	) 
+		);
+
+        $dwl_layout->add_field( 
+			array(
+				'name'           => __( 'Style Type', 'wp-team-manager' ),
+				'desc'           => __( 'Select Style Layout Type', 'wp-team-manager' ),
+				'id'             => $this->prefix . 'slider_style_option',
+				'type'           => 'radio_image',
+				'options'        => array(
+					'style-1'        => __('Style One', 'wp-team-manager'),
+				),
+				'images_path'    => TM_ADMIN_ASSETS,
+				'images'         => array(
+					'style-1'     => 'icons/short-code-layout/Slider-1.svg',
+				),
+				'default'        => 'style-1',
+                'classes'        => 'col-12',
+                'attributes'                 => array(
+                    'data-conditional-id'    => $this->prefix . 'layout_option',
+                   'data-conditional-value' => wp_json_encode( array( 'slider' ) ),
+                ),
+        	) 
+		);
+
+        
 
         // $dwl_layout->add_field( 
 		// 	array(
@@ -714,9 +787,6 @@ class TeamMetabox {
             'name'    => __( 'URL', 'wp-team-manager' ),
             'id'      => 'url',
             'type'    => 'text_url',
-            'attributes' => array(
-                'required' => 'required',
-            ),
         ) );
         
         // Social profile end

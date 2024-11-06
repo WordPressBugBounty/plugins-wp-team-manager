@@ -41,7 +41,7 @@ class PublicAssets {
 		wp_register_style( 'wp-team-single', TM_PUBLIC . '/assets/css/tm-single.css', [], TM_VERSION );
 		wp_register_style( 'wp-team-style', TM_PUBLIC . '/assets/css/tm-style.css', [], TM_VERSION );
 		wp_register_style( 'wp-old-style', TM_PUBLIC . '/assets/css/tm-old-style.css', [], TM_VERSION );
-
+		
 		// register scritps
 		wp_register_script( 'wp-team-slick', TM_PUBLIC . '/assets/vendor/slick/slick.min.js', array('jquery'), '5.9.0', true );
 

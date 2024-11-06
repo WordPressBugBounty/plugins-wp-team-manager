@@ -180,12 +180,12 @@ class Shortcodes{
     
     $post_id            = intval( $default['id'] );
     $all_settings       = get_post_meta( $post_id );
-    $posts_per_page     = isset( $all_settings['dwl_team_show_total_members'] ) ? $all_settings['dwl_team_show_total_members'][0]                : -1;
-    $asc_desc           = isset( $all_settings['dwl_team_team_order'] ) ? $all_settings['dwl_team_team_order'][0]                                : 'ASC';
-    $order_by           = isset( $all_settings['dwl_team_team_order_by'] ) ? $all_settings['dwl_team_team_order_by'][0]                          : 'name';
-    $display_members    = isset( $all_settings['dwl_team_show_team_member_by_ids'] ) ? $all_settings['dwl_team_show_team_member_by_ids'][0]      : '';
-    $remove_members     = isset( $all_settings['dwl_team_remove_team_members_by_ids'] ) ? $all_settings['dwl_team_remove_team_members_by_ids'][0]: '';
-    $layout = isset( $all_settings['dwl_team_layout_option'] ) ? $all_settings['dwl_team_layout_option'][0] : 'grid';	
+    $posts_per_page     = isset( $all_settings['dwl_team_show_total_members'][0] ) ? $all_settings['dwl_team_show_total_members'][0]                : -1;
+    $asc_desc           = isset( $all_settings['dwl_team_team_order'][0] ) ? $all_settings['dwl_team_team_order'][0]                                : 'ASC';
+    $order_by           = isset( $all_settings['dwl_team_team_order_by'][0] ) ? $all_settings['dwl_team_team_order_by'][0]                          : 'name';
+    $display_members    = isset( $all_settings['dwl_team_show_team_member_by_ids'][0] ) ? $all_settings['dwl_team_show_team_member_by_ids'][0]      : '';
+    $remove_members     = isset( $all_settings['dwl_team_remove_team_members_by_ids'][0] ) ? $all_settings['dwl_team_remove_team_members_by_ids'][0]: '';
+    $layout = isset( $all_settings['dwl_team_layout_option'][0] ) ? $all_settings['dwl_team_layout_option'][0] : 'grid';	
     $_paged        = is_front_page() ? "page" : "paged";
     $wrapper_calss = '';
     $social_size = ( false !== get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
@@ -193,14 +193,14 @@ class Shortcodes{
 
 	  $all_groups_member = isset( $all_settings['dwl_team_group_featured_cats'] ) ? $all_settings['dwl_team_group_featured_cats'][0]: [];
 	
-    $arrows = isset($all_settings['dwl_team_show_arrow']) ? 'yes' == $all_settings['dwl_team_show_arrow'][0] ? true : false: false;
-    $dot_nav = isset($all_settings['dwl_team_dot_nav']) ? 'yes' == $all_settings['dwl_team_dot_nav'][0] ? true : false  : false;
-    $autoplay = isset($all_settings['dwl_team_autoplay']) ? 'yes' == $all_settings['dwl_team_autoplay'][0] ? true : false : false;
-    $arrow_position = isset($all_settings['dwl_team_arrow_position']) ? $all_settings['dwl_team_arrow_position'][0] : 'side';
+    $arrows = isset($all_settings['dwl_team_show_arrow'][0]) ? 'yes' == $all_settings['dwl_team_show_arrow'][0] ? true : false: false;
+    $dot_nav = isset($all_settings['dwl_team_dot_nav'][0]) ? 'yes' == $all_settings['dwl_team_dot_nav'][0] ? true : false  : false;
+    $autoplay = isset($all_settings['dwl_team_autoplay'][0]) ? 'yes' == $all_settings['dwl_team_autoplay'][0] ? true : false : false;
+    $arrow_position = isset($all_settings['dwl_team_arrow_position'][0]) ? $all_settings['dwl_team_arrow_position'][0] : 'side';
 
-    $desktop = isset( $all_settings['dwl_team_desktop'] ) ? $all_settings['dwl_team_desktop'][0] : 3;
-    $tablet = isset( $all_settings['dwl_team_tablet'] ) ? $all_settings['dwl_team_tablet'][0] : 2;
-    $mobile = isset( $all_settings['dwl_team_mobile'] ) ? $all_settings['dwl_team_mobile'][0] : 1;
+    $desktop = isset( $all_settings['dwl_team_desktop'][0] ) ? $all_settings['dwl_team_desktop'][0] : 3;
+    $tablet  = isset( $all_settings['dwl_team_tablet'][0] ) ? $all_settings['dwl_team_tablet'][0] : 2;
+    $mobile  = isset( $all_settings['dwl_team_mobile'][0] ) ? $all_settings['dwl_team_mobile'][0] : 1;
    
     if( $layout != 'slider' ){
       $wrapper_calss = 'wtm-row g-2 g-lg-3';
@@ -259,11 +259,14 @@ class Shortcodes{
       wp_enqueue_style( 'wp-team-style' );
     }
     
-	$side_arrow_class = ( $arrow_position == 'side' ) ? 'team-arrow-postion-side' : '';
+    $side_arrow_class = ( $arrow_position == 'side' ) ? 'team-arrow-postion-side' : '';
+    $teamplate_style  = isset($all_settings['dwl_team_grid_style_option'][0]) ? $all_settings['dwl_team_grid_style_option'][0] : 'style-1';
+    $teamplate_layout = isset($all_settings['dwl_team_layout_option'][0]) ? $all_settings['dwl_team_layout_option'][0] : 'grid';
+    $style_type       = isset($all_settings['dwl_team_' . $teamplate_layout . '_style_option'][0]) ? $all_settings['dwl_team_' . $teamplate_layout . '_style_option'][0] : 'style-1';
 
     ?>
       <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-list dwl-team-wrapper wtm-container-fluid" >
-        <div class="dwl-team-wrapper--main dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $all_settings['dwl_team_image_style'] [0] );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
+        <div class="dwl-team-wrapper--main dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-<?php echo esc_attr( $teamplate_layout ); ?>-<?php echo esc_attr( $teamplate_style ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $all_settings['dwl_team_image_style'] [0] );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
           data-arrows="<?php echo esc_attr($arrows); ?>" 
           data-dots="<?php echo esc_attr($dot_nav); ?>"  
           data-autoplay="<?php echo esc_attr($autoplay); ?>"
@@ -271,8 +274,8 @@ class Shortcodes{
           data-tablet="<?php echo esc_attr(  $tablet )?>" 
           data-mobile="<?php echo esc_attr(  $mobile )?>" 
         >  
-            <?php Helper::display_template_output( $layout, $team_data, $all_settings ); ?>
-          </div>
+          <?php Helper::renderTeamLayout( $teamplate_layout, $team_data, $style_type, $all_settings ); ?>
+        </div>
       </div>
     <?php
       return ob_get_clean();

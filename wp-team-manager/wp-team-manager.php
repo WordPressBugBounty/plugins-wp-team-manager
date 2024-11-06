@@ -8,7 +8,7 @@
  * Plugin Name:       WordPress Team Manager
  * Plugin URI:        https://wpteammanager.com/
  * Description:       Showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
- * Version:           2.1.15
+ * Version:           2.1.16
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -39,7 +39,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.1.15';
+	const version = '2.1.16';
 
 	/**
 	 * Class init.
@@ -154,7 +154,7 @@ final class Wp_Team_Manager {
 
 		$current_version = get_option( 'wp_team_manager_version' );
 
-		if ( version_compare( $current_version, '2.1.15', '==' ) ) {
+		if ( version_compare( $current_version, '2.1.14', '==' ) ) {
 
 			$migration_completed = get_option( 'team_migration_completed' );
 

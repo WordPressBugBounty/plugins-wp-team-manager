@@ -92,12 +92,14 @@ class Helper {
        
         $wptm_social_data  = !empty($wptm_social_infos) ? $wptm_social_infos : [];
 
+
         $social_size = !empty( get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
         $link_window = ( false !== get_option('tm_link_new_window')  && 'True' == get_option('tm_link_new_window') ) ? 'target="_blank"' : '';
-        // var_dump(get_option('tm_social_size'));
-        if( count( $wptm_social_data ) == 0 ){
+
+        if( !isset( $wptm_social_data[0]['url'] ) && ( isset($wptm_social_data[0]['type']) &&  $wptm_social_data[0]['type'] == 'select_type') ){
             return false;
         }
+
 
         $output = '';
         $output .= '<div class="team-member-socials size-'.esc_attr($social_size).'">';
@@ -616,6 +618,40 @@ class Helper {
 
     }
     
+
+       /**
+     * Renders the Elementor layout based on the given layout, data, and settings.
+     *
+     * @param string $layout The name of the layout to render.
+     * @param array $data The data to pass to the layout template.
+     * @param array $settings The settings for the layout.
+     * @throws None
+     * @return void
+     */
+    public static function renderTeamLayout(string $layout, array $data, string $styleType , $settings): void
+    {
+        $styleType = stripslashes($styleType);
+        $path = stripslashes(TM_PATH . '/public/templates/layouts/' . $layout . '/');
+        $templateName = sanitize_file_name( $styleType . '.php' );
+
+        //allowed file type
+        $allowedFileTypes = [
+            'php'
+        ];
+        
+        $ext = pathinfo($path . $templateName, PATHINFO_EXTENSION);
+
+        if (in_array($ext, $allowedFileTypes)) {
+
+            if (file_exists($path . $templateName)) {
+
+                include self::locateTemplate($templateName, '', $path);
+    
+            }
+        }
+
+    }
+
     /**
      * Locates a template file based on the given template name, template path, and default path.
      *
@@ -676,7 +712,6 @@ class Helper {
 
                 break;
         }
-
 
     }
 

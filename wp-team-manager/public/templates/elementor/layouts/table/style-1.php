@@ -4,7 +4,8 @@ use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if(!empty($data)):
-
+    $style_type_name = $settings['layout_type'].'_'.'style_type';
+	$style_type = !empty( $settings[$style_type_name] ) ? $settings[$style_type_name] : '';
     $image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';   
 
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
@@ -17,27 +18,28 @@ if(!empty($data)):
     $mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
     
         ?>
+        <div class="team-table-<?php echo esc_attr( $style_type )?>">
             <table>
                 <thead>
                     <tr>
                         <?php if("yes" == $settings['show_image'] || 'yes' == $settings['show_social'] ): ?>
-                            <th>Image</th>
+                            <th><?php esc_html_e( " Image ", " wp-team-manager " )?></th>
                         <?php endif; ?>
 
                         <?php if('yes'== $settings['show_title']  ): ?>
-                            <th>Name</th>
+                            <th><?php esc_html_e( " Name ", " wp-team-manager " )?></th>
                         <?php endif; ?>
 
                         <?php if( 'yes'== $settings['show_sub_title'] ): ?>
-                            <th>Designation</th>
+                            <th><?php esc_html_e( " Designation ", " wp-team-manager " )?></th>
                         <?php endif; ?>
 
                         <?php if( 'yes' === $show_shortBio ) : ?>
-                            <th>Short Bio</th>
+                            <th><?php esc_html_e( " Short Bio ", " wp-team-manager " )?></th>
                         <?php endif; ?>
 
                         <?php if( isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info'] ) : ?>
-                            <th>EMAIL</th>
+                            <th><?php esc_html_e( " EMAIL ", " wp-team-manager " )?></th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -67,6 +69,7 @@ if(!empty($data)):
                                         <?php endif; ?>
                                     </td>
                                 <?php endif;?>
+                                
                                 <?php if('yes'== $settings['show_title']  ): ?>
                                     <td class="dwl-table-data">
                                         <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
@@ -110,6 +113,8 @@ if(!empty($data)):
                         <?php endforeach; ?>
                 <tbody>    
             </table>
+        </div>
+            
         <?php
     endif;
 ?>
