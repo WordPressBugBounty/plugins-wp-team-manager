@@ -628,7 +628,7 @@ class Helper {
      * @throws None
      * @return void
      */
-    public static function renderTeamLayout(string $layout, array $data, string $styleType , $settings): void
+    public static function renderTeamLayout(string $layout, array $data, string $styleType , $settings = []): void
     {
         $styleType = stripslashes($styleType);
         $path = stripslashes(TM_PATH . '/public/templates/layouts/' . $layout . '/');
@@ -668,7 +668,7 @@ class Helper {
         return $template ?: "{$defaultPath}{$templateName}";
     }
 
-    public static function show_html_output($layout = 'grid', $data = [], $settings){
+    public static function show_html_output($layout = 'grid', $data = [], $settings = []){
      
         switch ($layout) {
             case 'grid':
@@ -690,29 +690,5 @@ class Helper {
 
     }
     
-    public static function display_template_output($layout = 'grid', $data = [], $settings){
-
-
-        switch ($layout) {
-            case 'grid':
-                include self::wtm_locate_template('team-content-layout-grid.php');
-                break;
-            
-            case 'list':
-                include self::wtm_locate_template('team-content-layout-list.php');
-                break;
-            
-            case 'slider':
-                include self::wtm_locate_template('team-content-layout-slider.php');
-                break;
-
-            default:
-                
-                include self::wtm_locate_template('team-content-layout-grid.php');
-
-                break;
-        }
-
-    }
 
 }
