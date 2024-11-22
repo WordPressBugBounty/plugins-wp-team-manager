@@ -116,6 +116,8 @@ function wptm_template_chooser( $template ) {
         return wptm_get_template_hierarchy( 'single-team_manager' );
     }
  
+    return $template;
+    
 }
 
 /**

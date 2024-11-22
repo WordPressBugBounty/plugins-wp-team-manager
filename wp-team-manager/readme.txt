@@ -4,7 +4,7 @@ Donate link: http://www.dynamicweblab.com/
 Tags: team slider,teams,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.6.2
-Stable tag: 2.1.17
+Stable tag: 2.1.18
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -173,6 +173,9 @@ Please email us at support@dynamicweblab.com
 7. Settings Page
 
 == Changelog ==
+
+= 2.1.18 = 
+* [Bug] Search empty issue
 
 = 2.1.17 = 
 * [Bug] fix Optional parameter $layout declared
