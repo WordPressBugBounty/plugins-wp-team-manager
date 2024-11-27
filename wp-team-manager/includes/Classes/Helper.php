@@ -689,6 +689,29 @@ class Helper {
         }
 
     }
+
+    public static function render_terms( $post_id, $term_to_show = 1, $term = 'team_designation' ){
+		if( empty( $post_id ) ){
+			return false;
+		}
+
+		$get_the_terms = get_the_terms( $post_id, $term);
+
+		if( ! is_array( $get_the_terms ) ){
+			return false;
+		}
+
+		$terms = array_slice($get_the_terms, 0, $term_to_show);
+
+		$terms_html = '<div class="team-'.$term.'">';
+		foreach( $terms as $term ){
+			$terms_html .= '<span class="team-position">'. $term->name .'</span>';
+		}
+		$terms_html .= '</div>';
+
+		echo wp_kses_post( $terms_html );
+		
+	}
     
 
 }
