@@ -43,7 +43,7 @@ class PublicAssets {
 		wp_register_style( 'wp-old-style', TM_PUBLIC . '/assets/css/tm-old-style.css', [], TM_VERSION );
 		
 		// register scritps
-		wp_register_script( 'wp-team-slick', TM_PUBLIC . '/assets/vendor/slick/slick.min.js', array('jquery'), '5.9.0', true );
+
 
 		wp_register_script( 
 			'wp-team-slick', 
@@ -53,21 +53,21 @@ class PublicAssets {
 			true 
 		);
 
-		wp_register_script( 
-			'wtm-image-load-js', 
-			TM_PUBLIC . '/assets/vendor/isotope/imagesloaded.pkgd.min.js', 
-			array('jquery'), 
-			'5.0.0', 
-			true 
-		);		
+		// wp_register_script( 
+		// 	'wtm-image-load-js', 
+		// 	TM_PUBLIC . '/assets/vendor/isotope/imagesloaded.pkgd.min.js', 
+		// 	array('jquery'), 
+		// 	'5.0.0', 
+		// 	true 
+		// );		
 
-		wp_register_script( 
-			'wtm-isotope-js', 
-			TM_PUBLIC . '/assets/vendor/isotope/isotope.pkgd.min.js', 
-			array('jquery','wtm-image-load-js'), 
-			'3.0.6', 
-			true 
-		);
+		// wp_register_script( 
+		// 	'wtm-isotope-js', 
+		// 	TM_PUBLIC . '/assets/vendor/isotope/isotope.pkgd.min.js', 
+		// 	array('jquery','wtm-image-load-js'), 
+		// 	'3.0.6', 
+		// 	true 
+		// );
 
 		wp_register_script( 'wp-team-script', TM_PUBLIC . '/assets/js/team.js', array('jquery'), TM_VERSION, true );
 
