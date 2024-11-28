@@ -18,28 +18,28 @@ if(!empty($data)):
     $mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
     
         ?>
-        <div class="team-table-<?php echo esc_attr( $style_type )?>">
-            <table>
+        <div class="dwl-team-table-responsive team-table-<?php echo esc_attr( $style_type )?>">
+            <table class="table">
                 <thead>
                     <tr>
                         <?php if("yes" == $settings['show_image'] || 'yes' == $settings['show_social'] ): ?>
-                            <th><?php esc_html_e( " Image ", " wp-team-manager " )?></th>
+                            <th scope="col"><?php esc_html_e( "Image", "wp-team-manager" )?></th>
                         <?php endif; ?>
 
                         <?php if('yes'== $settings['show_title']  ): ?>
-                            <th><?php esc_html_e( " Name ", " wp-team-manager " )?></th>
+                            <th scope="col"><?php esc_html_e( "Name", "wp-team-manager" )?></th>
                         <?php endif; ?>
 
                         <?php if( 'yes'== $settings['show_sub_title'] ): ?>
-                            <th><?php esc_html_e( " Designation ", " wp-team-manager " )?></th>
+                            <th scope="col"><?php esc_html_e( "Designation", "wp-team-manager" )?></th>
                         <?php endif; ?>
 
                         <?php if( 'yes' === $show_shortBio ) : ?>
-                            <th><?php esc_html_e( " Short Bio ", " wp-team-manager " )?></th>
+                            <th scope="col"><?php esc_html_e( "Short Bio", "wp-team-manager" )?></th>
                         <?php endif; ?>
 
                         <?php if( isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info'] ) : ?>
-                            <th><?php esc_html_e( " EMAIL ", " wp-team-manager " )?></th>
+                            <th scope="col"><?php esc_html_e( "EMAIL", "wp-team-manager" )?></th>
                         <?php endif; ?>
                     </tr>
                 </thead>
@@ -51,9 +51,11 @@ if(!empty($data)):
 
                             $job_title = get_post_meta( $teamInfo->ID, 'tm_jtitle', true );
                             $short_bio = get_post_meta( $teamInfo->ID, 'tm_short_bio', true );
-                            $tm_email = get_post_meta($teamInfo->ID,'tm_email',true);?>
+                            $tm_email = get_post_meta($teamInfo->ID,'tm_email',true);
                             
-                            <tr class="dwl-table-row">
+                            ?>
+                            
+                            <tr class="dwl-table-row" scope="row">
                                 <?php if("yes" == $settings['show_image'] || 'yes' == $settings['show_social'] ): ?>
                                     <td class="dwl-table-data">
                                         <?php if("yes" == $settings['show_image']): ?>
@@ -94,14 +96,16 @@ if(!empty($data)):
                                     </td>
                                 <?php endif; ?>
 
-                                <?php if(isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info'] && isset($tm_email)) : ?>
+                                <?php if(isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info']) : ?>
                                     <td class="dwl-table-data">
+                                        <?php if(isset($tm_email) && !empty($tm_email)): ?>
                                         <div class="team-member-info">
                                             <a href="mailto:<?php echo esc_html($tm_email) ?>" target="_blank">
                                                 <i class="fas fa-envelope"></i>
                                                 <?php echo esc_html($tm_email) ?>
                                             </a>
                                         </div>
+                                        <?php endif; ?>
                                     </td>
                                 <?php endif; ?>
 
@@ -111,7 +115,7 @@ if(!empty($data)):
 
                     ?>
                         <?php endforeach; ?>
-                <tbody>    
+                    </tbody>    
             </table>
         </div>
             

@@ -17,30 +17,32 @@ if(!empty($data)):
     
     $mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
 
+
+   
     
         ?>
-            <div class="team-table-<?php echo esc_attr( $style_type )?>">
-                <table>
+            <div class="dwl-team-table-responsive team-table-<?php echo esc_attr( $style_type )?>">
+            <table class="table">
                     <thead>
                         <tr>
                             <?php if("yes" == $settings['show_image'] || 'yes' == $settings['show_title'] ): ?>
-                                <th><?php esc_html_e( " Member Name ", " wp-team-manager " )?></th>
+                                <th><?php esc_html_e( "Name", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
                             <?php if('yes'== $settings['show_department']  ): ?>
-                                <th><?php esc_html_e( " Department ", " wp-team-manager " )?></th>
+                                <th><?php esc_html_e( "Department", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
                             <?php if( 'yes'== $settings['show_designation'] ): ?>
-                                <th><?php esc_html_e( " Designation ", " wp-team-manager " )?></th>
+                                <th><?php esc_html_e( "Designation", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
                             <?php if( 'yes' === $settings['show_team_mobile_number'] ) : ?>
-                                <th><?php esc_html_e( " Number ", " wp-team-manager " )?></th>
+                                <th><?php esc_html_e( "Number", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
                             <?php if("yes" == $settings['show_social'] || 'yes' == $settings['show_full_biograph'] ) : ?>
-                                <th><?php esc_html_e( " Contact ", " wp-team-manager " )?></th>
+                                <th><?php esc_html_e( "Contact", " wp-team-manager " )?></th>
                             <?php endif; ?>
                         </tr>
                     </thead>
@@ -79,24 +81,26 @@ if(!empty($data)):
 
                                     <?php if('yes'== $settings['show_department']  ): ?>
                                         <td class="dwl-table-data">
-                                            <?php Helper::render_terms($teamInfo->ID, 1, 'team_department') ?>
+                                            <?php echo wp_kses_post(Helper::render_terms($teamInfo->ID, 1, 'team_department')); ?>
                                         </td>
                                     <?php endif;?>
 
                                     <?php if( 'yes'== $settings['show_designation'] ): ?>
                                         <td class="dwl-table-data">
-                                            <?php Helper::render_terms($teamInfo->ID, 1, 'team_designation') ?>
+                                            <?php echo wp_kses_post(Helper::render_terms($teamInfo->ID, 1, 'team_designation')); ?>
                                         </td>
                                     <?php endif;?>
                                     
                                     <?php if( 'yes' === $settings['show_team_mobile_number'] ) : ?>
-                                        <td class="dwl-table-data-short-bio">
+                                        <td class="dwl-table-data dwl-table-data-short-bio">
+                                            <?php if(isset($tm_mobile) && !empty($tm_mobile)): ?>
                                             <div class="team-member-mobile-info">
                                                 <a href="tel://<?php echo esc_html($tm_mobile) ?>" target="_blank">
                                                     <!-- <i class="fas fa-phone-alt"></i> -->
                                                     <?php echo esc_html($tm_mobile) ?>
                                                 </a>
                                             </div>
+                                            <?php endif; ?>
                                         </td>
                                     <?php endif; ?>
 
@@ -121,7 +125,7 @@ if(!empty($data)):
 
                         ?>
                             <?php endforeach; ?>
-                    <tbody>    
+                    </tbody>   
                 </table>
             </div>   
         <?php

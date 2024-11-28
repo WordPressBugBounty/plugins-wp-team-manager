@@ -5016,6 +5016,15 @@
  
  /*# sourceMappingURL=bootstrap-grid.css.map */
 
+ .dwl-team-table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+
 /* Member Info */
 
 .dwl-team-wrapper h2.team-member-title {
@@ -5811,9 +5820,7 @@ text-align: center;
   border-radius: 10px 10px 0px 0px;
 }
 .dwl-team-elementor-layout-table .team-table-style-2  table thead th {
-  /* background-color: #F2F4FF; */
   color: #2E3A67;
-  font-family: 'Open Sans';
   padding: 20px 20px 20px 20px;
   text-align: left;
   font-size: 20px;
@@ -5828,7 +5835,6 @@ text-align: center;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-member-title{
-  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -5858,7 +5864,6 @@ text-align: center;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-icon-wraper a{
-  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -5886,7 +5891,6 @@ text-align: center;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-position {
-  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
@@ -5900,7 +5904,6 @@ text-align: center;
   display: flex;
   align-items: center;
   padding: 10px;
-  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
