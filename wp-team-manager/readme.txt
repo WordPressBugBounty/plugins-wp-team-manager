@@ -1,10 +1,10 @@
 === Team Manager - WordPress Showcase Team Members ===
 Contributors: maidulcu,dynamicweblab
-Donate link: http://www.dynamicweblab.com/
+Donate link: https://wpteammanager.com/
 Tags: team slider,teams,team,team members,team showcase
 Requires at least: 6.0.0
-Tested up to: 6.6.2
-Stable tag: 2.1.21
+Tested up to: 6.7.1
+Stable tag: 2.1.23
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -143,10 +143,21 @@ With Table laout display team members' details, such as names, photos, designati
 
 == Frequently Asked Questions ==
 
+= Can I use Team plugin with any theme? =
+
+Yes you can use this plugin with any theme it will work. If face any issue mail our support we will help.
+
+= Is this Team Plugin allow slider? =
+
+Yes we added two slider layout.
+
+= Is this support social profiles for team members ? =
+
+Yes its support social profile.
+
 = Where is the short code ? =
 
-You can create shortcode generator under Team menu or use this default short code 
-[team_manager category='0' orderby='menu_order' posts_per_page='0' post__in='' post__not_in='' layout='grid' large_column='3' tablet_column='6' mobile_column='12' show_other_info='yes' show_social='yes' image_size='medium' image_style='boxed' bg_color='' social_color='']
+You can create shortcode generator under Team menu.
 
 = How can i disable the details member link on the image ? =
 
@@ -170,15 +181,25 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 
 == Screenshots ==
 
-1. Grid Layout
-2. List Layout
-3. Carousel layout
-4. Add new Team Member
-5. Team Generator
-6. Shortcode Generator (deprecated)
-7. Settings Page
+1. Grid Layout 1
+2. Grid Layout 2
+3. Grid Layout 3
+4. Grid Layout 4
+5. List Layout 1
+6. Slider layout 1
+7. Slider layout 2
+8. Add new Team Member
+9. Short Code Generator
+10. Elementor Widget
+11. Team generator
 
 == Changelog ==
+
+= 2.1.23 = 
+* Update table css
+
+= 2.1.22 = 
+* Fix list layout not displaying social icon bug
 
 = 2.1.21 = 
 * Improve css for table 1 and 2 layout

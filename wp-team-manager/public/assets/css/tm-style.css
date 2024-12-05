@@ -5064,9 +5064,6 @@
   margin-top: 15px;
   column-gap: 2px;
 }
-.team-member-socials a {
-    color: var(--wtm-color-white);
-}
 .team-member-socials a{
 	background-color: var(--wtm-color-light_blue);
 	cursor: pointer;
@@ -5081,6 +5078,8 @@
 	text-decoration: none !important;
 	-webkit-box-shadow: none !important;
 	box-shadow: none !important;
+  color: var(--wtm-color-white);
+  margin-right: 5px;
 }
 .team-member-socials a:hover{
   transition: .5s ease;
@@ -5693,15 +5692,19 @@ text-align: center;
   text-align: center;
 }
 
+.wtm-read-more-wrap{
+  margin: 20px 0;;
+}
 .wtm-read-more-wrap .wtm-read-more{
   font-size: 16px;
-  line-height: normal;
-  padding-left: 20px;
-  padding-bottom: 20px;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
   font-weight: 400;
-  color: #032b43;
+  color: var(--wtm-color-dark_blue);
   text-decoration: none;
 }
+
 
 
 /* Team table Layout */
@@ -5736,7 +5739,7 @@ text-align: center;
 }
 .dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-data .team-member-title{
   font-size: 20px;
-  font-weight: 600;
+  /* font-weight: 600; */
 }
 .dwl-table-data .team-member-info a{
   color: var(--wtm-text-color);
@@ -5756,7 +5759,7 @@ text-align: center;
   margin-top: 0;
 }
 .dwl-team-elementor-layout-table .team-table-style-1 .team-member-socials a {
-  margin-top: 0;
+  margin-top: 2px;
   font-size: 11px;
   height: 20px;
   width: 20px;
@@ -5798,11 +5801,28 @@ text-align: center;
   line-height: 25px;
   margin: 0;
 }
+
+.dwl-team-elementor-layout-table .team-table-style-1 .dwl-table-img-icon-wraper {
+  max-width: 130px;
+}
 .dwl-table-data-short-bio .team-short-bio{
+  max-width: 320px;
   text-align: center;
   font-weight: 300;
   color: var(--wtm-text-color);
   padding: 0px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-head {
+  max-width: 200px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-1 .team-position-wraper {
+  max-width: 143px;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-1 .team-member-info {
+  max-width: 223px;
 }
 
 .dwl-team-elementor-layout-table {
@@ -5815,11 +5835,17 @@ text-align: center;
   width: 100%;
 }
 
+/* .dwl-team-elementor-layout-table .team-table-style-2 th,
+.dwl-team-elementor-layout-table .team-table-style-2 td {
+  border-color: transparent;
+} */
+
 .dwl-team-elementor-layout-table .team-table-style-2  table thead {
   background: #F2F4FF;
   border-radius: 10px 10px 0px 0px;
 }
 .dwl-team-elementor-layout-table .team-table-style-2  table thead th {
+  /* background-color: #F2F4FF; */
   color: #2E3A67;
   padding: 20px 20px 20px 20px;
   text-align: left;
@@ -5844,21 +5870,33 @@ text-align: center;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .dwl-table-img-wraper {
+  max-width: 260px;
   display: flex;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   gap: 30px;
   align-items: center;
   padding: 10px;
 }
+.dwl-team-elementor-layout-table .team-table-style-2 table, 
+.dwl-team-elementor-layout-table .team-table-style-2 td, 
+.dwl-team-elementor-layout-table .team-table-style-2 th {
+  border-color: transparent;
+}
 
-.dwl-team-elementor-layout-table .team-table-style-2 tbody tr{
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data{
   border-bottom: 1px solid #999999;
 }
 
+th.dwl-table-head-cotact {
+  display: flex;
+  justify-content: center;
+}
+
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-icon-wraper {
+  max-width: 362px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: left;
+  justify-content: right;
   align-items: center;
   gap: 10px;
 }
@@ -5888,6 +5926,14 @@ text-align: center;
 .dwl-team-elementor-layout-table .team-table-style-2 td .dwl-table-icon-wraper,
 .dwl-team-elementor-layout-table .team-table-style-2 td .team-team_designation{
   padding: 10px;
+}
+.dwl-team-elementor-layout-table .team-table-style-2 td .team-team_designation ,
+.dwl-team-elementor-layout-table .team-table-style-2 td .team-team_department{
+  max-width: 216px;
+}
+
+.team-member-mobile-info{
+  max-width: 139px;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-position {
@@ -5924,7 +5970,6 @@ text-align: center;
 .dwl-team-elementor-layout-table .team-table-style-2 .team-member-socials a{
 	border-radius: 20%;
 }
-
 
 
 /* team grid style-2 shortcode genaretor */
