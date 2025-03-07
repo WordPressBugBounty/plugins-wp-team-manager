@@ -1,1 +1,180 @@
-.tm-tabs{display:flex;position:relative;gap:5px;padding-top:16px}.tm-tabs .line{position:absolute;left:0;bottom:0;width:0;height:6px;border-radius:15px;background-color:#47479f;transition:.2s}.tab-item{min-width:80px;padding:16px 20px 11px;font-size:16px;text-align:center;color:#47479f;background-color:#fff;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom:5px solid transparent;opacity:.6;cursor:pointer;transition:.5s}.tab-icon{font-size:24px;width:32px;position:relative;top:2px}.tab-item:hover{opacity:1;background-color:rgba(194,53,100,.05);border-color:rgba(194,53,100,.1)}.tab-item.active{opacity:1}.tm-tab-content-wrapper{padding:15px;background:#fff}.tab-pane{color:#333;display:none}.tab-pane.active{display:block}.tab-pane h2{font-size:24px;margin-bottom:8px}.tm-tab-content-wrapper .tm-field-wrapper{border-bottom:1px solid #e7e7e7;padding:15px 0;display:flex}.tm-field-wrapper .tm-label{font-weight:700;margin-bottom:5px;flex:0 0 200px}.tm-field-wrapper .tm-field{flex:1;padding:15px}.tm-nice-checkbox-wrapper{display:flex;padding:10px 0;gap:15px}.tm-nice-checkbox-wrapper span{font-size:15px;font-weight:600}.tm-nice-checkbox-wrapper input[type=checkbox]{visibility:hidden;display:none}.tm-nice-checkbox-wrapper .toggle{position:relative;display:block;width:40px;height:20px;cursor:pointer;-webkit-tap-highlight-color:transparent;transform:translate3d(0,0,0)}.tm-nice-checkbox-wrapper .toggle:before{content:"";position:relative;top:3px;left:3px;width:34px;height:14px;display:block;background:#9a9999;border-radius:8px;transition:background .2s}.tm-nice-checkbox-wrapper .toggle span{position:absolute;top:0;left:0;width:20px;height:20px;display:block;background:#fff;border-radius:10px;box-shadow:0 3px 8px rgba(154,153,153,.5);transition:.2s}.tm-nice-checkbox-wrapper .toggle span:before{content:"";position:absolute;display:block;margin:-18px;width:56px;height:56px;background:rgba(79,46,220,.5);border-radius:50%;transform:scale(0);opacity:1;pointer-events:none}.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle:before{background:#947ada}.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle span{background:#4f2edc;transform:translateX(20px);transition:.2s cubic-bezier(.8, .4, .3, 1.25),background .15s;box-shadow:0 3px 8px rgba(79,46,220,.2)}.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle span:before{transform:scale(1);opacity:0;transition:.4s}#wptm_support{background:#fff;border-radius:5px;padding:15px}#wpbody-content .wrap form .tm-tab-content-wrapper .tab-pane .tm-field-wrapper .tm-field textarea{width:90%}#wpbody-content .wrap form{width:62%;display:inline-block}#wpbody-content .wrap #wptm_support{margin-top:70px;width:35%;float:right}@media only screen and (max-width:1312px){#wpbody-content .wrap form{width:100%}#wpbody-content .wrap #wptm_support{margin-top:0;width:97%;float:left}}
+.tm-tabs {
+    display: flex;
+    position: relative;
+    gap: 5px;
+    padding-top: 16px;
+}
+.tm-tabs .line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 6px;
+    border-radius: 15px;
+    background-color: #47479f;
+    transition: .2s;
+}
+.tab-item {
+    min-width: 80px;
+    padding: 16px 20px 11px;
+    font-size: 16px;
+    text-align: center;
+    color: #47479f;
+    background-color: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 5px solid transparent;
+    opacity: .6;
+    cursor: pointer;
+    transition: .5s;
+}
+.tab-icon {
+    font-size: 24px;
+    width: 32px;
+    position: relative;
+    top: 2px;
+}
+.tab-item:hover {
+    opacity: 1;
+    background-color: rgba(194, 53, 100, .05);
+    border-color: rgba(194, 53, 100, .1);
+}
+.tab-item.active {
+    opacity: 1;
+}
+.tm-tab-content-wrapper {
+    padding: 15px;
+    background: #fff;
+}
+.tab-pane {
+    color: #333;
+    display: none;
+}
+.tab-pane.active {
+    display: block;
+}
+.tab-pane h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+.tm-tab-content-wrapper .tm-field-wrapper {
+    border-bottom: 1px solid #e7e7e7;
+    padding: 15px 0;
+    display: flex;
+}
+.tm-field-wrapper .tm-label {
+    font-weight: 700;
+    margin-bottom: 5px;
+    flex: 0 0 200px;
+}
+.tm-field-wrapper .tm-field {
+    flex: 1;
+    padding: 15px;
+}
+.tm-nice-checkbox-wrapper {
+    display: flex;
+    padding: 10px 0;
+    gap: 15px;
+}
+.tm-nice-checkbox-wrapper span {
+    font-size: 15px;
+    font-weight: 600;
+}
+.tm-nice-checkbox-wrapper input[type=checkbox] {
+    visibility: hidden;
+    display: none;
+}
+.tm-nice-checkbox-wrapper .toggle {
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transform: translate3d(0, 0, 0);
+}
+.tm-nice-checkbox-wrapper .toggle:before {
+    content: "";
+    position: relative;
+    top: 3px;
+    left: 3px;
+    width: 34px;
+    height: 14px;
+    display: block;
+    background: #9a9999;
+    border-radius: 8px;
+    transition: background .2s;
+}
+.tm-nice-checkbox-wrapper .toggle span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    display: block;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(154, 153, 153, .5);
+    transition: .2s;
+}
+.tm-nice-checkbox-wrapper .toggle span:before {
+    content: "";
+    position: absolute;
+    display: block;
+    margin: -18px;
+    width: 56px;
+    height: 56px;
+    background: rgba(79, 46, 220, .5);
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 1;
+    pointer-events: none;
+}
+.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle:before {
+    background: #947ada;
+}
+.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle span {
+    background: #4f2edc;
+    transform: translateX(20px);
+    transition: .2s cubic-bezier(.8,  .4,  .3,  1.25), background .15s;
+    box-shadow: 0 3px 8px rgba(79, 46, 220, .2);
+}
+.tm-nice-checkbox-wrapper .tm-checkbox:checked+.toggle span:before {
+    transform: scale(1);
+    opacity: 0;
+    transition: .4s;
+}
+#wpbody-content .wrap form .tm-tab-content-wrapper .tab-pane .tm-field-wrapper .tm-field textarea {
+    width: 90%}
+#wpbody-content .wrap form {
+    width: 62%;
+    display: inline-block;
+}
+#wpbody-content .wrap #wptm_support {
+    margin-top: 68px;
+    width: 37%;
+    float: right;
+}
+.wp-team-box-content a {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 400;
+    color: #A259FF;
+    text-decoration: none;
+    padding: 9px 18px;
+    border-radius: 4px;
+    position: relative;
+    line-height: 1.4;
+    transition: all 0.3s ease-in-out;
+    height: auto;
+    border: 2px solid #A259FF;
+}
+@media only screen and (max-width:1312px) {
+    #wpbody-content .wrap form {
+    width: 100%}
+#wpbody-content .wrap #wptm_support {
+    margin-top: 0;
+    width: 97%;
+    float: left;
+}
+}

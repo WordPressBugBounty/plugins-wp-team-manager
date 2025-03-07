@@ -56,6 +56,8 @@ namespace DWL\Wtm\Classes;
      */
     public function team_manager_setting_function() {
 
+        wp_enqueue_style( 'wp-team-get-help-admin' );
+
         ?>
         <div class="wrap">
             <h2><?php esc_html_e('Team Manager Settings', 'wp-team-manager'); ?></h2>
@@ -66,15 +68,17 @@ namespace DWL\Wtm\Classes;
                 <?php 
                     settings_fields( 'tm-settings-group' );
                     do_settings_sections( 'tm-settings-group' );
-                    $tm_social_size = get_option('tm_social_size');
-                    $tm_custom_css = get_option('tm_custom_css');
-                    $tm_link_new_window = get_option('tm_link_new_window');
-                    $single_team_member_view = get_option('single_team_member_view');
-                    $old_team_manager_style = get_option( 'old_team_manager_style' );
-                    $tm_slug = get_option('tm_slug');
-                    $tm_single_fields = get_option('tm_single_fields');
-                    $tm_image_size_fields = get_option('image_size_fields');
-                    $team_image_size_change = get_option('team_image_size_change');
+                    $tm_social_size           = get_option('tm_social_size');
+                    $tm_custom_css            = get_option('tm_custom_css');
+                    $tm_link_new_window       = get_option('tm_link_new_window');
+                    $single_team_member_view  = get_option('single_team_member_view');
+                    $old_team_manager_style   = get_option( 'old_team_manager_style' );
+                    $tm_slug                  = get_option('tm_slug');
+                    $tm_single_fields         = get_option('tm_single_fields');
+                    $tm_taxonomy_fields       = get_option('tm_taxonomy_fields');
+                    $tm_image_size_fields     = get_option('image_size_fields');
+                    $team_image_size_change   = get_option('team_image_size_change');
+                    $tm_single_team_lightbox  = get_option('tm_single_team_lightbox');
                     
                     include_once TM_PATH . '/admin/includes/content-settings.php';
 
@@ -82,10 +86,33 @@ namespace DWL\Wtm\Classes;
             </form>
         
             <!-- Support -->
-            <div id="wptm_support">
-                <h3><?php esc_html_e('Support & bug report', 'wp-team-manager'); ?></h3>
-                <p><?php echo wp_kses_post( sprintf(__('If you have some idea to improve this plugin or any bug to report, please reach us at ', 'wp-team-manager').' <a href="%1$s">%2$s</a>', 'https://dynamicweblab.com/submit-a-request/', 'support') ); ?></p>
-                <p><?php echo wp_kses_post( sprintf(__( 'You like this plugin ? Then please provide some support by' , 'wp-team-manager' ).' <a href="%1$s" target="_blank">'.__( 'voting for it' , 'wp-team-manager' ).'</a> '. __( 'and/or says that', 'wp-team-manager' ) .'  <a href="%2$s" target="_blank">'.__( 'it works', 'wp-team-manager').'</a> '.__( 'for your WordPress installation on the official WordPress plugins repository.', 'wp-team-manager' ), 'http://wordpress.org/plugins/wp-team-manager/reviews/?filter=5#new-post', 'http://wordpress.org/plugins/wp-team-manager/reviews/?filter=5#new-post') ); ?></p>
+            <div id="wptm_support" class="wp-team-box-content">      
+                <div class="wp-team-card-section">
+                    <div class="wp-team-document-box wp-team-document-box-card">
+                        <div class="wp-team-box-icon">
+                            <i class="dashicons dashicons-media-document"></i>
+                            <h3 class="wp-team-box-title"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></h3>
+                        </div>
+
+                        <div class="wp-team-box-content">
+                            <p><?php esc_html_e( 'Get started by spending some time with the documentation we included step by step process with screenshots with video.', 'wp-team-manager' )?></p>
+                            <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></a>
+                        </div>
+                    </div>
+
+                    <div class="wp-team-document-box wp-team-document-box-card">
+                        <div class="wp-team-box-icon">
+                            <i class="dashicons dashicons-sos"></i>
+                            <h3 class="wp-team-box-title"><?php esc_html_e( 'Need Help?', 'wp-team-manager' )?></h3>
+                        </div>
+
+                        <div class="wp-team-box-content wp-team-need-help">
+                            <p><?php esc_html_e( 'Stuck with something? Please create a ticket here', 'wp-team-manager' )?></p>
+                            <a href="<?php echo esc_url( 'https://dynamicweblab.com/submit-a-request/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Get Support', 'wp-team-manager' )?></a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -102,7 +129,10 @@ namespace DWL\Wtm\Classes;
         register_setting( 'tm-settings-group', 'tm_custom_css' );
         register_setting( 'tm-settings-group', 'old_team_manager_style' );
         register_setting( 'tm-settings-group', 'tm_single_fields');
+        register_setting( 'tm-settings-group', 'tm_taxonomy_fields');
         register_setting( 'tm-settings-group', 'tm_custom_template' );
+        register_setting( 'tm-settings-group', 'tm_single_team_lightbox' );
+        register_setting( 'tm-settings-group', 'tm_single_gallery_column' );
         register_setting( 
             'tm-settings-group', 
             'tm_slug',

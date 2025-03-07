@@ -1,9 +1,9 @@
 /**
  * Conditional logic for CMB2 library
- * @author    Awran5 <github.com/awran5>
+ * @author    Maidul Islam
  * @version   1.0.0
- * @license   under GPL v2.0 (https://github.com/awran5/CMB2-conditional-logic/blob/master/LICENSE)
- * @copyright © 2018 Awran5. All rights reserved.
+ * @license   under GPL v2.0
+ * @copyright © 2025 Maidul. All rights reserved.
  * 
  */
 (function( $ ) {
@@ -84,9 +84,7 @@
   
     // Trigger again when new group added
     $( '.cmb2-wrap > .cmb2-metabox' ).on( 'cmb2_add_row', function() {
-  
         CMB2Conditional();
-  
     });
   
   })( jQuery );

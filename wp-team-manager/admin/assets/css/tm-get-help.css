@@ -1,0 +1,194 @@
+.wp-team-get-help{
+    position: relative;
+    background-color: #fff;
+    padding: 45px 0 25px;
+}
+.wp-team-header-logo{
+    padding-left: 30px;
+}
+
+.wp-team-document-wrap{
+    position: relative;
+    width: 70%;
+    margin: 40px auto;
+}
+
+.wp-team-box-icon {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.wp-team-box-content{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.wp-team-box-content .wp-team-card-section .wp-team-box-content{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    
+}
+
+.wp-team-video-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-left: -10px;
+    margin-right: -10px;
+    max-width: calc(100% - 60px);
+}
+
+.wp-team-video-wrapper .wp-team-video-col {
+    position: relative;
+    padding-left: 10px;
+    padding-right: 10px;
+    max-width: 50%;
+    flex: 0 0 50%;
+}
+.wp-team-video-wrapper .wp-team-video-col iframe {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.wp-team-document-box {
+    background-color: #ffffff;
+    box-shadow: 0 1px 18px 0 rgb(0 0 0 / 8%);
+    border-radius: 4px;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+}
+
+.wp-team-testimonials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 20px;
+}
+.wp-team-testimonials .wp-team-testimonial {
+    flex: 0 0 calc(50% - 30px);
+}
+
+.wp-team-document-box .wp-team-box-content p {
+    font-size: 15px;
+    color: #646464;
+    margin: 0 0 25px 0;
+}
+
+.wp-team-testimonial .wp-team-client-info img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.wp-team-testimonial .wp-team-client-info .wp-team-star {
+    color: #A259FF;
+}
+
+.wp-team-client-info{
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 14px;
+    align-items: center;
+}
+
+.wp-team-testimonial .wp-team-client-info .wp-team-client-name {
+    display: block;
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 8px 0 5px;
+}
+
+
+.wp-team-card-section {
+    display: flex;
+    gap: 20px;
+}
+
+.wp-team-box-content a {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 400;
+    color: #A259FF;
+    text-decoration: none;
+    padding: 9px 18px;
+    border-radius: 4px;
+    position: relative;
+    line-height: 1.4;
+    transition: all 0.3s ease-in-out;
+    height: auto;
+    border: 2px solid #A259FF;
+}
+
+.wp-team-box-content a:hover {
+    background-color: #A259FF;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.wp-team-document-box .wp-team-box-icon i {
+    font-size: 20px;
+    color: #A259FF;
+}
+
+.wp-team-document-box .wp-team-box-icon i {
+    height: 30px;
+    width: 30px;
+    background-color: #ecf1ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    margin-right: 10px;
+}
+
+.wp-team-card-section .wp-team-document-box.wp-team-document-box-card{
+    width: 33.39%;
+    justify-content: left;
+}
+
+.wp-team-card-section .wp-team-document-box.wp-team-document-box-card .wp-team-box-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+
+/* this css is for setting page */
+#wptm_support .wp-team-card-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0px
+}
+
+#wptm_support .wp-team-card-section .wp-team-box-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+}
+#wptm_support .wp-team-card-section .wp-team-box-content.wp-team-need-help{
+    flex-direction: column;
+}
+
+#wptm_support .wp-team-box-content a,
+#wptm_support .wp-team-document-box .wp-team-box-content p {
+    align-self: flex-start;
+}
+#wptm_support .wp-team-card-section .wp-team-document-box.wp-team-document-box-card {
+    width: 50%;
+}
+@media screen and (min-width: 1024px) {
+    #wptm_support .wp-team-card-section  {
+        margin-top: 22px;
+    }
+
+}

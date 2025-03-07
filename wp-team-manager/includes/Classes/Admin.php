@@ -41,16 +41,10 @@ class Admin {
 	 * @param $column
 	 * @param $post_id
 	 */
-	public function shortocode_in_post_column_data( $column, $post_id ) {
-
-		switch ( $column ) {
-
-			case 'shortcode' :
-				echo '<code>[dwl_create_team id="'.esc_attr($post_id).'"]</code>';
-				break;
-
+	public function shortocode_in_post_column_data($column, $post_id) {
+		if ($column === 'shortcode') {
+			printf('<code>[dwl_create_team id="%d"]</code>', esc_attr($post_id));
 		}
-
 	}
 
 }

@@ -68,6 +68,7 @@
   display: flex;
   flex-wrap: wrap;
 }
+#wptm_cm2_member_skills_pro .postbox-header,
 #wptm_cm2_metabox_general .postbox-header,
 #wptm_cm2_metabox_social .postbox-header,
 #wptm_cm2_image_gallery_metabox .postbox-header,
@@ -145,4 +146,17 @@
     border: 1px solid #ddd;
   }
 
-  
+
+  #wptm_cm2_member_skills_pro .postbox-header .hndle {
+    flex-grow: 1;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+  }
+  #wptm_cm2_member_skills_pro .postbox-header .hndle .wptm-pro-text{
+    color:rgb(218, 17, 57);
+    margin: 7px;
+  }
+ .wptm-pro-text{
+    color:rgb(218, 17, 57);
+  }

@@ -1,0 +1,62 @@
+.dwl-team-isotope-filter{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.dwl-team-filter-button{
+    font-size: 16px;
+    line-height: normal;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    font-weight: 400;
+    color: var(--wtm-color-dark_blue);
+    text-decoration: none;
+}
+
+.dwl-team-isotope-container button {
+    background: var(--wtm-color-light_blue);
+    border: none;
+    color: var(--wtm-color-white);
+    text-transform: none;
+    font-weight: 400 !important;
+    margin: 8px;
+    padding: 10px 15px;
+    outline: 0px;
+    box-shadow: none;
+    text-shadow: none;
+    border-radius: 7px;
+}
+
+.dwl-team-isotope-container button:hover {
+    background: var(--wtm-color-green);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.dwl-team-isotope-container .dwl-team-filter-button.active {
+    background: var(--wtm-color-green);
+}
+.wtm-isotope-grid::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+.wtm-isotope-item{
+    min-height: 400px;
+}
+.elementor-editor-preview .wtm-isotope-grid,
+.elementor-editor-active .wtm-isotope-grid{
+    height: auto !important;
+}
+.wtm-isotope-item .team-member-info{
+    margin-bottom: 8px;
+}
+.wtm-isotope-item .wtm-read-more-wrap{
+    margin-bottom: 10px;
+}
+.wtm-isotope-item .team-member-socials{
+    justify-content: center;
+}

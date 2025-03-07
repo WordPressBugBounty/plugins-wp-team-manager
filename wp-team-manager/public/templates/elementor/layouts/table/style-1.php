@@ -10,12 +10,6 @@ if(!empty($data)):
 
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
 
-    $desktop_column = isset($settings['columns_desktop']) ? $settings['columns_desktop'] : (
-        isset($settings['columns']) ? $settings['columns'] : '4');
-
-    $tablet_column = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : 3;
-    
-    $mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
     
         ?>
         <div class="dwl-team-table-responsive team-table-<?php echo esc_attr( $style_type )?>">
@@ -58,29 +52,36 @@ if(!empty($data)):
                             <tr class="dwl-table-row" scope="row">
                                 <?php if("yes" == $settings['show_image'] || 'yes' == $settings['show_social'] ): ?>
                                     <td class="dwl-table-data">
-                                        <?php if("yes" == $settings['show_image']): ?>
-                                            <div class="dwl-table-img-wraper">
-                                                <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
-                                                    <?php echo wp_kses_post( Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' ) ); ?>
-                                                </a>
-                                            </div>
-                                        <?php endif;?>
+                                        <div class="dwl-table-img-icon-wraper">
+                                            <?php if("yes" == $settings['show_image']): ?>
+                                                <div class="dwl-table-img-wraper">
+                                                    <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                                                        <?php echo wp_kses_post( Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' ) ); ?>
+                                                    </a>
+                                                </div>
+                                            <?php endif;?>
 
-                                        <?php if(isset($settings['show_social']) && 'yes' == $settings['show_social']) : ?>
-                                            <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
-                                        <?php endif; ?>
+                                            <?php if(isset($settings['show_social']) && 'yes' == $settings['show_social']) : ?>
+                                                <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
+                                            <?php endif; ?>
+                                        </div>
+                                        
                                     </td>
                                 <?php endif;?>
                                 
                                 <?php if('yes'== $settings['show_title']  ): ?>
                                     <td class="dwl-table-data">
-                                        <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
+                                        <div class="team-member-head">
+                                            <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
+                                        </div>
                                     </td>
                                 <?php endif;?>
 
                                 <?php if(!empty( $job_title ) && 'yes'== $settings['show_sub_title']  ): ?>
                                     <td class="dwl-table-data">
-                                        <h4 class="team-position"><?php echo esc_html( $job_title ); ?></h4>
+                                        <div class="team-position-wraper">
+                                            <p class="team-position"><?php echo esc_html( $job_title ); ?></p>
+                                        </div>
                                     </td>
                                 <?php endif;?>
 

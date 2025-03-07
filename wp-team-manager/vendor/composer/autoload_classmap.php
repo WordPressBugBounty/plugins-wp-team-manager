@@ -18,5 +18,6 @@ return array(
     'DWL\\Wtm\\Classes\\TeamMetabox' => $baseDir . '/includes/Classes/TeamMetabox.php',
     'DWL\\Wtm\\Elementor\\ElementorWidgets' => $baseDir . '/includes/Elementor/ElementorWidgets.php',
     'DWL\\Wtm\\Elementor\\Widgets\\Team' => $baseDir . '/includes/Elementor/Widgets/Team.php',
+    'DWL\\Wtm\\Elementor\\Widgets\\Team' => $baseDir . '/includes/Elementor/Widgets/isotope.php',
     'DWL\\Wtm\\Traits\\Singleton' => $baseDir . '/includes/Traits/Singleton.php',
 );

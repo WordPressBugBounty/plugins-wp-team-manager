@@ -1,0 +1,66 @@
+<svg width="140" height="90" viewBox="0 0 140 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="140" height="90" fill="white"/>
+<g clip-path="url(#clip0_365_582)">
+<rect x="4.5" y="7.94385" width="39" height="51.7759" fill="white"/>
+<rect x="4.5" y="7.94385" width="39" height="39" rx="1.39" fill="#FFB20B"/>
+<rect opacity="0.9" x="5" y="53" width="25" height="3" rx="1.1095" fill="#B1B1B1"/>
+<rect opacity="0.9" x="9" y="71" width="16" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="9" y="67" width="12" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="5" y="50" width="15" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect x="4" y="8" width="40" height="1" fill="black"/>
+<rect x="5" y="59" width="3" height="3" fill="#415993"/>
+<rect x="10" y="59" width="3" height="3" fill="#3881B1"/>
+<rect x="15" y="59" width="3" height="3" fill="#C55240"/>
+<rect x="20" y="59" width="3" height="3" fill="#50ABEB"/>
+<circle cx="6.5" cy="67.5" r="1.5" fill="#B1B1B1"/>
+<circle cx="6.5" cy="71.5" r="1.5" fill="#B1B1B1"/>
+</g>
+<g clip-path="url(#clip1_365_582)">
+<rect x="50.5" y="7.94385" width="39" height="51.7759" fill="white"/>
+<rect x="50.5" y="7.94385" width="39" height="39" rx="1.39" fill="#5362E8"/>
+<rect opacity="0.9" x="51" y="53" width="25" height="3" rx="1.1095" fill="#B1B1B1"/>
+<rect opacity="0.9" x="55" y="71" width="16" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="55" y="67" width="12" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="51" y="50" width="15" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect x="50" y="8" width="40" height="1" fill="black"/>
+<rect x="51" y="59" width="3" height="3" fill="#415993"/>
+<rect x="56" y="59" width="3" height="3" fill="#3881B1"/>
+<rect x="61" y="59" width="3" height="3" fill="#C55240"/>
+<rect x="66" y="59" width="3" height="3" fill="#50ABEB"/>
+<circle cx="52.5" cy="67.5" r="1.5" fill="#B1B1B1"/>
+<circle cx="52.5" cy="71.5" r="1.5" fill="#B1B1B1"/>
+</g>
+<g clip-path="url(#clip2_365_582)">
+<rect x="96.5" y="7.94385" width="39" height="51.7759" fill="white"/>
+<rect x="96.5" y="7.94385" width="39" height="39" rx="1.39" fill="#56A162"/>
+<rect opacity="0.9" x="97" y="53" width="25" height="3" rx="1.1095" fill="#B1B1B1"/>
+<rect opacity="0.9" x="101" y="71" width="16" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="101" y="67" width="12" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect opacity="0.9" x="97" y="50" width="15" height="1" rx="0.5" fill="#B1B1B1"/>
+<rect x="96" y="8" width="40" height="1" fill="black"/>
+<rect x="97" y="59" width="3" height="3" fill="#415993"/>
+<rect x="102" y="59" width="3" height="3" fill="#3881B1"/>
+<rect x="107" y="59" width="3" height="3" fill="#C55240"/>
+<rect x="112" y="59" width="3" height="3" fill="#50ABEB"/>
+<circle cx="98.5" cy="67.5" r="1.5" fill="#B1B1B1"/>
+<circle cx="98.5" cy="71.5" r="1.5" fill="#B1B1B1"/>
+</g>
+<path d="M27.7334 84.8296L27.3037 85.2593C27.1084 85.4351 26.8154 85.4351 26.6396 85.2593L22.8311 81.4702C22.6553 81.2749 22.6553 80.9819 22.8311 80.8062L26.6396 76.9976C26.8154 76.8218 27.1084 76.8218 27.3037 76.9976L27.7334 77.4272C27.9092 77.6226 27.9092 77.9155 27.7334 78.1108L25.3701 80.3569L30.9756 80.3569C31.249 80.3569 31.4443 80.5522 31.4443 80.8257L31.4443 81.4507C31.4443 81.7046 31.249 81.9194 30.9756 81.9194L25.3701 81.9194L27.7334 84.146C27.9092 84.3413 27.9287 84.6343 27.7334 84.8296Z" fill="#5D5757"/>
+<path d="M114.711 77.5024L115.141 77.0728C115.336 76.897 115.629 76.897 115.805 77.0728L119.613 80.8618C119.789 81.0571 119.789 81.3501 119.613 81.5259L115.805 85.3345C115.629 85.5103 115.336 85.5103 115.141 85.3345L114.711 84.9048C114.535 84.7095 114.535 84.4165 114.711 84.2212L117.074 81.9751H111.469C111.195 81.9751 111 81.7798 111 81.5063V80.8813C111 80.6274 111.195 80.4126 111.469 80.4126H117.074L114.711 78.186C114.535 77.9907 114.516 77.6978 114.711 77.5024Z" fill="#5D5757"/>
+<circle cx="60.5" cy="80.5562" r="1.5" fill="#D9D9D9"/>
+<circle cx="65.5" cy="80.5562" r="1.5" fill="#D9D9D9"/>
+<circle cx="70.5" cy="80.5562" r="1.5" fill="#5E5858"/>
+<circle cx="75.5" cy="80.5562" r="1.5" fill="#D9D9D9"/>
+<circle cx="80.5" cy="80.5562" r="1.5" fill="#D9D9D9"/>
+<defs>
+<clipPath id="clip0_365_582">
+<rect x="4.5" y="7.94385" width="39" height="68" rx="1.38517" fill="white"/>
+</clipPath>
+<clipPath id="clip1_365_582">
+<rect x="50.5" y="7.94385" width="39" height="68" rx="1.38517" fill="white"/>
+</clipPath>
+<clipPath id="clip2_365_582">
+<rect x="96.5" y="7.94385" width="39" height="68" rx="1.38517" fill="white"/>
+</clipPath>
+</defs>
+</svg>

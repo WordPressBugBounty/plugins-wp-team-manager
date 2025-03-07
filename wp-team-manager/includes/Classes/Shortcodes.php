@@ -80,7 +80,7 @@ class Shortcodes{
         'post_status' => 'publish',
         'posts_per_page'=> $posts_per_page,
         'paged' => get_query_var( $_paged ) ? absint( get_query_var( $_paged ) ) : 1,
-        'orderby' => isset( $settings['orderby'] ) ? $settings['orderby'] : '', 
+        'orderby' => isset( $settings['orderby']) ? sanitize_text_field($settings['orderby']) : '', 
         'order' => $asc_desc
       ); 
 
@@ -158,7 +158,7 @@ class Shortcodes{
         }
         <?php endif; ?>
       </style>
-      <div id="<?php echo esc_attr( $shortcode_id ); ?>" class="dwl-team-list dwl-team-wrapper wtm-container-fluid">
+      <div id="<?php echo esc_html( $shortcode_id ); ?>" class=" dwl-team-wrapper wtm-container-fluid">
         <div class="dwl-team-wrapper--main <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $settings['image_style'] );?>">
           <?php Helper::show_html_output($layout,$team_data,$settings); ?>
         </div>
@@ -264,9 +264,11 @@ class Shortcodes{
     $teamplate_layout = isset($all_settings['dwl_team_layout_option'][0]) ? $all_settings['dwl_team_layout_option'][0] : 'grid';
     $style_type       = isset($all_settings['dwl_team_' . $teamplate_layout . '_style_option'][0]) ? $all_settings['dwl_team_' . $teamplate_layout . '_style_option'][0] : 'style-1';
 
+    $imageStyle =  isset($all_settings['dwl_team_image_style'])? $all_settings['dwl_team_image_style'] [0] : '';
+
     ?>
-      <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-list dwl-team-wrapper wtm-container-fluid" >
-        <div class="dwl-team-wrapper--main dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-<?php echo esc_attr( $teamplate_layout ); ?>-<?php echo esc_attr( $teamplate_style ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $all_settings['dwl_team_image_style'] [0] );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
+      <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-wrapper wtm-container-fluid" >
+        <div class="dwl-team-wrapper--main dwl-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-<?php echo esc_attr( $teamplate_layout ); ?>-<?php echo esc_attr( $teamplate_style ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $imageStyle );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
           data-arrows="<?php echo esc_attr($arrows); ?>" 
           data-dots="<?php echo esc_attr($dot_nav); ?>"  
           data-autoplay="<?php echo esc_attr($autoplay); ?>"

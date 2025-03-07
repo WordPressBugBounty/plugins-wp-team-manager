@@ -10,13 +10,6 @@ if(!empty($data)):
 
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
 
-    $desktop_column = isset($settings['columns_desktop']) ? $settings['columns_desktop'] : (
-        isset($settings['columns']) ? $settings['columns'] : '4');
-
-    $tablet_column = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : 3;
-    
-    $mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
-
 
    
     
@@ -42,7 +35,7 @@ if(!empty($data)):
                             <?php endif; ?>
 
                             <?php if("yes" == $settings['show_social'] || 'yes' == $settings['show_full_biograph'] ) : ?>
-                                <th><?php esc_html_e( "Contact", " wp-team-manager " )?></th>
+                                <th class="dwl-table-head-cotact"><?php esc_html_e( "Contact", " wp-team-manager " )?></th>
                             <?php endif; ?>
                         </tr>
                     </thead>

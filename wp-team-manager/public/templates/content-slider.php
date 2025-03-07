@@ -7,7 +7,7 @@ $image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thum
 $disable_single_template = ( false !== get_option('single_team_member_view')  && 'True' == get_option('single_team_member_view') ) ? true : false;
 
   if(!empty($data)){
-    foreach ($data as $key => $teamInfo) {
+    foreach ($data['posts'] as $key => $teamInfo) {
       
       $job_title = get_post_meta( $teamInfo->ID, 'tm_jtitle', true );
       $short_bio = get_post_meta( $teamInfo->ID, 'tm_short_bio', true );

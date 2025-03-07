@@ -33,6 +33,10 @@ class PostType {
      */
     public function register_team_manager() {
 
+        $tm_taxonomy_fields =  get_option('tm_taxonomy_fields')
+        ? get_option('tm_taxonomy_fields') : 
+        [];
+
         $labels = array( 
             'name' => __( 'Team', 'wp-team-manager' ),
             'singular_name' => __( 'Team Member', 'wp-team-manager' ),
@@ -106,7 +110,10 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_groups' ),
         );
 
-        register_taxonomy( 'team_groups', 'team_manager', $args );
+        // Hide Taxonomy Conditionally
+        if (!in_array('team_groups', $tm_taxonomy_fields)) {
+            register_taxonomy('team_groups', 'team_manager', $args);
+        }
 
 
         unset( $args );
@@ -144,7 +151,12 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_designation' ),
         );
 
-        register_taxonomy( 'team_designation', 'team_manager', $args );
+        // Hide Taxonomy Conditionally
+        if (!in_array('team_designation', $tm_taxonomy_fields)) {
+            register_taxonomy( 'team_designation', 'team_manager', $args );
+        }
+
+
 
         unset( $args );
         unset( $labels );
@@ -181,7 +193,12 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_department' ),
         );
 
-        register_taxonomy( 'team_department', 'team_manager', $args );
+        // Hide Taxonomy Conditionally
+        if (!in_array('team_department', $tm_taxonomy_fields)) {
+            register_taxonomy( 'team_department', 'team_manager', $args );
+        }
+
+
 
         unset( $args );
         unset( $labels );
@@ -218,7 +235,11 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_genders' ),
         );
 
-        register_taxonomy( 'team_genders', 'team_manager', $args );
+        // Hide Taxonomy Conditionally
+        if (!in_array('team_genders', $tm_taxonomy_fields)) {
+            register_taxonomy( 'team_genders', 'team_manager', $args );
+        }
+
 
         unset( $args );
         unset( $labels );

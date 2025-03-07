@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </label>
                     </th>
                     <td>
-                        <input class="form-control" id="tm_social_size" name="tm_social_size" type="number" value="<?php echo esc_html($tm_social_size); ?>">
+                        <input class="form-control" id="tm_social_size" name="tm_social_size" type="number" value="<?php echo esc_html($tm_social_size); ?>" placeholder="16">
                     </td>
                 </tr>
                 <tr valign="top">
@@ -78,17 +78,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                         </label>
                     </th>
                     <td>
-                        <?php 
-                            $options = get_option( 'team_image_size_change' );
-                            $selected = isset($options) ? $options : 'medium'; // Default value
-                            echo '<select name="team_image_size_change">';
-                            echo '<option value="medium" ' . selected($selected, 'medium', false) . '>' . __('Medium', 'wp-team-manager') . '</option>';
-                            echo '<option value="thumbnail" ' . selected($selected, 'thumbnail', false) . '>' . __('Thumbnail', 'wp-team-manager') . '</option>';
-                            echo '<option value="medium_large" ' . selected($selected, 'medium_large', false) . '>' . __('Medium Large', 'wp-team-manager') . '</option>';
-                            echo '<option value="large" ' . selected($selected, 'large', false) . '>' . __('Large', 'wp-team-manager') . '</option>';
-                            echo '<option value="full" ' . selected($selected, 'full', false) . '>' . __('Full', 'wp-team-manager') . '</option>';
-                            echo '</select>';
-                        ?>
+                        <select name="team_image_size_change">
+                            <?php Helper::get_image_sizes(); ?>
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -102,8 +94,42 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
                 <div class="tm-field">
                     <?php Helper::generate_single_fields(); ?>
-                </div>
+                </div>   
             </div><!-- .tm-field-wrapper -->
+            <table class="form-table">
+                <tr valign="top">
+                    <th scope="row">
+                        <label>
+                            <?php esc_html_e('Enable Gallery Lightbox','wp-team-manager'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <input type="checkbox" name="tm_single_team_lightbox" value="True" 
+                            <?php checked( $tm_single_team_lightbox, 'True' ); ?> 
+                            <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) { echo 'disabled'; } ?>>
+
+                        <?php esc_html_e('Yes', 'wp-team-manager'); 
+
+                        if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                            <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        <label>
+                            <?php esc_html_e('Gallery Columns','wp-team-manager'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <select name="tm_single_gallery_column">
+                            <?php Helper::get_gallery_columns(); ?>
+                        </select>
+
+                        <p><?php esc_html_e('Number of Columns on Image Gallery ', 'wp-team-manager'); ?></p>
+                    </td>
+                </tr>
+            </table> 
         </div>
         <div class="tab-pane">
             <div class="tm-field-wrapper">
@@ -113,11 +139,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </label>
                 </div>
                 <div class="tm-field">
-                    <input type="text" class="form-control regular-text" name="tm_slug" id="tm_slug"
+                    <input type="text" placeholder="team-details" class="form-control regular-text" name="tm_slug" id="tm_slug"
                         value="<?php echo esc_html($tm_slug); ?>">
                     <p class="description">
-                        <?php esc_html_e('Slug configuration','wp-team-manager'); ?>
+                        <?php esc_html_e('Customize Team Members Post Type Slug, by default it is set to team-details','wp-team-manager'); ?>
                     </p>
+                </div>
+            </div><!-- .tm-field-wrapper -->
+            <div class="tm-field-wrapper">
+                <div class="tm-label">
+                    
+                    <?php esc_html_e('Show/Hide Taxonomy','wp-team-manager'); ?>
+                </div>
+                <div class="tm-field">
+                    <?php Helper::get_taxonomy_settings(); ?>
                 </div>
             </div><!-- .tm-field-wrapper -->
             <div class="tm-field-wrapper">

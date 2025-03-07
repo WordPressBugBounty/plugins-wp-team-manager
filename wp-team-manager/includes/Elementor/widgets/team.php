@@ -48,7 +48,7 @@ class Team extends Widget_Base {
 	 * @return string Widget title.
 	 */
 	public function get_title() {
-		return __( 'Team Manager', 'xevant' );
+		return __( 'Team Layouts', 'wp-team-manager' );
 	}
 
 	/**
@@ -80,11 +80,11 @@ class Team extends Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return [ 'wp-team-style', 'wp-team-font-awesome', 'wp-team-slick', 'wp-team-slick-theme'];
+		return ['wp-team-font-awesome', 'wp-team-slick', 'wp-team-slick-theme','wp-team-style'];
 	}
 
 	public function get_script_depends() {
-		return [ 'wp-team-script','wp-team-slick', 'wp-team-script', 'wp-team-el-slider' ];
+		return [ 'wp-team-slick', 'wp-team-el-slider' ,'wp-team-script', 'wpteam-admin-js'];
 	}
 
 	private function get_all_taxonomy( $taxonomy = 'category' ) {
@@ -163,6 +163,10 @@ class Team extends Widget_Base {
 						'title' => esc_html__('Style 4', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS .'/icons/layout/grid-4.svg',
 					],
+					'style-5' => [
+						'title' => esc_html__('Style 5', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/grid-5.svg',
+					],
 				],
 				'default' => 'style-1',
 				'condition' => [
@@ -207,6 +211,23 @@ class Team extends Widget_Base {
 						'title' => esc_html__('Style 2', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS .'/icons/layout/Slider-2.svg',
 					],
+					'style-3' => [
+						'title' => esc_html__('Style 3', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/Slider-3.svg',
+					],
+					'style-4' => [
+						'title' => esc_html__('Style 4', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/Slider-2.svg',
+					],
+					'style-5' => [
+						'title' => esc_html__('Style 5', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/Slider-5.svg',
+					],
+					'style-6' => [
+						'title' => esc_html__('Style 6', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/Slider-6.svg',
+					],
+					
 				],
 				'default' => 'style-1',
 				'condition' => [
@@ -253,7 +274,7 @@ class Team extends Widget_Base {
 					'4' => '4',
 				],
 				'condition' => [
-					'layout_type!' => 'list',
+					'layout_type!' => ['list','table'],
 				],
 			]
 		);
@@ -298,6 +319,23 @@ class Team extends Widget_Base {
 				'condition' => [
 					'layout_type' => 'slider',
 				],
+			]
+		);
+
+		$this->add_control(
+			'team_arrow_position',
+			[
+				'label' => esc_html__( 'Border Style', 'textdomain' ),
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'default' => 'top-right',
+				'options' => [
+					'top-right' => esc_html__( 'Top Right', 'textdomain' ),
+					'side'  => esc_html__( 'Side', 'textdomain' ),
+				],
+				'condition' => [
+					'layout_type' => 'slider',
+				],
+				
 			]
 		);
 
@@ -526,27 +564,14 @@ class Team extends Widget_Base {
 			]
 		);
 
-		$this->add_control(
-			'image_size',
-			[
-				'label' => esc_html__( 'Image Size', 'wp-team-manager' ),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => 'medium',
-				'options' => [
-					'thumbnail' => esc_html__( 'Thumbnail', 'wp-team-manager' ),
-					'medium' => esc_html__( 'Medium', 'wp-team-manager' ),
-					'large' => esc_html__( 'Large', 'wp-team-manager' ),
-					'full' => esc_html__( 'Full', 'wp-team-manager' ),
-				],
-			]
-		);
+
 
 		$this->add_control(
 			'image_style',
 			[
 				'label' => esc_html__( 'Border Style', 'wp-team-manager' ),
 				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => 'boxed',
+				// 'default' => 'boxed',
 				'options' => [
 					'50%' => esc_html__( 'Circle', 'wp-team-manager' ),
 					'15px' => esc_html__( 'Rounded', 'wp-team-manager' ),
@@ -554,7 +579,12 @@ class Team extends Widget_Base {
 				],
 				'selectors' => [
 					'{{WRAPPER}} .team-member-info-content header img' => 'border-radius: {{VALUE}}',
+					'{{WRAPPER}} .team-member-thumbnail img' => 'border-radius: {{VALUE}}',
 					'{{WRAPPER}} .dwl-table-img-wraper a img' => 'border-radius: {{VALUE}}',
+				],
+				'condition' => [
+					'grid_style_type' => ['style-1', 'style-2', 'style-3', 'style-5'],
+					'slider_style_type' => ['style-1', 'style-2', 'style-3', 'style-4', 'style-6'],
 				],
 			]
 		);
@@ -568,6 +598,9 @@ class Team extends Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .team-member-info-content header img' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
+				'condition' => [
+					'grid_style_type' => 'style-3', 
+				],
 			]
 		);
 		$this->end_controls_section();
@@ -576,7 +609,7 @@ class Team extends Widget_Base {
 		$this->start_controls_section(
 			'posts_title',
 			[
-				'label' => esc_html__( 'Title', 'wp-team-manager'),
+				'label' => esc_html__( 'Name', 'wp-team-manager'),
 				'tab' => Controls_Manager::TAB_STYLE
 			]
 		);
@@ -584,7 +617,7 @@ class Team extends Widget_Base {
 		$this->add_control(
 			'show_title',
 			[
-				'label' => __( 'Show Title', 'wp-team-manager' ),
+				'label' => __( 'Show Name', 'wp-team-manager' ),
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __( 'Show', 'wp-team-manager' ),
 				'label_off' => __( 'Hide', 'wp-team-manager' ),
@@ -596,10 +629,24 @@ class Team extends Widget_Base {
 		$this->add_control(
 			'posts_title_color',
 			[
-				'label' => esc_html__( 'Title Color', 'wp-team-manager'),
+				'label' => esc_html__( 'Name Color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .team-member-title' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .team-member-title a' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		$this->add_control(
+			'posts_title_background_color',
+			[
+				'label' => esc_html__( 'Name Background Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .team-member-head' => 'background-color: {{VALUE}};',
+				],
+				'condition' => [
+					'grid_style_type' => 'style-2',
 				],
 			]
 		);
@@ -857,7 +904,7 @@ class Team extends Widget_Base {
 		$this->start_controls_section(
 			'team_short_bio',
 			[
-				'label' => esc_html__( 'Team Short Bio', 'wp-team-manager'),
+				'label' => esc_html__( 'Short Bio', 'wp-team-manager'),
 				'tab' => Controls_Manager::TAB_STYLE
 			]
 		);
@@ -865,7 +912,7 @@ class Team extends Widget_Base {
 		$this->add_control(
 			'team_show_short_bio',
 			[
-				'label' => __( 'Team Short Bio', 'wp-team-manager' ),
+				'label' => __( 'Show Short Bio', 'wp-team-manager' ),
 				'type' => Controls_Manager::SWITCHER,
 				'label_on' => __( 'Show', 'wp-team-manager' ),
 				'label_off' => __( 'Hide', 'wp-team-manager' ),
@@ -932,6 +979,17 @@ class Team extends Widget_Base {
 		);
 
 		$this->add_control(
+			'social_info_icon_color',
+			[
+				'label' => esc_html__( 'Ohter InfoIcon Color', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .fas' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
 			'show_social',
 			[
 				'label' => __( 'Show Social Icon', 'wp-team-manager' ),
@@ -958,14 +1016,23 @@ class Team extends Widget_Base {
 			]
 		);
 
-
 		$this->add_control(
 			'show_social_icon_color',
 			[
 				'label' => esc_html__( 'Social Icon Color', 'wp-team-manager' ),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .fas' => 'color: {{VALUE}}',
+					'{{WRAPPER}} .team-member-socials a i' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'show_social_icon_background_color',
+			[
+				'label' => esc_html__( 'Social Icon Background Color', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
 					'{{WRAPPER}} .team-member-socials a' => 'background-color: {{VALUE}}',
 				],
 			]
@@ -984,12 +1051,16 @@ class Team extends Widget_Base {
 
 		$this->end_controls_section();
 
-		//Read More
+		//Details
 		$this->start_controls_section(
 			'wtm_read_more',
 			[
-				'label' => esc_html__( 'Read More', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_STYLE
+				'label' => esc_html__( 'Details Settings', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'grid_style_type' => ['style-1', 'style-2', 'style-3', 'style-4'],
+					'slider_style_type' => ['style-1', 'style-2', 'style-3', 'style-4', 'style-5', 'style-6'],
+				],
 			]
 		);
 
@@ -1004,6 +1075,20 @@ class Team extends Widget_Base {
 				'default' => 'yes',
 			]
 		);
+
+		$this->add_control(
+			'read_more_type',
+			[
+				'label'   => esc_html__( 'Link Type', 'wp-team-manager' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'link',
+				'options' => [
+					'link'       => __( 'Link', 'wp-team-manager' ),
+					// 'popup'  => __( 'Popup', 'wp-team-manager' ),
+				],
+			]
+		);
+
 
 		$this->add_control(
 			'wtm_read_more_color',
@@ -1038,12 +1123,226 @@ class Team extends Widget_Base {
 
 		$this->end_controls_section();
 
+		// Load More
+		$this->start_controls_section(
+			'load_more_button',
+			[
+				'label' => esc_html__( 'Load More', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'pagination_type' => 'ajax',
+				],
+			]
+		);
+
+		$this->add_control(
+			'load_more_button_text',
+			[
+				'label' => esc_html__( 'Button Text', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__( 'Load More', 'wp-team-manager' ),
+				'placeholder' => esc_html__( 'Type your button Text', 'wp-team-manager' ),
+			]
+		);
+
+		$this->add_control(
+			'load_more_button_heading',
+			[
+				'label' => __( 'Button', 'wp-team-manager'),
+				'type' => Controls_Manager::HEADING,
+			]
+		);
+
+		$this->start_controls_tabs( 'tabs_button_style' );
+
+		$this->start_controls_tab(
+			'tab_button_normal',
+			[
+				'label' => __( 'Normal', 'wp-team-manager' ),
+			]
+		);
+
+		$this->add_control(
+			'button_text_color',
+			[
+				'label' => __( 'Text Color', 'wp-team-manager' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'fill: {{VALUE}}; color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'background',
+				'label' => __( 'Background', 'wp-team-manager' ),
+				'types' => [ 'classic', 'gradient' ],
+				'exclude' => [ 'image' ],
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_button_hover',
+			[
+				'label' => __( 'Hover', 'wp-team-manager' ),
+			]
+		);
+
+		$this->add_control(
+			'hover_color',
+			[
+				'label' => __( 'Text Color', 'wp-team-manager' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover svg, {{WRAPPER}} .dwl-team-load-more-btn:focus svg' => 'fill: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'button_background_hover',
+				'label' => __( 'Background', 'wp-team-manager' ),
+				'types' => [ 'classic', 'gradient' ],
+				'exclude' => [ 'image' ],
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_hover_border_color',
+			[
+				'label' => __( 'Border Color', 'wp-team-manager' ),
+				'type' => Controls_Manager::COLOR,
+				'condition' => [
+					'border_border!' => '',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus' => 'border-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'hover_animation',
+			[
+				'label' => __( 'Hover Animation', 'wp-team-manager' ),
+				'type' => Controls_Manager::HOVER_ANIMATION,
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'border',
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'border_radius',
+			[
+				'label' => __( 'Border Radius', 'wp-team-manager' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%', 'em' ],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'button_box_shadow',
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+			 'name' => 'button_typography',
+			 'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+			]
+		);
+
+		$this->add_responsive_control(
+			'text_padding',
+			[
+				'label' => __( 'Padding', 'wp-team-manager' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', 'em', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'text_align',
+			[
+				'label' => esc_html__( 'Button Alignment', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => esc_html__( 'Left', 'wp-team-manager' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__( 'Center', 'wp-team-manager' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__( 'Right', 'wp-team-manager' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'center',
+				'toggle' => true,
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-wrap' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+
+		$this->end_controls_section();
+
+
 		// Color, Typography & Spacing
 		$this->start_controls_section(
 			'posts_article_settings',
 			[
 				'label' => esc_html__( 'Container Settings', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_STYLE
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'layout_type' => ['slider', 'grid', 'list'],
+				],
 			]
 		);
 
@@ -1092,35 +1391,169 @@ class Team extends Widget_Base {
 
 		$this->end_controls_section();
 
-
-
-
 	}
+	// private function pagination_options()
+	// {
+	// 	$is_not_paying =  tmwstm_fs()-> is_not_paying();
 
-	private function pagination_options()
-	{
+	// 	$this->start_controls_section(
+	// 		'section_pagination',
+	// 		[
+	// 			'label' => esc_html__( 'Pagination', 'wp-team-manager' ),
+	// 			'condition' => [
+	// 				'layout_type!' => ['slider'],
+	// 			],
+	// 		]
+	// 	);
+
+	// 	$this->add_control(
+	// 		'pagination_type',
+	// 		[
+	// 			'label' => __( 'Pagination Type', 'wp-team-manager' ),
+	// 			'type' => Controls_Manager::SELECT,
+	// 			'default' => 'none',
+	// 			'options' => [
+	// 				'none' => esc_html__( 'None', 'wp-team-manager' ),
+	// 				'numbers' => esc_html__( 'Numbers', 'wp-team-manager' ),
+	// 				'ajax' => esc_html__( 'Ajax', 'wp-team-manager' ) . Helper::showProFeatureLabel(),
+	// 			],
+	// 			'description' => Helper::showProFeatureLink( 'Ajax Pro Feature' ),
+				
+	// 		]
+	// 	);	
+
+	// 	$this->end_controls_section();
+	// }
+	private function pagination_options() {
+	
+		$pagination_options = [
+			'none' => esc_html__( 'None', 'wp-team-manager' ),
+			'numbers' => esc_html__( 'Numbers', 'wp-team-manager' ),
+		];
+	
+		// Conditionally add 'Ajax' option if the user is not paying
+		if (tmwstm_fs()->is_paying_or_trial()) {
+			$pagination_options['ajax'] = esc_html__( 'Ajax', 'wp-team-manager' ) . Helper::showProFeatureLabel();
+		}
+	
 		$this->start_controls_section(
 			'section_pagination',
 			[
 				'label' => esc_html__( 'Pagination', 'wp-team-manager' ),
 				'condition' => [
-					'layout_type!' => 'slider',
+					'layout_type!' => ['slider'],
 				],
 			]
 		);
-
+	
 		$this->add_control(
 			'pagination_type',
 			[
 				'label' => __( 'Pagination Type', 'wp-team-manager' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => 'none',
+				'options' => $pagination_options,
+				'description' => Helper::showProFeatureLink( 'Ajax Pro Feature' ),
+			]
+		);    
+	
+		$this->end_controls_section();
+	}
+	
+	
+	
+	private function image_options()
+	{
+		$this->start_controls_section(
+			'image_section',
+			[
+				'label' => esc_html__( 'Image', 'wp-team-manager' ),
+			]
+		);
+
+		$this->add_control(
+			'image_size',
+			[
+				'label' => esc_html__( 'Image Size', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'default' => 'medium',
 				'options' => [
-					'none' => esc_html__( 'None', 'wp-team-manager' ),
-					'numbers' => esc_html__( 'Numbers', 'wp-team-manager' ),
+					'thumbnail' => esc_html__( 'Thumbnail', 'wp-team-manager' ),
+					'medium' => esc_html__( 'Medium', 'wp-team-manager' ),
+					'large' => esc_html__( 'Large', 'wp-team-manager' ),
+					'full' => esc_html__( 'Full', 'wp-team-manager' ),
 				],
 			]
-		);	
+		);
+
+		$this->end_controls_section();
+	}
+	private function skills_options()
+	{
+		/**
+		 * @todo need to update code can_use_premium_code__premium_only
+		 */
+	
+
+		$this->start_controls_section(
+			'skills_section',
+			[
+				'label' => esc_html__( 'Skills', 'wp-team-manager' ) . Helper::showProFeatureLabel(),
+				'condition' => [
+					'layout_type' => ['slider', 'grid', 'list'],
+					'slider_style_type' => ['style-1', 'style-2', 'style-3', 'style-5'],
+					'grid_style_type' => ['style-1', 'style-2', 'style-3'],
+				],
+			]
+			
+		);
+
+		
+
+
+		$this->add_control(
+			'progress_bar_show',
+			[
+				'label' => __( 'Progress Bar', 'wp-team-manager' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'Show', 'wp-team-manager' ),
+				'label_off' => __( 'Hide', 'wp-team-manager' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => Helper::showProFeatureLink( 'Progress Bar Pro Feature' ),
+				'classes' => tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+				
+			]
+		);
+
+		$this->add_control(
+			'text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'textdomain' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				
+				'selectors' => [
+					'{{WRAPPER}} .team-member-skill-title' => 'color: {{VALUE}}',
+				],
+				'condition' => [
+					'progress_bar_show' => 'yes',  
+				],
+				
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'content_typography',
+				'selector' => '{{WRAPPER}} .team-member-skill-title',
+				'label_block' => true,
+				'condition' => [
+					'progress_bar_show' => 'yes',  
+				],
+			]
+		);
+		
 
 		$this->end_controls_section();
 	}
@@ -1138,6 +1571,8 @@ class Team extends Widget_Base {
 
 		$this->query_options();
 		$this->pagination_options();
+		$this->image_options();
+		$this->skills_options();
 		$this->style_options();
 
 
@@ -1159,6 +1594,7 @@ class Team extends Widget_Base {
 		$offset_posts = [];
 		$excluded_ids = [];
 		$wrapper_calss = '';
+		$per_page = isset($settings['per_page']) ? $settings['per_page'] : get_option( 'posts_per_page' );
 
 
 		if( $settings['layout_type'] != 'slider' ){
@@ -1166,7 +1602,7 @@ class Team extends Widget_Base {
 		}
 
 		$query_args = array(
-			'posts_per_page' => $settings['per_page'],
+			'posts_per_page' => $per_page,
 			'post_type'   => 'team_manager',
 			'paged' => $paged
 		  );
@@ -1238,43 +1674,87 @@ class Team extends Widget_Base {
 
 		$style_type_name = $settings['layout_type'].'_'.'style_type';
 		$style_type = !empty( $settings[$style_type_name] ) ? $settings[$style_type_name] : '';
+
 		/**
 		 * Slider settings
 		 * 
 		 */
-		$arrows = isset($settings['show_arrow']) && $settings['show_arrow'] ? true : false;
-		$dot_nav = isset($settings['show_dot_navigation']) && $settings['show_dot_navigation'] ? true : false;
-		$autoplay = isset($settings['enable_autoplay']) && $settings['enable_autoplay'] ? true : false;
-		$arrow_position = isset($all_settings['wc_pcd_arrow_position']) ? $all_settings['wc_pcd_arrow_position'][0] : 'side';
-		$desktop = isset($settings['columns']) ? $settings['columns'] : '4';
-		$tablet = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : '3';
-		$mobile = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : '1';
-		$speed  = isset($settings['Autoplay_Speed']) ? $settings['Autoplay_Speed'] : '4000';
+		$slider_settings = ['fdfdfd'];		 
+		$slider_settings['arrows'] = isset($settings['show_arrow']) && $settings['show_arrow'] ? true : false;
+		$slider_settings['dot_nav'] = isset($settings['show_dot_navigation']) && $settings['show_dot_navigation'] ? true : false;
+		$slider_settings['autoplay'] = isset($settings['enable_autoplay']) && $settings['enable_autoplay'] ? true : false;
+		/**
+		 * @todo Need to check if the all_settings exists on not
+		 */
+		$slider_settings['arrow_position'] = isset($all_settings['wc_pcd_arrow_position']) ? $all_settings['wc_pcd_arrow_position'][0] : 'side';
+		$slider_settings['desktop'] = isset($settings['columns']) ? $settings['columns'] : '4';
+		$slider_settings['tablet'] = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : '3';
+		$slider_settings['mobile'] = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : '1';
+		$slider_settings['speed']  = isset($settings['Autoplay_Speed']) ? $settings['Autoplay_Speed'] : '4000';
+
+		$settings['slider_settings'] = $slider_settings;
+
+
+		$desktop_column = isset($settings['columns_desktop']) ? $settings['columns_desktop'] : (
+			isset($settings['columns']) ? $settings['columns'] : '4');
+		
+		
+		$tablet_column = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : 3;
+		
+		$mobile_column = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : 1;
+		
+		$bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
+
+		$settings['bootstrap_class'] = $bootstrap_class;
+
+
+		$ajax_settings = [
+			'layout_type' => $settings['layout_type'],
+			'image_size' => $settings['image_size'],
+			'team_show_short_bio' => $settings['team_show_short_bio'],
+			'slider_style_type' => $settings['slider_style_type'],
+			'grid_style_type' => $settings['grid_style_type'],
+			'table_style_type' => $settings['table_style_type'],
+			'list_style_type' => $settings['list_style_type'],
+			'bootstrap_class' => $settings['bootstrap_class'],
+		];
+
+		$ajax_show_setting = array_filter($settings, function ($e) {
+				return strpos($e, 'show_') === 0;
+		}, ARRAY_FILTER_USE_KEY);
+
+
+		$ajax_settings_all = array_merge($ajax_settings, $ajax_show_setting);
+
 		$team_data = Helper::get_team_data($query_args);
 
-		
 		?>
-		<div class="dwl-team-list dwl-team-wrapper <?php echo esc_attr( $style_type )?>">
-			<div 
-			class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr( $settings['layout_type'] ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-layout-<?php echo esc_attr( $settings['layout_type'] ) ?>"
-			<?php if($settings['layout_type'] == 'slider'): ?>
-			data-arrows="<?php echo esc_attr($arrows); ?>" 
-			data-dots="<?php echo esc_attr($dot_nav); ?>"  
-			data-autoplay="<?php echo esc_attr($autoplay); ?>"
-			data-desktop = "<?php echo esc_attr($desktop); ?>"
-			data-tablet = "<?php echo esc_attr($tablet); ?>"
-			data-mobile = "<?php echo esc_attr($mobile); ?>"
-			data-speed = "<?php echo esc_attr($speed); ?>"
-			<?php endif; ?>
-			>
-				<?php Helper::renderElementorLayout($settings['layout_type'],$team_data,$settings); ?>
+		<div class="dwl-team-wrapper <?php echo esc_attr( $style_type )?>" 
+		data-posts-per-page="<?php echo esc_attr( $per_page ) ?>" 
+		data-paged="1" 
+		data-settings="<?php echo esc_attr( json_encode($ajax_settings_all) ) ?>"
+		>
+		<div class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr( $settings['layout_type'] ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-layout-<?php echo esc_attr( $settings['layout_type'] ) ?>">
+				<?php Helper::renderElementorLayout($settings['layout_type'], $team_data['posts'] ,$settings); ?>
 			</div><!--.wp-team-manager-widget-->
 		</div><!--.wp-team-manager-widget-->
-		<?php
 
-		if ( isset( $settings['pagination_type']) && 'none' !== $settings['pagination_type'] ) :
-			echo wp_kses_post(  Helper::get_pagination_markup( new \WP_Query( $query_args ), $settings['per_page'] ) );
-		endif;
+		<?php
+			// echo $settings['pagination_type'];
+			$pagination = isset($settings['pagination_type']) ? $settings['pagination_type'] : 'none';
+			$load_more = isset($settings['load_more_button_text'])? $settings['load_more_button_text'] : '';
+			if ( 'numbers' === $pagination && 'none' !== $pagination ) :
+				echo wp_kses_post(  Helper::get_pagination_markup( new \WP_Query( $query_args ), $per_page ) );
+			elseif ( 'ajax' === $pagination && 'none' !== $pagination ) :
+				if(tmwstm_fs()->is_paying_or_trial()){
+					?>
+						<div class="dwl-team-load-more-wrap">
+							<button class="dwl-team-load-more-btn"><?php echo esc_html( $load_more ); ?></button>
+						</div>
+						
+					<?php
+				}
+			endif;
 	}
 
 }

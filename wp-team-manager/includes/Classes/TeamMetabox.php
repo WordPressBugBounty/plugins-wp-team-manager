@@ -17,6 +17,9 @@ class TeamMetabox {
     */
     private $prefix;
 
+
+    private $proLink;
+
     /**
      * Constructor for the class.
      *
@@ -28,6 +31,15 @@ class TeamMetabox {
         $this->prefix = 'dwl_team_';
         \add_action( 'cmb2_init', [$this, 'create_wp_team_manager_metaboxes'] );
         \add_action( 'cmb2_init', [$this, 'create_meta_for_dwl_team_generator_post_type'] );
+        \add_action( 'cmb2_init', [$this, 'create_member_information_metabox'] );
+
+        $this->proLink = '';
+
+        if ( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) {
+           
+            $this->proLink = '<span class="wptm-pro-text">' . __( ' Pro', 'wp-team-manager' ) . '</span> <a class="wptm-pro-link" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">'  . __('Upgrade Now!', 'wp-team-manager') . '</a>';
+        }
+
     }
 
     function create_meta_for_dwl_team_generator_post_type(){
@@ -383,6 +395,7 @@ class TeamMetabox {
                             $this->prefix . 'team_background_color',
                             $this->prefix . 'team_show_other_info',
                             $this->prefix . 'team_show_social',
+                            $this->prefix . 'show_progress_bar',
                             $this->prefix . 'team_show_read_more',
                         ),
                     ),
@@ -540,6 +553,22 @@ class TeamMetabox {
 			)
 		);
 
+        $show_progress_bar =  array(
+            'name'    => __( 'Show Progress Bar', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
+            'desc' => 'Show/hide',
+            'id'      => $this->prefix . 'show_progress_bar',
+            'type'    => 'checkbox',
+        );
+
+        if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()){
+
+            $show_progress_bar['attributes'] =   array(
+                'disabled' => true
+            );
+
+        }
+
+        $dwl_team_metabox->add_field( $show_progress_bar );
         
         // Image Setting
         $dwl_team_metabox->add_field( 
@@ -820,6 +849,75 @@ class TeamMetabox {
         ) );
 
         // End Member Profile image gallery 
+    }
+
+
+    /**
+     * Add a metabox for member information pro. This metabox contains a text field for skill.
+     * 
+     * @since 1.0.0
+     */
+    function create_member_information_metabox() {
+
+            $dwl_team_skills = new_cmb2_box( 
+                array(
+                    'id'            => 'wptm_cm2_member_skills_pro',
+                    'title'         => esc_html__( 'Member Skills', 'wp-team-manager' ) . wp_kses_post( $this->proLink ),
+                    'object_types'  => ['team_manager'],
+                    'context'       => 'normal',
+                    'priority'      => 'high',
+                    'show_names'    => true
+                ) 
+            );
+        
+            $group_field_id = $dwl_team_skills->add_field( array(
+                'id'   => 'wptm_skills_group',
+                'type' => 'group',
+                'desc' => 'Add skill labels and their proficiency percentage.',
+                'options' => array(
+                    'group_title'   => __( 'Skill {#}', 'wp-team-manager' ),
+                    'add_button'    => __( 'Add Another Skill', 'wp-team-manager' ),
+                    'remove_button' => __( 'Remove Skill', 'wp-team-manager' ),
+                    'sortable'      => true,
+                ),
+            ) );
+          
+            $show_team_skills = array(
+                'name' => __( 'Skill Label', 'wp-team-manager' ),
+                'id'   => 'tm_skill_label', // Static ID instead of wp_rand()
+                'type' => 'text',
+            );
+            
+            if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ){
+                $show_team_skills['attributes'] = array(
+                    'disabled' => true
+                );   
+            }
+            
+            $dwl_team_skills->add_group_field( $group_field_id, $show_team_skills );
+            
+          
+            $show_team_skills_percentage = array( 
+                'name'       => __( 'Skill Percentage', 'wp-team-manager' ),
+                'id'         => 'tm_skill_percentage', // Static ID
+                'type'       => 'text',
+                'attributes' => array(
+                    'type' => 'number',
+                    'min'  => '0',
+                    'max'  => '100',
+                    'step' => '5',
+                ),
+                'desc' => __( 'Enter a number between 0 and 100.', 'wp-team-manager' ),
+            );
+            
+            if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()){
+                $show_team_skills_percentage['attributes']['disabled'] = true;
+            }
+            
+            $dwl_team_skills->add_group_field( $group_field_id, $show_team_skills_percentage );
+            
+         
+    
     }
 
     function wtm_eam_layout_to_add_classes($field_args, $field) {

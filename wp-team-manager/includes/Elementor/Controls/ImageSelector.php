@@ -13,7 +13,7 @@ use Elementor\Base_Data_Control as Control;
 /**
  * Image Selector Class.
  */
-class ImageSelectorControl extends Control {
+class ImageSelector extends Control {
 
 	/**
 	 * Set control name.
@@ -60,24 +60,40 @@ class ImageSelectorControl extends Control {
 	 */
 	public function content_template() {
 		$control_uid = $this->get_control_uid( '{{ value }}' );
+		$is_admin_pro = 'is-pro';
 		?>
 		<div class="elementor-control-field">
 			<label class="elementor-control-title">{{{ data.label }}}</label>
 			<# if ( data.description ) { #>
-			<div class="elementor-control-field-description">{{{ data.description }}}</div>
+				<div class="elementor-control-field-description">{{{ data.description }}}</div>
 			<# } #>
+			
+			
 			<div class="elementor-control-image-selector-wrapper">
-				<# _.each( data.options, function( options, value ) { #>
-				<div class="image-selector-inner" title="{{ options.title }}" data-tooltip="{{ options.title }}">
-					<input id="<?php echo esc_attr( $control_uid ); ?>" type="radio" name="elementor-image-selector-{{ data.name }}-{{ data._cid }}" value="{{ value }}" data-setting="{{ data.name }}">
-					<label class="elementor-image-selector-label tooltip-target" for="<?php echo esc_attr( $control_uid ); ?>" data-tooltip="{{ options.title }}" title="{{ options.title }}">
-						<img src="{{ options.url }}" alt="{{ options.title }}">
-						<span class="elementor-screen-only">{{{ options.title }}}</span>
-					</label>
-				</div>
-				<# } ); #>
+				<# _.each(data.options, function(options, value) { #>
+					<# var is_pro_style = (
+						(data.name === 'grid_style_type' && [ 'Style 5'].includes(options.title)) ||
+						(data.name === 'slider_style_type' && ['Style 3','Style 4', 'Style 5', 'Style 6'].includes(options.title)) ||
+						(data.name === 'isotope_style_type' && [ 'Style 1'].includes(options.title))
+					); #>
+					<div class="image-selector-inner<# if ( is_pro_style && <?php echo json_encode(tmwstm_fs()-> is_not_paying()); ?> ) { #> <?php echo esc_attr($is_admin_pro); ?> <# } #>" 
+						title="{{ options.title }}" data-tooltip="{{ options.title }}">
+						
+						<input id="<?php echo esc_attr($control_uid); ?>" type="radio" 
+							name="elementor-image-selector-{{ data.name }}-{{ data._cid }}" 
+							value="{{ value }}" data-setting="{{ data.name }}">
+							
+						<label class="elementor-image-selector-label tooltip-target" 
+							for="<?php echo esc_attr($control_uid); ?>" 
+							data-tooltip="{{ options.title }}" title="{{ options.title }}">
+							<img src="{{ options.url }}" alt="{{ options.title }}">
+							<span class="elementor-screen-only">{{{ options.title }}}</span>
+						</label>
+					</div>
+				<# }); #>
 			</div>
 		</div>
+
 		<?php
 	}
 }

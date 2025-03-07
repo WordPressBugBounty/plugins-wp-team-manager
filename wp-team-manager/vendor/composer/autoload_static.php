@@ -33,6 +33,7 @@ class ComposerStaticInit5d583c9efdd2dec7399796798cc0da7d
         'DWL\\Wtm\\Classes\\TeamMetabox' => __DIR__ . '/../..' . '/includes/Classes/TeamMetabox.php',
         'DWL\\Wtm\\Elementor\\ElementorWidgets' => __DIR__ . '/../..' . '/includes/Elementor/ElementorWidgets.php',
         'DWL\\Wtm\\Elementor\\Widgets\\Team' => __DIR__ . '/../..' . '/includes/Elementor/Widgets/Team.php',
+        'DWL\\Wtm\\Elementor\\Widgets\\Team' => __DIR__ . '/../..' . '/includes/Elementor/Widgets/isotope.php',
         'DWL\\Wtm\\Traits\\Singleton' => __DIR__ . '/../..' . '/includes/Traits/Singleton.php',
     );
 

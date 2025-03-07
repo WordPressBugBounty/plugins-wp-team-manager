@@ -21,179 +21,267 @@ class Helper {
         foreach ( $classes as $class ) {
             $class::get_instance();
         }
-    }
-
-    public static function get_team_picture($post_id, $thumb_image_size,$class=""){
-
-        $thumbnail_id = get_post_thumbnail_id( $post_id );
-
-        if (isset($thumbnail_id)) {
-
-            return wp_get_attachment_image($thumbnail_id,$thumb_image_size, "", array( "class" => $class ));
-
-        }
 
     }
 
     /**
-     * Deprecated Method
+     * Retrieves the team member's picture as an HTML image element.
+     *
+     * @param int $post_id The ID of the post for which the picture is being retrieved.
+     * @param string $thumb_image_size The size of the thumbnail image to retrieve.
+     * @param string $class Optional. Additional CSS class(es) to apply to the image. Default is an empty string.
+     *
+     * @return string|null The HTML image element or null if no thumbnail ID is found.
      */
-    public static function get_team_social_links($post_id){
-
-        $output = '';
-        $social_size = ( false !== get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
-        $link_window = ( false !== get_option('tm_link_new_window')  && 'True' == get_option('tm_link_new_window') ) ? 'target="_blank"' : '';
-
-        $facebook = get_post_meta($post_id,'tm_flink',true);
-        $twitter = get_post_meta($post_id,'tm_tlink',true);
-        $linkedIn = get_post_meta($post_id,'tm_llink',true);
-        $googleplus = get_post_meta($post_id,'tm_gplink',true);
-        $dribbble = get_post_meta($post_id,'tm_dribbble',true);
-        $youtube = get_post_meta($post_id,'tm_ylink',true);
-        $vimeo = get_post_meta($post_id,'tm_vlink',true);
-        $emailid = get_post_meta($post_id,'tm_emailid',true);
-
-        $output .= '<div class="team-member-socials size-'.esc_attr($social_size).'">';
-
-        if (!empty($facebook)) {
-        $output .= '<a class="facebook-'.esc_attr($social_size).'" href="' .esc_url($facebook) . '" '.esc_attr($link_window).' title="'.__('Facebook','wp-team-manager').'"><i class="fab fa-facebook-f"></i></a>';
+    public static function get_team_picture($post_id, $thumb_image_size = 'thumbnail', $class = '') {
+        // Ensure a valid post ID
+        $post_id = intval($post_id);
+        
+        // Get the thumbnail ID once
+        $thumbnail_id = get_post_thumbnail_id($post_id);
+    
+        // Return default image if no thumbnail is found
+        if (!$thumbnail_id) {
+            return ''; // Or return a default placeholder image
         }
-        if (!empty($twitter)) {
-        $output .= '<a class="twitter-'.esc_attr($social_size).'" href="' . esc_url($twitter). '" '.esc_attr($link_window).' title="'.__('Twitter','wp-team-manager').'"><i class="fab fa-twitter"></i></a>';
-        }
-        if (!empty($linkedIn)) {
-        $output .= '<a class="linkedIn-'.esc_attr($social_size).'" href="' . esc_url($linkedIn). '" '.esc_attr($link_window).' title="'.__('LinkedIn','wp-team-manager').'"><i class="fab fa-linkedin"></i></a>';
-        }
-        if (!empty($googleplus)) {
-        $output .= '<a class="googleplus-'.esc_attr($social_size).'" href="' . esc_url($googleplus). '" '.esc_attr($link_window).' title="'.__('Google Plus','wp-team-manager').'"><i class="fab fa-google-plus-g"></i></a>';
-        }
-        if (!empty($dribbble)) {
-        $output .= '<a class="dribbble-'.esc_attr($social_size).'" href="' . esc_url($dribbble). '" '.esc_attr($link_window).' title="'.__('Dribbble','wp-team-manager').'"><i class="fab fa-dribbble-square"></i></a>';
-        }        
-        if (!empty($youtube)) {
-        $output .= '<a class="youtube-'.esc_attr($social_size).'" href="' . esc_url($youtube). '" '.esc_attr($link_window).' title="'.__('Youtube','wp-team-manager').'"><i class="fab fa-youtube"></i></a>';
-        }
-        if (!empty($vimeo)) {
-        $output .= '<a class="vimeo-'.esc_attr($social_size).'" href="' . esc_url($vimeo). '" '.esc_attr($link_window).' title="'.__('Vimeo','wp-team-manager').'"><i class="fab fa-vimeo"></i></a>';
-        }
-        if (!empty($emailid)) {
-        $output .= '<a class="emailid-'.esc_attr($social_size).'" href="mailto:' .sanitize_email($emailid). '" title="'.__('Email','wp-team-manager').'"><i class="far fa-envelope"></i></a>';
-        } 
-
-        $output .= '</div>';
-
-        return $output;
-
+    
+        // Return the formatted image with proper escaping for class attributes
+        return wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]);
     }
 
+
+    /**
+     * Retrieves the team member's social media links as an HTML structure.
+     *
+     * This function retrieves the social media links associated with a team member
+     * and generates an HTML structure containing anchor tags for each link. The
+     * HTML structure includes a wrapper element with a class attribute specifying
+     * the size of the links. Each anchor tag also includes a class attribute specifying
+     * the social media network and its size.
+     *
+     * @param int $post_id The ID of the post for which the social media links are being retrieved.
+     *
+     * @return string The HTML structure containing the social media links.
+     */
+    public static function get_team_social_links($post_id) {
+        // Retrieve settings once and cache them
+        static $social_size = null;
+        static $link_window = null;
+    
+        if (is_null($social_size)) {
+            $social_size = intval(get_option('tm_social_size', 16));
+        }
+    
+        if (is_null($link_window)) {
+            $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
+        }
+    
+        // Fetch all social links in a single call to reduce DB queries
+        $meta = get_post_meta($post_id);
+    
+        // Define supported social networks with their metadata keys and icons
+        $social_links = [
+            'facebook'    => ['key' => 'tm_flink', 'icon' => 'fab fa-facebook-f', 'title' => __('Facebook', 'wp-team-manager')],
+            'twitter'     => ['key' => 'tm_tlink', 'icon' => 'fab fa-twitter', 'title' => __('Twitter', 'wp-team-manager')],
+            'linkedin'    => ['key' => 'tm_llink', 'icon' => 'fab fa-linkedin', 'title' => __('LinkedIn', 'wp-team-manager')],
+            'googleplus'  => ['key' => 'tm_gplink', 'icon' => 'fab fa-google-plus-g', 'title' => __('Google Plus', 'wp-team-manager')],
+            'dribbble'    => ['key' => 'tm_dribbble', 'icon' => 'fab fa-dribbble-square', 'title' => __('Dribbble', 'wp-team-manager')],
+            'youtube'     => ['key' => 'tm_ylink', 'icon' => 'fab fa-youtube', 'title' => __('YouTube', 'wp-team-manager')],
+            'vimeo'       => ['key' => 'tm_vlink', 'icon' => 'fab fa-vimeo', 'title' => __('Vimeo', 'wp-team-manager')],
+            'email'       => ['key' => 'tm_emailid', 'icon' => 'far fa-envelope', 'title' => __('Email', 'wp-team-manager')],
+        ];
+    
+        // Start output buffering
+        ob_start();
+    
+        echo '<div class="team-member-socials size-' . esc_attr($social_size) . '">';
+    
+        foreach ($social_links as $network => $data) {
+            // Get the social URL from metadata
+            $value = isset($meta[$data['key']][0]) ? trim($meta[$data['key']][0]) : '';
+    
+            if (!empty($value)) {
+                $href = ($network === 'email') ? 'mailto:' . sanitize_email($value) : esc_url($value);
+                echo '<a class="' . esc_attr($network . '-' . $social_size) . '" href="' . $href . '" ' . esc_attr($link_window) . ' title="' . esc_attr($data['title']) . '">';
+                echo '<i class="' . esc_attr($data['icon']) . '"></i></a>';
+            }
+        }
+    
+        echo '</div>';
+    
+        return ob_get_clean();
+    }
+
+    /**
+     * Displays the social media profile output.
+     *
+     * This function retrieves the social media data associated with a team member
+     * and then iterates over the retrieved data to generate a set of HTML
+     * elements representing the social media profiles.
+     *
+     * The generated HTML includes a wrapper, a set of labels, and a set of
+     * anchor tags. The labels are the social media types, and the anchor tags
+     * are styled to represent the social media icons.
+     *
+     * @param int $post_id The team member post ID.
+     *
+     * @return string The social media profile output.
+     */
     public static function display_social_profile_output( $post_id = 0 ) {
-        $post_id           = $post_id ? $post_id : get_the_ID();
-        $wptm_social_infos = get_post_meta( $post_id, 'wptm_social_group', true );
-       
-        $wptm_social_data  = !empty($wptm_social_infos) ? $wptm_social_infos : [];
-
-
-        $social_size = !empty( get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
-        $link_window = ( false !== get_option('tm_link_new_window')  && 'True' == get_option('tm_link_new_window') ) ? 'target="_blank"' : '';
-
-        if( !isset( $wptm_social_data[0]['url'] ) && ( isset($wptm_social_data[0]['type']) &&  $wptm_social_data[0]['type'] == 'select_type') ){
+        // Ensure a valid post ID is retrieved
+        $post_id = $post_id ? intval($post_id) : get_the_ID();
+    
+        // Fetch social group metadata once, ensuring it's an array
+        $wptm_social_data = get_post_meta($post_id, 'wptm_social_group', true);
+        if (empty($wptm_social_data) || !is_array($wptm_social_data)) {
             return false;
         }
+    
+        // Retrieve and cache social settings
+        static $social_size = null;
+        static $link_window = null;
+    
+        if (is_null($social_size)) {
+            $social_size = intval(get_option('tm_social_size', 16));
+        }
+    
+        if (is_null($link_window)) {
+            $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
+        }
+    
+        // Validate social media mappings (Font Awesome classes)
+        $social_media_icons = [
+            'email'          => ['icon' => 'far fa-envelope', 'title' => __('Email', 'wp-team-manager')],
+            'facebook'       => ['icon' => 'fab fa-facebook-f', 'title' => __('Facebook', 'wp-team-manager')],
+            'twitter'        => ['icon' => 'fab fa-twitter', 'title' => __('Twitter', 'wp-team-manager')],
+            'linkedin'       => ['icon' => 'fab fa-linkedin', 'title' => __('LinkedIn', 'wp-team-manager')],
+            'googleplus'     => ['icon' => 'fab fa-google-plus-g', 'title' => __('Google Plus', 'wp-team-manager')],
+            'dribbble'       => ['icon' => 'fab fa-dribbble', 'title' => __('Dribbble', 'wp-team-manager')],
+            'youtube'        => ['icon' => 'fab fa-youtube', 'title' => __('YouTube', 'wp-team-manager')],
+            'vimeo'          => ['icon' => 'fab fa-vimeo', 'title' => __('Vimeo', 'wp-team-manager')],
+            'instagram'      => ['icon' => 'fab fa-instagram', 'title' => __('Instagram', 'wp-team-manager')],
+            'discord'        => ['icon' => 'fab fa-discord', 'title' => __('Discord', 'wp-team-manager')],
+            'tiktok'         => ['icon' => 'fab fa-tiktok', 'title' => __('TikTok', 'wp-team-manager')],
+            'github'         => ['icon' => 'fab fa-github', 'title' => __('GitHub', 'wp-team-manager')],
+            'stack-overflow' => ['icon' => 'fab fa-stack-overflow', 'title' => __('Stack Overflow', 'wp-team-manager')],
+            'medium'         => ['icon' => 'fab fa-medium', 'title' => __('Medium', 'wp-team-manager')],
+            'telegram'       => ['icon' => 'fab fa-telegram', 'title' => __('Telegram', 'wp-team-manager')],
+            'pinterest'      => ['icon' => 'fab fa-pinterest', 'title' => __('Pinterest', 'wp-team-manager')],
+            'square-reddit'  => ['icon' => 'fab fa-reddit-square', 'title' => __('Reddit', 'wp-team-manager')],
+            'tumblr'         => ['icon' => 'fab fa-tumblr', 'title' => __('Tumblr', 'wp-team-manager')],
+            'quora'          => ['icon' => 'fab fa-quora', 'title' => __('Quora', 'wp-team-manager')],
+            'snapchat'       => ['icon' => 'fab fa-snapchat', 'title' => __('Snapchat', 'wp-team-manager')],
+            'goodreads'      => ['icon' => 'fab fa-goodreads', 'title' => __('Goodreads', 'wp-team-manager')],
+            'twitch'         => ['icon' => 'fab fa-twitch', 'title' => __('Twitch', 'wp-team-manager')],
+        ];
+    
+        // Start output buffering for better performance
+        ob_start();
+    
+        echo '<div class="team-member-socials size-' . esc_attr($social_size) . '">';
+    
+        foreach ($wptm_social_data as $data) {
+            if (!isset($data['type'], $data['url']) || !isset($social_media_icons[$data['type']])) {
+                continue;
+            }
+    
+            $type  = sanitize_key($data['type']);
+            $icon  = esc_attr($social_media_icons[$type]['icon']);
+            $title = esc_attr($social_media_icons[$type]['title']);
+            $url   = $type === 'email' ? 'mailto:' . sanitize_email($data['url']) : esc_url($data['url']);
+    
+            echo '<a class="' . esc_attr($type) . '-' . esc_attr($social_size) . '" href="' . $url . '" ' . $link_window . ' title="' . $title . '">';
+            echo '<i class="' . $icon . '"></i></a>';
+        }
+    
+        echo '</div>';
+    
+        return ob_get_clean();
+    }
 
 
-        $output = '';
-        $output .= '<div class="team-member-socials size-'.esc_attr($social_size).'">';
-        ?>
-        <?php 
-            // Define an associative array mapping social media types to Font Awesome icons and titles
-            $social_media_icons = array(
-                'email'          => array('icon' => 'far fa-envelope', 'title'       => __('Email', 'wp-team-manager')),
-                'facebook'       => array('icon' => 'fab fa-facebook-f', 'title'     => __('Facebook', 'wp-team-manager')),
-                'twitter'        => array('icon' => 'fab fa-twitter', 'title'        => __('Twitter', 'wp-team-manager')),
-                'linkedin'       => array('icon' => 'fab fa-linkedin', 'title'       => __('LinkedIn', 'wp-team-manager')),
-                'googleplus'     => array('icon' => 'fab fa-google-plus-g', 'title'  => __('Google Plus', 'wp-team-manager')),
-                'dribbble'       => array('icon' => 'fab fa-dribbble', 'title'       => __('Dribbble', 'wp-team-manager')),
-                'youtube'        => array('icon' => 'fab fa-youtube', 'title'        => __('Youtube', 'wp-team-manager')),
-                'vimeo'          => array('icon' => 'fab fa-vimeo', 'title'          => __('Vimeo', 'wp-team-manager')),
-                'instagram'      => array('icon' => 'fab fa-instagram', 'title'      => __('Instagram', 'wp-team-manager')),
-                'discord'        => array('icon' => 'fab fa-discord', 'title'        => __('Discord', 'wp-team-manager')),
-                'tiktok'         => array('icon' => 'fab fa-tiktok', 'title'         => __('Tiktok', 'wp-team-manager')),
-                'github'         => array('icon' => 'fab fa-github', 'title'         => __('Github', 'wp-team-manager')),
-                'stack-overflow' => array('icon' => 'fab fa-stack-overflow', 'title' => __('Stack overflow', 'wp-team-manager')),
-                'medium'         => array('icon' => 'fab fa-medium', 'title'         => __('Medium', 'wp-team-manager')),
-                'telegram'       => array('icon' => 'fab fa-telegram', 'title'       => __('Telegram', 'wp-team-manager')),
-                'pinterest'      => array('icon' => 'fab fa-pinterest', 'title'      => __('Pinterest', 'wp-team-manager')),
-                'square-reddit'  => array('icon' => 'fab fa-reddit-square', 'title'  => __('Square reddit', 'wp-team-manager')),
-                'tumblr'         => array('icon' => 'fab fa-tumblr', 'title'         => __('Tumblr', 'wp-team-manager')),
-                'quora'          => array('icon' => 'fab fa-quora', 'title'          => __('Quora', 'wp-team-manager')),
-                'snapchat'       => array('icon' => 'fab fa-snapchat', 'title'       => __('Snapchat', 'wp-team-manager')),
-                'goodreads'      => array('icon' => 'fab fa-goodreads', 'title'      => __('Goodreads', 'wp-team-manager')),
-                'twitch'         => array('icon' => 'fab fa-twitch', 'title'         => __('Twitch', 'wp-team-manager')),
-            );
 
-            foreach( $wptm_social_data as $data ) {
-                if ( isset($data['type']) AND isset( $social_media_icons[$data['type']] ) ) {
-                    $icon_class = $social_media_icons[$data['type']]['icon'];
-                    $title = $social_media_icons[$data['type']]['title'];
-                    $url  = !empty( $data['url'] ) ? $data['url'] : '';
-                    if( isset($data['type']) AND 'email' == $data['type'] ) {
-                        $output .= '<a class="'. esc_attr($data['type']) . '-' .esc_attr($social_size). '"  href="mailto:' .sanitize_email( $url ). '" ' . esc_attr($link_window) . ' title="' . esc_attr($title) . '"><i class="' . esc_attr($icon_class) . '"></i></a>';
-                    }else{
-                        $output .= '<a class="' . esc_attr($data['type']) . '-' . esc_attr($social_size) . '" href="' . esc_url( $url ) . '" ' . esc_attr($link_window) . ' title="' . esc_attr($title) . '"><i class="' . esc_attr($icon_class) . '"></i></a>';
+        /**
+         * Display the skills output
+         *
+         * This function retrieves the skills data associated with a team member
+         * and then iterates over the retrieved data to generate a set of HTML
+         * elements representing the skills.
+         *
+         * The generated HTML includes a wrapper, a set of labels, and a set of
+         * progress bars. The labels are the skill labels, and the progress bars
+         * are styled to represent the percentage of the skill completed.
+         *
+         * @param int $post_id The team member post ID.
+         *
+         * @return string
+         */
+  
+
+
+        /**
+         * Retrieves additional information about a team member and formats it into HTML.
+         *
+         * This function fetches metadata for a specified team member, including fields
+         * like mobile, experience, email, and more. It sanitizes the data and generates
+         * an HTML structure displaying this information. The output can include icons,
+         * text, and links based on the metadata and user settings.
+         *
+         * @param int $post_id The ID of the team member post.
+         *
+         * @return string The HTML representation of the team member's additional information.
+         */
+        public static function get_team_other_infos($post_id) {
+            // Retrieve option once and ensure it's an array
+            $tm_single_fields = (array) get_option('tm_single_fields', []);
+        
+            // Fetch all metadata at once (reducing database calls)
+            $meta = get_post_meta($post_id);
+        
+            // Define all required fields with safe sanitization
+            $fields = [
+                'tm_mobile'          => isset($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
+                'tm_year_experience' => isset($meta['tm_year_experience'][0]) ? sanitize_text_field($meta['tm_year_experience'][0]) : '',
+                'tm_email'           => isset($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '',
+                'tm_telephone'       => isset($meta['tm_telephone'][0]) ? sanitize_text_field($meta['tm_telephone'][0]) : '',
+                'tm_location'        => isset($meta['tm_location'][0]) ? sanitize_text_field($meta['tm_location'][0]) : '',
+                'tm_web_url'         => isset($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
+                'tm_vcard'           => isset($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
+            ];
+        
+            $output = '<div class="team-member-other-info">';
+        
+            // Define field mappings for icons and text
+            $field_mappings = [
+                'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel://', 'is_link' => true],
+                'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel://', 'is_link' => true],
+                'tm_year_experience' => ['icon' => 'fas fa-history', 'is_link' => false],
+                'tm_location'        => ['icon' => 'fas fa-map-marker', 'is_link' => false],
+                'tm_email'           => ['icon' => 'fas fa-envelope', 'prefix' => 'mailto:', 'is_link' => true],
+                'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => __('Bio', 'wp-team-manager')],
+                'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => __('Download CV', 'wp-team-manager')],
+            ];
+        
+            // Generate HTML only for allowed fields
+            foreach ($field_mappings as $key => $info) {
+                if (!empty($fields[$key]) && !in_array($key, $tm_single_fields)) {
+                    $output .= '<div class="team-member-info"><i class="' . esc_attr($info['icon']) . '"></i> ';
+        
+                    if ($info['is_link']) {
+                        $text = isset($info['link_text']) ? esc_html($info['link_text']) : esc_html($fields[$key]);
+                        $output .= '<a href="' . esc_url($info['prefix'] . $fields[$key]) . '" target="_blank">' . $text . '</a>';
+                    } else {
+                        $output .= esc_html($fields[$key]);
                     }
+        
+                    $output .= '</div>';
                 }
             }
-        ?>
-    <?php
-        $output .= '</div>';
-        return $output;
-    
-    }
-
-    public static function get_team_other_infos($post_id){
         
-        $tm_single_fields = get_option('tm_single_fields') 
-        ? get_option('tm_single_fields') : 
-        [];
-
-        $output = '';
-
-        $tm_mobile = get_post_meta($post_id,'tm_mobile',true);
-        $tm_year_experience = get_post_meta($post_id,'tm_year_experience',true);
-        $tm_email = get_post_meta($post_id,'tm_email',true);
-        $telephone = get_post_meta($post_id,'tm_telephone',true);
-        $location = get_post_meta($post_id,'tm_location',true);
-        $web_url = get_post_meta($post_id,'tm_web_url',true);
-        $vcard = get_post_meta($post_id,'tm_vcard',true);
-        $output .= '<div class="team-member-other-info">';
-
-        if (!empty($tm_mobile) AND !in_array('tm_mobile',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-mobile-alt"></i></i> <a href="tel://'.esc_html($tm_mobile).'">'.esc_html($tm_mobile).'</a></div>';
+            $output .= '</div>';
+        
+            return $output;
         }
-        if (!empty($telephone) AND !in_array('tm_telephone',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-phone-alt"></i> <a href="tel://'.esc_html($telephone).'">'.esc_html($telephone).'</a></div>';
-        }
-        if (!empty($tm_year_experience) AND !in_array('tm_year_experience',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-history"></i>'.esc_html($tm_year_experience).'</div>';
-        }
-        if (!empty($location) AND !in_array('tm_location',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-map-marker"></i> '.esc_html($location).'</div>';
-        }
-        if (!empty($tm_email) AND !in_array('tm_email',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-envelope"></i><a href="mailto:'. esc_html($tm_email) .'" target="_blank">' . esc_html($tm_email) . '</a></div>';
-        }
-        if (!empty($web_url) AND !in_array('tm_web_url',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-link"></i> <a href="'. esc_url($web_url) .'" target="_blank">'.__('Bio','wp-team-manager').'</a></div>';
-        }
-        if (!empty($vcard) AND !in_array('tm_vcard',$tm_single_fields)) {
-            $output .= '<div class="team-member-info"><i class="fas fa-download"></i> <a href="'.esc_url($vcard).'" target="_blank">'.__('Download CV','wp-team-manager').'</a></div>';
-        }   
-                                                    
-        $output .= '</div>';
-
-        return $output;
-
-    }
 
     /**
 	 * Get Post Pagination, Load more & Scroll markup
@@ -339,35 +427,65 @@ class Helper {
 		}
 	}
     
-    public static function generatorShortcodeCss( $scID ) {
-		global $wp_filesystem;
-		// Initialize the WP filesystem, no more using 'file-put-contents' function
-		if ( empty( $wp_filesystem ) ) {
-			require_once ABSPATH . '/wp-admin/includes/file.php';
-			WP_Filesystem();
-		}
-        
-		$upload_dir     = wp_upload_dir();
-		$upload_basedir = $upload_dir['basedir'];
-		$cssFile        = $upload_basedir . '/wp-team-manager/team.css';
+        /**
+         * Generate custom css and save in uploads folder
+         *
+         * @param int $scID Shortcode id
+         *
+         * @return void
+         */
+        public static function generatorShortcodeCss($scID)
+{
+    global $wp_filesystem;
 
-		if ( $css = self::render( 'style', compact( 'scID' ), true ) ) {
-			$css = sprintf( '/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, $scID );
-			if ( file_exists( $cssFile ) && ( $oldCss = $wp_filesystem->get_contents( $cssFile ) ) ) {
-				if ( strpos( $oldCss, '/*wp_team-' . $scID . '-start' ) !== false ) {
-					$oldCss = preg_replace( '/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss );
-					$oldCss = preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $oldCss );
-				}
-				$css = $oldCss . $css;
-			} elseif ( ! file_exists( $cssFile ) ) {
-				$upload_basedir_trailingslashit = trailingslashit( $upload_basedir );
-				$wp_filesystem->mkdir( $upload_basedir_trailingslashit . 'wp-team-manager' );
-			}
-			if ( ! $wp_filesystem->put_contents( $cssFile, $css ) ) {
-				error_log( print_r( 'Team: Error Generated css file ', true ) );
-			}
-		}
-	}
+    // Validate `$scID` to prevent injection
+    if (!is_numeric($scID)) {
+        die('Invalid shortcode ID.');
+    }
+
+    // Ensure the user has the capability to modify files
+    if (!current_user_can('manage_options')) {
+        die('Unauthorized access.');
+    }
+
+    // Initialize WP filesystem securely
+    if (empty($wp_filesystem)) {
+        require_once ABSPATH . '/wp-admin/includes/file.php';
+        WP_Filesystem();
+    }
+
+    $upload_dir = wp_upload_dir();
+    $upload_basedir = $upload_dir['basedir'];
+
+    // Validate and securely construct the CSS file path
+    $allowedPath = realpath($upload_basedir);
+    $cssFile = $allowedPath . '/wp-team-manager/team.css';
+
+    if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
+        die('Invalid file path.');
+    }
+
+    // Generate CSS content
+    if ($css = self::render('style', compact('scID'), true)) {
+        $css = sprintf('/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, (int)$scID);
+
+        if (file_exists($cssFile)) {
+            $oldCss = $wp_filesystem->get_contents($cssFile);
+            if ($oldCss && strpos($oldCss, '/*wp_team-' . $scID . '-start') !== false) {
+                $oldCss = preg_replace('/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
+                $oldCss = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $oldCss);
+            }
+            $css = $oldCss . $css;
+        } else {
+            $wp_filesystem->mkdir($allowedPath . '/wp-team-manager');
+        }
+
+        // Use secure file writing with WP Filesystem API
+        if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
+            error_log('Team: Error generating CSS file');
+        }
+    }
+}
 
     /**
      * Generate Shortcode for remove css
@@ -376,41 +494,68 @@ class Helper {
      *
      * @return void
     */
-    public static function removeGeneratorShortcodeCss( $scID ) {
-        // Load the WordPress filesystem API.
-        if ( ! function_exists( 'WP_Filesystem' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-        }
-
-        // Initialize the filesystem.
-        if ( ! WP_Filesystem() ) {
-            // Failed to initialize the filesystem, handle error here.
-            return;
-        }
-
-        global $wp_filesystem;
-
-        $upload_dir     = wp_upload_dir();
-        $upload_basedir = $upload_dir['basedir'];
-        $cssFile        = $upload_basedir . '/wp-team-manager/team.css';
-        
-        if( file_exists( $cssFile ) && $response = wp_remote_get($cssFile) ){
-            if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-                $oldCss = wp_remote_retrieve_body($response);
-            
-                if ($oldCss !== false && strpos( $oldCss, '/*wp_team-' . $scID . '-start') !== false) {
-                    $css = preg_replace( '/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
-                    $css = preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $css);
-                    $wp_filesystem->put_contents( $cssFile, $css, FS_CHMOD_FILE );
-                }
-            } else {
-                
-                $error_message = is_wp_error($response) ? $response->get_error_message() : 'HTTP request failed';
-            }
-        }
-        
+    public static function removeGeneratorShortcodeCss($scID)
+{
+    // Ensure the user has admin privileges
+    if (!current_user_can('manage_options')) {
+        die('Unauthorized access.');
     }
 
+    // Validate `$scID` to prevent injection
+    if (!is_numeric($scID)) {
+        die('Invalid shortcode ID.');
+    }
+
+    // Load the WordPress filesystem API securely
+    if (!function_exists('WP_Filesystem')) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
+    if (!WP_Filesystem()) {
+        return; // Failed to initialize, handle error appropriately
+    }
+
+    global $wp_filesystem;
+
+    $upload_dir = wp_upload_dir();
+    $upload_basedir = realpath($upload_dir['basedir']);
+
+    // Validate the path to prevent path traversal
+    if (!$upload_basedir || strpos($upload_basedir, realpath(WP_CONTENT_DIR . '/uploads')) !== 0) {
+        die('Invalid file path.');
+    }
+
+    $cssFile = realpath($upload_basedir . '/wp-team-manager/team.css');
+
+    // Ensure `$cssFile` is inside the allowed directory
+    if (!$cssFile || strpos($cssFile, $upload_basedir) !== 0) {
+        die('Invalid file path.');
+    }
+
+    // Securely read the existing CSS file
+    if (file_exists($cssFile)) {
+        $oldCss = $wp_filesystem->get_contents($cssFile);
+
+        if ($oldCss !== false && strpos($oldCss, '/*wp_team-' . $scID . '-start') !== false) {
+            $css = preg_replace('/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
+            $css = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $css);
+
+            // Securely write the updated CSS file
+            if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
+                error_log('Team: Error updating CSS file');
+            }
+        }
+    }
+}
+
+
+    /**
+     * Retrieve content from meta key and apply wpautop and do_shortcode to it
+     *
+     * @param string $meta_key
+     * @param int $post_id
+     * @return string
+     */
     public static function get_wysiwyg_output( $meta_key, $post_id = 0 ) {
         global $wp_embed;
         $post_id = $post_id ? $post_id : get_the_ID();
@@ -425,41 +570,73 @@ class Helper {
         return $content;
     }
 
+    /**
+     * Outputs the image gallery for a team member.
+     *
+     * This function retrieves the image gallery meta data for a team member,
+     * then iterates over the retrieved data to generate a set of HTML
+     * elements representing the image gallery.
+     *
+     * The generated HTML includes a wrapper, a set of links, and a set of
+     * images. Each link points to a full-size image, and the images are
+     * displayed in a grid layout.
+     *
+     * @param int $post_id The team member post ID.
+     *
+     * @return void
+     */
     public static function get_image_gallery_output( $post_id = 0 ) {
-        $post_id           = $post_id ? $post_id : get_the_ID();
-        $team_gallery_data = get_post_meta( $post_id, 'wptm_cm2_gallery_image' );
+        $post_id              = $post_id ? $post_id : get_the_ID();
+        $team_gallery_data    = get_post_meta( $post_id, 'wptm_cm2_gallery_image' );
+        $light_box_selector   = '';
+        $is_lightbox_selected = get_option( 'tm_single_team_lightbox' );
+        $team_image_column    = get_option( 'tm_single_gallery_column' );
+
+        if ( 'True' === $is_lightbox_selected ) {
+            $light_box_selector = 'wtm-image-gallery-lightbox';
+        }
 
         if( is_array($team_gallery_data) AND  empty($team_gallery_data) ){
             return false;
         }
-        
         ?>
-            <div class="wtm-image-gallery-wrapper">
-                <?php foreach( $team_gallery_data[0] as $attachment_id => $attachment_url ): ?>
-                    <div class="wtm-single-image">
-                        <a href="<?php echo esc_url( wp_get_attachment_url( $attachment_id ) ); ?>">
-                            <?php echo wp_get_attachment_image( $attachment_id ); ?>
-                        </a>
-                    </div>
-                <?php endforeach;?>
-            </div>
+        <div class="wtm-image-gallery-wrapper <?php echo esc_attr($team_image_column) ?? '' ?> <?php echo esc_attr($light_box_selector) ?? ''; ?>">
+            <?php foreach( $team_gallery_data[0] as $attachment_id => $attachment_url ): ?>
+                <div class="wtm-single-image">
+                    <a href="<?php echo esc_url( wp_get_attachment_url( $attachment_id ) ); ?>" title="">
+                        <?php echo wp_get_attachment_image( $attachment_id ); ?>
+                    </a>
+                </div>
+            <?php endforeach;?>
+        </div>
        <?php
     }
 
+    /**
+     * Generates a set of HTML checkbox inputs for single fields.
+     *
+     * This function retrieves single field options from the WordPress database,
+     * then iterates over a predefined list of field keys and labels to generate
+     * corresponding checkbox inputs. Each checkbox represents a field option,
+     * and it will be checked if its key exists in the retrieved options.
+     *
+     * The generated HTML includes a wrapper, input checkbox, label, and display
+     * name for each field option.
+     */
     public static function generate_single_fields(){
 
         $tm_single_fields =  get_option('tm_single_fields')
         ? get_option('tm_single_fields') : 
         [];
         $fields = array(
-            'tm_email' => 'Email',
-            'tm_jtitle' => 'Job Title',
-            'tm_telephone' => 'Telephone (Office)',
-            'tm_mobile' => 'Mobile (Personal)',
-            'tm_location' => 'Location',
+            'tm_email'           => 'Email',
+            'tm_jtitle'          => 'Job Title',
+            'tm_telephone'       => 'Telephone (Office)',
+            'tm_mobile'          => 'Mobile (Personal)',
+            'tm_location'        => 'Location',
             'tm_year_experience' => 'Years of Experience',
-            'tm_web_url' => 'Web URL',
-            'tm_vcard' => 'vCard',
+            'tm_web_url'         => 'Web URL',
+            'tm_vcard'           => 'vCard',
         );
         
         foreach ($fields as $key => $value) {
@@ -482,6 +659,104 @@ class Helper {
 
     }
 
+    public static function get_image_sizes(){
+
+        $selected =  get_option('team_image_size_change')
+        ? get_option('team_image_size_change') : 
+        'medium';
+
+        $fields = array(
+            'medium'       => 'Medium',
+            'thumbnail'    => 'Thumbnail',
+            'medium_large' => 'Medium Large',
+            'large'        => 'Large',
+            'full'         => 'Full',
+
+        );
+        
+        foreach ($fields as $key => $value) {
+
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr( $key ) ,
+                selected( $selected , $key, false),
+                esc_html( $value ) ,
+                
+            );
+
+        }
+
+    }
+    public static function get_gallery_columns(){
+
+        $selected =  get_option('tm_single_gallery_column')
+        ? get_option('tm_single_gallery_column') : 
+        'four_columns';
+
+        $fields = array(
+            'one_column'    => 'One Column',
+            'two_columns'   => 'Two Columns',
+            'three_columns' => 'Three Columns',
+            'four_columns'  => 'Four Columns',
+
+        );
+        
+        foreach ($fields as $key => $value) {
+
+            printf(
+                '<option value="%s" %s>%s</option>',
+                esc_attr( $key ) ,
+                selected( $selected , $key, false),
+                esc_html( $value ) ,
+                
+            );
+
+        }
+
+    }
+
+    public static function get_taxonomy_settings(){
+
+        $tm_taxonomy_fields =  get_option('tm_taxonomy_fields')
+        ? get_option('tm_taxonomy_fields') : 
+        [];
+        $fields = array(
+            'team_designation' => 'Designations',
+            'team_department'  => 'Departments',
+            'team_groups'      => 'Groups',
+            'team_genders'     => 'Genders',
+        );
+        
+        foreach ($fields as $key => $value) {
+
+            printf(
+                '<div class="tm-nice-checkbox-wrapper">
+                <input type="checkbox" class="tm-checkbox" id="tm_%s" name="tm_taxonomy_fields[]" value="%s" %s/>
+                <label for="tm_%s" class="toggle"><span></span></label>
+                <span>%s</span>  
+                </div><!--.tm-nice-checkbox-wrapper-->',
+                esc_attr( $key ) ,
+                esc_attr( $key ),
+                in_array($key,$tm_taxonomy_fields) ? 'checked' : '',
+                esc_attr( $key ),
+                esc_html( $value ) ,
+                
+            );
+
+        }
+
+    }
+
+/**
+ * Migrates old social icon metadata to a unified social group format.
+ *
+ * This function retrieves individual social media links (e.g., Facebook, Twitter)
+ * from the post meta of a given post ID and consolidates them into a single
+ * 'wptm_social_group' meta entry. Each entry in this group contains the social
+ * media type and its corresponding URL.
+ *
+ * @param int $post_id The ID of the post whose social icons are to be migrated.
+ */
     public static function team_social_icon_migration( $post_id ) {
 
         $post_id     = $post_id ? $post_id: get_the_ID();
@@ -563,25 +838,43 @@ class Helper {
 	 * @param  mixed $default_path default path.
 	 * @return string
 	 */
-	public static function wtm_locate_template( $template_name, $template_path = '', $default_path = '' ) {
-		if ( ! $template_path ) {
-			$template_path = 'public/templates';
-		}
-		if ( ! $default_path ) {
-			$default_path = TM_PATH . '/public/templates/';
-		}
-		$template = locate_template( trailingslashit( $template_path ) . $template_name );
-		// Get default template.
-		if ( ! $template ) {
-			$template = $default_path . $template_name;
-		}
-		// Return what we found.
-		return $template;
-	}
+    public static function wtm_locate_template( $template_name, $template_path = '', $default_path = '' ) {
+        if ( ! $template_path ) {
+            $template_path = 'public/templates';
+        }
+        if ( ! $default_path ) {
+            $default_path = TM_PATH . '/public/templates/';
+        }
+    
+        // Sanitize template name to prevent directory traversal
+        $template_name = basename($template_name);
+    
+        // // Allowlist of valid template files
+        // $allowed_templates = ['content-memeber.php', 'footer.php', 'team-template.php','content-grid.php'];
+    
+        // if (!in_array($template_name, $allowed_templates, true)) {
+        //     return ''; // Block unauthorized template names
+        // }
+    
+        $template = locate_template( trailingslashit( $template_path ) . $template_name );
+    
+        // Get default template securely
+        if ( ! $template ) {
+            $real_path = realpath($default_path . $template_name);
+            
+            if ($real_path && strpos($real_path, realpath($default_path)) === 0 && file_exists($real_path)) {
+                $template = $real_path;
+            } else {
+                return ''; // Prevent file inclusion attacks
+            }
+        }
+    
+        return $template;
+    }
 
     public static function get_team_data($args){
         $tmQuery = new \WP_Query( $args );
-        return ($tmQuery->posts) ? $tmQuery->posts : [];
+        return ($tmQuery->posts) ? ['posts' => $tmQuery->posts,'max_num_pages' => $tmQuery->max_num_pages] : [];
     }
 
     /**
@@ -594,102 +887,191 @@ class Helper {
      * @return void
      */
     public static function renderElementorLayout(string $layout, array $data, array $settings): void
-    {
-        $styleTypeKey = "{$layout}_style_type";
-        $styleType = stripslashes($settings[$styleTypeKey]);
-        $path = stripslashes(TM_PATH . '/public/templates/elementor/layouts/' . $layout . '/');
-        $templateName = sanitize_file_name( $styleType . '.php' );
+{
+    $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Allowed layouts
 
-        //allowed file type
-        $allowedFileTypes = [
-            'php'
-        ];
-        
-        $ext = pathinfo($path . $templateName, PATHINFO_EXTENSION);
+    if (!in_array($layout, $allowedLayouts, true)) {
+        wp_die(__('Invalid layout.', 'wp-team-manager'));
+    }
 
-        if (in_array($ext, $allowedFileTypes)) {
+    $styleTypeKey = "{$layout}_style_type";
+    $styleType = $settings[$styleTypeKey] ?? '';
 
-            if (file_exists($path . $templateName)) {
+    // Ensure only safe characters (alphanumeric + underscores)
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
+        wp_die(__('Invalid style type.', 'wp-team-manager'));
+    }
 
-                include self::locateTemplate($templateName, '', $path);
+    // Ensure constants exist before using them
+    if (!defined('TM_PATH')) {
+        wp_die(__('TM_PATH is not defined.', 'wp-team-manager'));
+    }
+
+    // Define Free path (always available)
+    $basePath = realpath(TM_PATH . '/public/templates/elementor/layouts/');
+
+    // Define Pro path if available
+    $proPath = defined('TM_PRO_PATH') ? realpath(TM_PRO_PATH . '/public/templates/elementor/layouts/') : null;
+
+    // Ensure the free path is valid
+    if (!$basePath) {
+        wp_die(__('Invalid base template path.', 'wp-team-manager'));
+    }
+
+    $templateName = sanitize_file_name($styleType . '.php');
+
+    // Define possible template paths (Pro first, then Free)
+    $proFullPath = $proPath ? $proPath . '/' . $layout . '/' . $templateName : null;
+    $freeFullPath = $basePath . '/' . $layout . '/' . $templateName;
+
+    // Check if Pro template exists and is readable
+    if ($proFullPath && is_readable($proFullPath) && strpos(realpath($proFullPath), $proPath) === 0) {
+        include $proFullPath;
+        return;
+    }
+
+    // Check if Free template exists and is readable
+    if (is_readable($freeFullPath) && strpos(realpath($freeFullPath), $basePath) === 0) {
+        include $freeFullPath;
+        return;
+    }
+
+    // If neither file is found, show an error
+    wp_die(__('Template not found or invalid file.', 'wp-team-manager'));
+}
     
+           /**
+         * Renders the Elementor layout based on the given layout, data, and settings.
+         *
+         * @param string $layout The name of the layout to render.
+         * @param array $data The data to pass to the layout template.
+         * @param array $settings The settings for the layout.
+         * @throws None
+         * @return void
+         */
+        public static function renderTeamLayout(string $layout, array $data, string $styleType, array $settings = []): void
+        {
+            $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Define valid layouts
+        
+            if (!in_array($layout, $allowedLayouts, true)) {
+                die('Invalid layout.');
+            }
+        
+          // Allow only alphanumeric + underscores to prevent directory traversal
+        if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
+            die('Invalid style type.');
+        }
+        
+        
+            $path = realpath(TM_PATH . '/public/templates/layouts/' . $layout . '/');
+            if (!$path || strpos($path, realpath(TM_PATH . '/public/templates/layouts/')) !== 0) {
+                die('Invalid path.');
+            }
+        
+            $templateName = sanitize_file_name($styleType . '.php');
+            $fullPath = $path . '/' . $templateName;
+        
+            // Validate that the file exists and is within the intended directory
+            if (file_exists($fullPath) && pathinfo($fullPath, PATHINFO_EXTENSION) === 'php') {
+                include $fullPath;
+            } else {
+                die('Template not found or invalid file.');
             }
         }
-
-    }
-    
-
-       /**
-     * Renders the Elementor layout based on the given layout, data, and settings.
-     *
-     * @param string $layout The name of the layout to render.
-     * @param array $data The data to pass to the layout template.
-     * @param array $settings The settings for the layout.
-     * @throws None
-     * @return void
-     */
-    public static function renderTeamLayout(string $layout, array $data, string $styleType , $settings = []): void
-    {
-        $styleType = stripslashes($styleType);
-        $path = stripslashes(TM_PATH . '/public/templates/layouts/' . $layout . '/');
-        $templateName = sanitize_file_name( $styleType . '.php' );
-
-        //allowed file type
-        $allowedFileTypes = [
-            'php'
-        ];
         
-        $ext = pathinfo($path . $templateName, PATHINFO_EXTENSION);
-
-        if (in_array($ext, $allowedFileTypes)) {
-
-            if (file_exists($path . $templateName)) {
-
-                include self::locateTemplate($templateName, '', $path);
     
+        /**
+         * Locates a template file based on the given template name, template path, and default path.
+         *
+         * @param string $templateName The name of the template file to locate.
+         * @param string $templatePath The path to search for the template file. Defaults to 'public/templates'.
+         * @param string $defaultPath The default path to use if the template file is not found in the template path. Defaults to TM_PATH . '/public/templates/'.
+         * @return string The path to the located template file, or the default path if the template file is not found.
+         */
+      
+        private static function locateTemplate(string $templateName, string $templatePath = '', string $defaultPath = ''): string
+        {
+            // Ensure template name is safe (allow only alphanumeric, dashes, and underscores)
+            if (!preg_match('/^[a-zA-Z0-9_-]+\.php$/', $templateName)) {
+                die('Invalid template name.');
+            }
+        
+            $templatePath = $templatePath ?: 'public/templates';
+            $defaultPath = $defaultPath ?: TM_PATH . '/public/templates/';
+        
+            // Ensure paths are properly resolved
+            $resolvedDefaultPath = realpath($defaultPath);
+            $resolvedTemplatePath = realpath(trailingslashit($templatePath));
+        
+            // Validate resolved paths
+            if (!$resolvedDefaultPath || strpos($resolvedDefaultPath, realpath(TM_PATH . '/public/templates/')) !== 0) {
+                die('Invalid default path.');
+            }
+        
+            if ($resolvedTemplatePath && strpos($resolvedTemplatePath, realpath(TM_PATH . '/public/templates/')) === 0) {
+                $template = locate_template($resolvedTemplatePath . '/' . $templateName);
+                if ($template && file_exists($template)) {
+                    return $template;
+                }
+            }
+        
+            // Build the final safe path
+            $finalPath = $resolvedDefaultPath . '/' . $templateName;
+        
+            // Ensure the final path is within the allowed directory
+            if (file_exists($finalPath) && strpos(realpath($finalPath), $resolvedDefaultPath) === 0) {
+                return $finalPath;
+            }
+        
+            die('Template not found or invalid.');
+        }
+        
+        /**
+         * Displays the HTML output of a given layout, with the given data and settings.
+         * 
+         * @param string $layout The name of the layout to display. Defaults to 'grid'. Valid values are 'grid', 'list', and 'slider'.
+         * @param array $data The data to pass to the layout template.
+         * @param array $settings The settings for the layout.
+         * 
+         * @return void
+         */
+        public static function show_html_output($layout = 'grid', $data = [], $settings = [])
+        {
+            // Define allowed layouts to prevent arbitrary input
+            $allowedLayouts = [
+                'grid'   => 'content-grid.php',
+                'list'   => 'content-list.php',
+                'slider' => 'content-slider.php'
+            ];
+        
+            // Ensure the layout is valid
+            if (!array_key_exists($layout, $allowedLayouts)) {
+                $layout = 'grid'; // Default fallback
+            }
+        
+            $templateFile = $allowedLayouts[$layout];
+        
+            // Locate and validate template path
+            $templatePath = self::wtm_locate_template($templateFile);
+        
+            // Ensure the template file exists and is inside the intended directory
+            if (file_exists($templatePath) && strpos(realpath($templatePath), realpath(TM_PATH . '/public/templates/')) === 0) {
+                include $templatePath;
+            } else {
+                die('Invalid template file.');
             }
         }
-
-    }
+        
+    
 
     /**
-     * Locates a template file based on the given template name, template path, and default path.
+     * Renders a specified number of terms for a given post and taxonomy.
      *
-     * @param string $templateName The name of the template file to locate.
-     * @param string $templatePath The path to search for the template file. Defaults to 'public/templates'.
-     * @param string $defaultPath The default path to use if the template file is not found in the template path. Defaults to TM_PATH . '/public/templates/'.
-     * @return string The path to the located template file, or the default path if the template file is not found.
+     * @param int $post_id The ID of the post from which to retrieve terms.
+     * @param int $term_to_show The number of terms to display. Defaults to 1.
+     * @param string $term The taxonomy from which to retrieve terms. Defaults to 'team_designation'.
+     * @return bool False if the post ID is empty or no terms are found; otherwise, outputs the terms HTML.
      */
-    private static function locateTemplate(string $templateName, string $templatePath = '', string $defaultPath = ''): string
-    {
-        $templatePath = $templatePath ?: 'public/templates';
-        $defaultPath = $defaultPath ?: TM_PATH . '/public/templates/';
-        $template = locate_template(trailingslashit($templatePath) . $templateName);
-        return $template ?: "{$defaultPath}{$templateName}";
-    }
-
-    public static function show_html_output($layout = 'grid', $data = [], $settings = []){
-     
-        switch ($layout) {
-            case 'grid':
-                include self::wtm_locate_template('content-grid.php');
-                break;
-            
-            case 'list':
-                include self::wtm_locate_template('content-list.php');
-                break;
-            
-            case 'slider':
-                include self::wtm_locate_template('content-slider.php');
-                break;
-
-            default:
-                include self::wtm_locate_template('content-grid.php');
-                break;
-        }
-
-    }
-
     public static function render_terms( $post_id, $term_to_show = 1, $term = 'team_designation' ){
 		if( empty( $post_id ) ){
 			return false;
@@ -705,13 +1087,40 @@ class Helper {
 
 		$terms_html = '<div class="team-'.$term.'">';
 		foreach( $terms as $term ){
-			$terms_html .= '<span class="team-position">'. $term->name .'</span>';
+			$terms_html .= '<span class="team-position">'. esc_html( $term->name ) .'</span>';
 		}
 		$terms_html .= '</div>';
 
-		echo wp_kses_post( $terms_html );
-		
+		return $terms_html;
 	}
+
+    /**
+     * Shows a label indicating that a feature is only available in the Pro version.
+     *
+     * @return string The label HTML, or an empty string if the current user has a paid license.
+     */
+    public static function showProFeatureLabel(){
+
+        if(tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()){
+            return esc_html__(' (Pro Feature)', 'wp-team-manager');
+        }
+
+        return '';
+    }
+
+    /**
+     * Returns a link to upgrade to the Pro version if the current user does not have a paid license.
+     *
+     * @return string The link HTML, or an empty string if the current user has a paid license.
+     */
+    public static function showProFeatureLink( $link_text = 'Upgrade Now!'){
+
+        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
+            return '<a href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">' . esc_html($link_text) . '</a>';
+        }
+
+        return '';
+    }
     
 
 }

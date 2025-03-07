@@ -45,7 +45,7 @@ class ElementorWidgets {
 		
 		require_once( __DIR__ . '/Controls/ImageSelector.php' );
 		
-		$controls_manager->register( new ImageSelectorControl() );
+		$controls_manager->register( new ImageSelector() );
 
 	}
 	/**
@@ -58,10 +58,11 @@ class ElementorWidgets {
 	 */
 	private function include_widgets_files() {
 		require_once( __DIR__ . '/widgets/team.php' );
+		require_once(__DIR__ . '/widgets/isotope.php');
 	}
 
 	public function editor_scripts(){
-		
+		wp_enqueue_script( 'wp-team-el-admin' );
 	}
 
 	/**
@@ -78,9 +79,9 @@ class ElementorWidgets {
 
 		// Register Widgets
         Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Team() );
-
+		Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Isotope() );
 	}
-
+	
 
 	/**
 	 *  Plugin class constructor
@@ -106,5 +107,7 @@ class ElementorWidgets {
 		\add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'editor_scripts' ] );
 	
 	}
+	
+	
 }
 

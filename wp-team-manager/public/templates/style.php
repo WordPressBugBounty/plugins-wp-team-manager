@@ -1,35 +1,41 @@
 <?php
 use DWL\Wtm\Classes;
+
 /**
- * Generate custom css
- *
+ * Generate custom CSS
  */
-// Do not allow directly accessing this file.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit( 'This script cannot be accessed directly.' );
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit('This script cannot be accessed directly.');
 }
-$all_settings  = get_post_meta( $scID );
-$selector = '#dwl-team-wrapper-' . $scID;
 
-$card_background_collor = isset($all_settings['dwl_team_team_background_color'][0]) ? $all_settings['dwl_team_team_background_color'][0] : 'none';
-$icon_background_collor = isset($all_settings['dwl_team_social_icon_color'][0]) ? $all_settings['dwl_team_social_icon_color'][0] : '#3F88C5';
+// Retrieve all settings safely
+$all_settings = get_post_meta($scID);
 
-$css = '';
+// Define selector
+$selector = "#dwl-team-wrapper-" . esc_attr($scID);
 
-$css .= "$selector .team-member-info-content {";
-$css .= 'background-color:' . esc_html($card_background_collor) . ' !important ;';
-$css .= '}';
+// Get color settings with default values
+$card_background_color = sanitize_hex_color($all_settings['dwl_team_team_background_color'][0] ?? 'none');
+$icon_background_color = sanitize_hex_color($all_settings['dwl_team_social_icon_color'][0] ?? '#3F88C5');
 
-$css .= "$selector .team-member-socials a{";
-$css .= 'background-color:' . esc_html($icon_background_collor) . ' !important ;';
-$css .= '}';
+// Initialize CSS variable
+$css = <<<CSS
+$selector .team-member-info-content {
+    background-color: {$card_background_color} !important;
+}
 
-$css .= "$selector .team-member-other-info .fas{";
-$css .= 'color:' . esc_html($icon_background_collor) . ' !important ;';
-$css .= '}';
+$selector .team-member-socials a {
+    background-color: {$icon_background_color} !important;
+}
 
+$selector .team-member-other-info .fas {
+    color: {$icon_background_color} !important;
+}
+CSS;
 
-	
-if( $css ){
-	echo wp_strip_all_tags( $css );
+// Output CSS safely if not empty
+if (!empty($css)) {
+    echo wp_kses_post($css);
 }
