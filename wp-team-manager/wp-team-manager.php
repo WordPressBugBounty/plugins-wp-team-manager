@@ -9,7 +9,7 @@
  * Plugin Name:       WordPress Team Manager
  * Plugin URI:        https://wpteammanager.com/
  * Description:       Showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
- * Version:           2.2.0
+ * Version:           2.2.1
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -21,13 +21,6 @@
 if ( !defined( 'ABSPATH' ) ) {
     exit;
 }
-define( 'TM_VERSION', '2.2.0' );
-define( 'TM_FILE', __FILE__ );
-define( 'TM_PATH', __DIR__ );
-define( 'TM_PRO_PATH', __DIR__ . '/pro' );
-define( 'TM_URL', plugins_url( '', TM_FILE ) );
-define( 'TM_ADMIN_ASSETS', TM_URL . '/admin/assets' );
-define( 'TM_PUBLIC', TM_URL . '/public' );
 if ( function_exists( 'tmwstm_fs' ) ) {
     tmwstm_fs()->set_basename( false, __FILE__ );
 } else {
@@ -77,6 +70,38 @@ if ( function_exists( 'tmwstm_fs' ) ) {
         do_action( 'tmwstm_fs_loaded' );
     }
     // ... Your plugin's main file logic ...
+    require_once dirname( __FILE__ ) . '/vendor/autoload.php';
+    define( 'TM_VERSION', '2.2.1' );
+    define( 'TM_FILE', __FILE__ );
+    define( 'TM_PATH', __DIR__ );
+    define( 'TM_PRO_PATH', __DIR__ . '/pro' );
+    define( 'TM_URL', plugins_url( '', TM_FILE ) );
+    define( 'TM_ADMIN_ASSETS', TM_URL . '/admin/assets' );
+    define( 'TM_PUBLIC', TM_URL . '/public' );
+    require_once dirname( __FILE__ ) . '/Core.php';
+    register_activation_hook( __FILE__, 'wptm_activate_wp_team' );
+    /**
+     * Plugin activation action.
+     *
+     * Plugin activation will not work after "plugins_loaded" hook
+     * that's why activation hooks run here.
+     */
+    function wptm_activate_wp_team() {
+        $activation = strtotime( 'now' );
+        add_option( 'wp_team_manager_activation_time', strtotime( 'now' ) );
+        update_option( 'wp_team_manager_version', TM_VERSION );
+        flush_rewrite_rules();
+    }
+
+    register_deactivation_hook( __FILE__, 'wptm_deactivate_wtp_team' );
+    /**
+     * Plugin deactivation action.
+     *
+     * Plugin deactivation will not work after "plugins_loaded" hook
+     * that's why deactivation hooks run here.
+     */
+    function wptm_deactivate_wtp_team() {
+        flush_rewrite_rules();
+    }
+
 }
-require_once dirname( __FILE__ ) . '/vendor/autoload.php';
-require_once dirname( __FILE__ ) . '/includes/Classes/Core.php';

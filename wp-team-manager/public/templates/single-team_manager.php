@@ -16,7 +16,7 @@ if (get_option('tm_single_team_lightbox') === 'True') {
     wp_enqueue_style('wp-team-magnific-popup');
 }
 
-$tm_single_fields = get_option('tm_single_fields', []); // Use default value directly
+$tm_single_fields = (array) get_option('tm_single_fields', []); // Use default value directly
 
 ?>
 
@@ -24,9 +24,9 @@ $tm_single_fields = get_option('tm_single_fields', []); // Use default value dir
     <div id="main" class="wtm-row site-main" role="main">
         <article id="post-<?php the_ID(); ?>" <?php post_class('wtm-col-12'); ?>>
             <?php while (have_posts()) : the_post();
-                $post_id   = get_the_ID();
-                $job_title = get_post_meta($post_id, 'tm_jtitle', true);
-                $short_bio = get_post_meta($post_id, 'tm_short_bio', true);
+                $post_id   = absint(get_the_ID()); // Ensure post ID is an integer
+                $job_title = esc_html(get_post_meta($post_id, 'tm_jtitle', true)); // Escape early
+                $short_bio = wp_kses_post(get_post_meta($post_id, 'tm_short_bio', true)); 
             ?>
                 <div class="entry-content wtm-row">
                     <div class="team-bio-image wtm-col-12 wtm-col-md-6">
@@ -41,12 +41,12 @@ $tm_single_fields = get_option('tm_single_fields', []); // Use default value dir
                         <?php the_title('<h2 class="single-team-member-title">', '</h2>'); ?>
 
                         <?php if (!empty($job_title) && !in_array('tm_jtitle', $tm_single_fields)) : ?>
-                            <h3 class="team-position my-0"><?php echo esc_html($job_title); ?></h3>
+                            <h3 class="team-position my-0"><?php echo $job_title; ?></h3>
                         <?php endif; ?>
 
                         <div class="team-short-bio">
                             <?php if (!empty($short_bio)) {
-                                echo wp_kses_post($short_bio);
+                                echo $short_bio;
                             } ?>
                         </div>
 

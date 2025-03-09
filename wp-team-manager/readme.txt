@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,teams,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -194,6 +194,10 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 11. Team generator
 
 == Changelog ==
+
+= 2.2.1 =
+* Added flush_rewrite_rules
+* update single team file
 
 = 2.2.0 = 
 * Add Layouts of Grid and Slider
