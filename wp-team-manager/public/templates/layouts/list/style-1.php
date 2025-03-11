@@ -14,7 +14,7 @@ $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
 $disable_single_template = get_option('single_team_member_view') === 'True';
 
 if (!empty($data['posts'])) {
-    $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']); // Set default value directly
+    $tm_single_fields = (array) get_option('tm_single_fields', ['tm_jtitle']); // Set default value directly
 
     foreach ($data['posts'] as $teamInfo) {
         $meta = get_post_meta($teamInfo->ID);

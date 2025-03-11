@@ -16,15 +16,21 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
       $short_bio = isset($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
       ?>
   
-        <div <?php post_class('team-member-info-wrap wtm-col-12'); ?>>
+        <div <?php post_class('team-member-info-wrap wtm-col-12 wtm-col-lg-6 wtm-col-md-6'); ?>>
           <div class="wtm-row g-0 team-member-info-content"> 
-            <header class="wtm-col-12 wtm-col-lg-3 wtm-col-md-6">
+            <header class="wtm-col-12 wtm-col-lg-4 wtm-col-md-6">
+            <div class="dwl-team-overlay-container">
               <?php if("yes" == $settings['show_image']): ?>
                 <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
-                  <?php echo wp_kses_post(Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' )); ?>
+                <?php echo wp_kses_post(Helper::get_team_picture($teamInfo->ID, $image_size, 'dwl-box-shadow')); ?>
+                <div class="dwl-team-overlay">
+                    <div class="list-icon"><i class="fa fa-plus"></i></div>
+                </div>
                 </a>
               <?php endif;?>
+            </div>
             </header>
+
           <div class="team-member-desc wtm-col-12 wtm-col-lg-8 wtm-col-md-6">
             <?php if('yes'== $settings['show_title']  ): ?>
               <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">

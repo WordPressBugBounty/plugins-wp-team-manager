@@ -61,13 +61,17 @@ namespace DWL\Wtm\Classes;
 
                     <div class="wp-team-container">
                         <div class="wp-team-header-logo">
-                            <img src="<?php echo esc_url( 'https://wpteammanager.com/wp-content/uploads/2024/07/Logo.svg' )?>" alt="">
-                            <span><?php esc_html_e( '2.1.17', 'wp-team-manager' )?></span>
+                            <img src="<?php echo esc_url( 'https://wpteammanager.com/wp-content/uploads/2024/07/Logo.svg' )?>" alt="team logo">
+                            <span><?php esc_html_e( '2.2.2', 'wp-team-manager' )?></span>
                         </div>
                     </div>
 
                     <div class="wp-team-header-logo-shape">
-                        <img src="" alt="">
+                       <?php
+                        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
+                            return '<a href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">Upgrade to Pro !</a>';
+                        }
+                        ?>
                     </div>
 
                 </div>
@@ -86,11 +90,6 @@ namespace DWL\Wtm\Classes;
                     <div class="wp-team-box-content">
 
                         <div class="wp-team-video-wrapper">
-                            <div class="wp-team-video-col">
-                                <div class="wp-team-responsive-iframe">
-                                    <iframe width="800" height="450" src="<?php echo esc_url( 'https://www.youtube.com/embed/AkqR6SGxcWo?feature=oembed' )?>" title="How To Create Team Page Using ShortCode With WordPress Team Members Showcase Plugin" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                </div>
-                            </div>
                             <div class="wp-team-video-col">
                                 <div class="wp-team-responsive-iframe">
                                     <iframe width="800" height="450" src="<?php echo esc_url( 'https://www.youtube.com/embed/T-cF14_TxXE?feature=oembed' )?>" title="How To Create Team Page Using Elementor Addon With WordPress Team Members Showcase Plugin" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
@@ -136,7 +135,7 @@ namespace DWL\Wtm\Classes;
                             <div class="wp-team-testimonial">
                                 <p><?php esc_html_e( 'Great plugin, and so easy to use. I have bought two but this one is much better. Buddy', 'wp-team-manager' )?></p>
                                 <div class="wp-team-client-info">
-                                    <img src="<?php echo esc_url( 'https://secure.gravatar.com/avatar/431d6e86e03b7de6ce39e9f6e5d053d1?s=100&d=retro&r=g' )?>">
+                                    <img src="<?php echo esc_url( 'https://secure.gravatar.com/avatar/093ca6f23cf63c3679a07a8c2bdd2a62?s=100&d=retro&r=g' )?>">
                                     <div>
                                         <div class="wp-team-star">
                                             <i class="dashicons dashicons-star-filled"></i>

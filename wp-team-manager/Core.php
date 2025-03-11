@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.2.0';
+	const version = '2.2.2';
 
 	/**
 	 * Class init.
@@ -43,7 +43,7 @@ final class Wp_Team_Manager {
 	 * @access public
 	 */
 	public function load_plugin_text_domain() {
-		load_plugin_textdomain( 'wp-team-manager', false, plugin_basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain('wp-team-manager', false, dirname(plugin_basename(__FILE__)) . '/languages/');
 	}
 
 	/**

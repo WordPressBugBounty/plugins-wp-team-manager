@@ -4,11 +4,12 @@ use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if(!empty($data)):
-    $style_type_name = $settings['layout_type'].'_'.'style_type';
-	$style_type = !empty( $settings[$style_type_name] ) ? $settings[$style_type_name] : '';
-    $image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';   
+    
 
-    $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
+    $style_type_name = isset( $settings['layout_type'] ) ? sanitize_text_field( $settings['layout_type'] ) . '_style_type' : '';  // Sanitize layout type before concatenation
+    $style_type = isset( $settings[$style_type_name] ) && !empty( $settings[$style_type_name] ) ? sanitize_text_field( $settings[$style_type_name] ) : '';  // Sanitize style type
+    $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';  // Sanitize image size
+    $show_shortBio = isset( $settings['team_show_short_bio'] ) && !empty( $settings['team_show_short_bio'] ) ? sanitize_textarea_field( $settings['team_show_short_bio'] ) : '';  // Sanitize short bio
 
     
         ?>

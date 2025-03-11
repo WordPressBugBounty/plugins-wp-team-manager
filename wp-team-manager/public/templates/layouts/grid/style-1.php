@@ -5,19 +5,21 @@ use DWL\Wtm\Classes\Helper;
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 // Ensure settings and data arrays are valid
-$settings = isset($settings) && is_array($settings) ? $settings : [];
-$data = isset($data) && is_array($data) && isset($data['posts']) && is_array($data['posts']) ? $data : null;
+$settings = is_array($settings) ? $settings : [];
+$data = (is_array($data) && isset($data['posts']) && is_array($data['posts'])) ? $data : null;
 
-if (!$data) return; // Stop execution if no posts exist
+if (!$data) {
+    return; // Stop execution if no posts exist
+}
 
-// Retrieve settings with default values
-$image_size = sanitize_text_field($settings['dwl_team_select_image_size'][0] ?? 'thumbnail');
-$show_other_info = !empty($settings['dwl_team_team_show_other_info']);
-$show_social = !empty($settings['dwl_team_team_show_social']);
-$show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
-$show_read_more = empty($settings['dwl_team_team_show_read_more']);
+// Retrieve settings with default values and sanitize inputs
+$image_size = isset($settings['dwl_team_select_image_size'][0]) ? sanitize_text_field($settings['dwl_team_select_image_size'][0]) : 'thumbnail';
+$show_other_info = isset($settings['dwl_team_team_show_other_info']) && $settings['dwl_team_team_show_other_info'] === 'yes';
+$show_social = isset($settings['dwl_team_team_show_social']) && $settings['dwl_team_team_show_social'] === 'yes';
+$show_progress_bar = isset($settings['dwl_team_show_progress_bar'][0]) && $settings['dwl_team_show_progress_bar'][0] === 'yes';
+$show_read_more = !isset($settings['dwl_team_team_show_read_more']) || $settings['dwl_team_team_show_read_more'] === 'no';
 
-// Validate and retrieve single fields
+// Validate and retrieve single fields with proper defaults
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
 
@@ -25,15 +27,21 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
 $disable_single_template = get_option('single_team_member_view') === 'True';
 
 // Sanitize and validate column numbers
-$desktop_column = absint($settings['dwl_team_desktop'][0] ?? 4);
-$tablet_column = absint($settings['dwl_team_tablet'][0] ?? 3);
-$mobile_column = absint($settings['dwl_team_mobile'][0] ?? 1);
+$desktop_column = isset($settings['dwl_team_desktop'][0]) ? absint($settings['dwl_team_desktop'][0]) : 4;
+$tablet_column = isset($settings['dwl_team_tablet'][0]) ? absint($settings['dwl_team_tablet'][0]) : 3;
+$mobile_column = isset($settings['dwl_team_mobile'][0]) ? absint($settings['dwl_team_mobile'][0]) : 1;
 
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
 
 foreach ($data['posts'] as $teamInfo) {
-    $job_title = sanitize_text_field(get_post_meta($teamInfo->ID, 'tm_jtitle', true));
-    $short_bio = sanitize_textarea_field(get_post_meta($teamInfo->ID, 'tm_short_bio', true));
+ 
+    // Retrieve all post meta for the current team member in one call (if necessary)
+    $post_meta = get_post_meta($teamInfo->ID);
+    
+    // Ensure post meta exists and sanitize
+    $job_title = isset($post_meta['tm_jtitle'][0]) ? sanitize_text_field($post_meta['tm_jtitle'][0]) : '';
+    $short_bio = isset($post_meta['tm_short_bio'][0]) ? sanitize_textarea_field($post_meta['tm_short_bio'][0]) : '';
+ 
     ?>
 
     <div <?php post_class("team-member-info-wrap " . esc_attr($bootstrap_class)); ?>>

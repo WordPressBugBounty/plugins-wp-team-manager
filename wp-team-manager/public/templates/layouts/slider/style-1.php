@@ -20,8 +20,13 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
 // Ensure data['posts'] exists
 if (!empty($data['posts'])) {
     foreach ($data['posts'] as $teamInfo) {
-        $job_title = sanitize_text_field(get_post_meta($teamInfo->ID, 'tm_jtitle', true));
-        $short_bio = sanitize_textarea_field(get_post_meta($teamInfo->ID, 'tm_short_bio', true));
+        // Retrieve all post meta at once to reduce database queries
+        $post_meta = get_post_meta($teamInfo->ID);
+
+        // Retrieve and sanitize values from the $post_meta array
+        $job_title = isset($post_meta['tm_jtitle'][0]) ? sanitize_text_field($post_meta['tm_jtitle'][0]) : '';
+        $short_bio = isset($post_meta['tm_short_bio'][0]) ? sanitize_textarea_field($post_meta['tm_short_bio'][0]) : '';
+
         ?>
 
         <div <?php post_class('team-member-info-wrap'); ?>>

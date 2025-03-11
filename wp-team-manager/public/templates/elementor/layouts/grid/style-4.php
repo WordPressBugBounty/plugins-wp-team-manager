@@ -3,8 +3,10 @@ use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if(!empty($data)):
-    $image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';   
-    $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
+    $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';
+    $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? sanitize_textarea_field( $settings['team_show_short_bio'] ) : '';
+    $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
+    
 
     foreach ($data as $key => $teamInfo):
         $meta = get_post_meta( $teamInfo->ID );
@@ -58,7 +60,9 @@ if(!empty($data)):
 
                     <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
                         <div class="wtm-read-more-wrap">
-                            <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>" class="wtm-read-more"><?php esc_html_e( 'Read More', 'wp-team-manager' ); ?></a>
+                            <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>" class="wtm-read-more">
+                                <?php echo esc_html( $team_read_more ); ?>
+                            </a>
                         </div>
                     <?php endif; ?>
 

@@ -7,9 +7,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! empty( $data ) ) :
 
-    $image_size      = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';
-    $show_short_bio   = isset( $settings['team_show_short_bio'] ) ? $settings['team_show_short_bio'] : '';
-    $team_arrow_positon = isset( $settings['team_arrow_position'] ) && ($settings['team_arrow_position'] === 'side') ? 'team-arrow-postion-side' : '';
+    $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';
+    $show_short_bio = isset( $settings['team_show_short_bio'] ) ? sanitize_text_field( $settings['team_show_short_bio'] ) : '';
+    $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
+    $team_arrow_position = isset( $settings['team_arrow_position'] ) && ( $settings['team_arrow_position'] === 'side' ) ? 'team-arrow-postion-side' : '';
+
     ?>
     <div class="team-member-slider-wrap <?php echo esc_attr( $team_arrow_positon ); ?>" data-slider_settings="<?php echo esc_attr( json_encode( $settings['slider_settings'] ) ); ?>">
     <?php
@@ -56,7 +58,9 @@ if ( ! empty( $data ) ) :
 
                     <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
                         <div class="wtm-read-more-wrap">
-                            <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>" class="wtm-read-more"><?php esc_html_e( 'Read More', 'wp-team-manager' ); ?></a>
+                            <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>" class="wtm-read-more">
+                                <?php echo esc_html( $team_read_more ); ?>
+                            </a>
                         </div>
                     <?php endif; ?>
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>

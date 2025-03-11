@@ -46,8 +46,7 @@
     position: relative;
     padding-left: 10px;
     padding-right: 10px;
-    max-width: 50%;
-    flex: 0 0 50%;
+    width: 100%;
 }
 .wp-team-video-wrapper .wp-team-video-col iframe {
     position: relative;

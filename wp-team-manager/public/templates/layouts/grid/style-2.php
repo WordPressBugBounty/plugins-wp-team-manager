@@ -4,23 +4,27 @@ use DWL\Wtm\Classes\Helper;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
+// Ensure $settings is an array and sanitize inputs properly
+$settings = is_array($settings) ? $settings : [];
+
 // Retrieve settings with default values
 $image_size = sanitize_text_field($settings['dwl_team_select_image_size'][0] ?? 'thumbnail');
-$show_other_info = !empty($settings['dwl_team_team_show_other_info']);
-$show_social = !empty($settings['dwl_team_team_show_social']);
-$show_read_more = empty($settings['dwl_team_team_show_read_more']);
+$show_other_info = !empty($settings['dwl_team_team_show_other_info']); // Ensure this returns a boolean
+$show_social = !empty($settings['dwl_team_team_show_social']); // Ensure this returns a boolean
+$show_read_more = empty($settings['dwl_team_team_show_read_more']); // Make sure it's correctly handled as boolean
 
 // Retrieve single fields with default value and ensure it’s an array
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
 
-// Determine if the single template should be disabled
+// Determine if the single template should be disabled (strict comparison)
 $disable_single_template = get_option('single_team_member_view') === 'True';
 
-// Retrieve column settings with default values
+// Retrieve column settings with default values and ensure they are integers
 $desktop_column = absint($settings['dwl_team_desktop'][0] ?? 4);
 $tablet_column = absint($settings['dwl_team_tablet'][0] ?? 3);
 $mobile_column = absint($settings['dwl_team_mobile'][0] ?? 1);
+
 
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
 

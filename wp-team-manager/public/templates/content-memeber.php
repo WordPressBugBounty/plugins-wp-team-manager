@@ -2,11 +2,19 @@
 use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-$image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';   
+// Fetch image size, sanitize it (optional validation)
+$image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';  
 
-$job_title = get_post_meta( $teamInfo->ID, 'tm_jtitle', true );
-$short_bio = get_post_meta( $teamInfo->ID, 'tm_short_bio', true );
-$disable_single_template = ( false !== get_option('single_team_member_view')  && 'True' == get_option('single_team_member_view') ) ? true : false;
+// Fetch post meta in bulk to reduce database queries (tm_jtitle, tm_short_bio)
+$post_meta = get_post_meta( $teamInfo->ID );
+$job_title = isset( $post_meta['tm_jtitle'][0] ) ? sanitize_text_field( $post_meta['tm_jtitle'][0] ) : '';
+$short_bio = isset( $post_meta['tm_short_bio'][0] ) ? sanitize_textarea_field( $post_meta['tm_short_bio'][0] ) : '';
+
+// Store option value in a variable for better performance
+$single_team_member_view = get_option('single_team_member_view');
+
+// Validate and sanitize the option value for the template disable flag
+$disable_single_template = ( false !== $single_team_member_view && filter_var( $single_team_member_view, FILTER_VALIDATE_BOOLEAN ) ) ? true : false;
 
 ?>
     <div class="team-member-info-content"> 

@@ -12,17 +12,17 @@ class ElementorWidgets {
 
 	use \DWL\Wtm\Traits\Singleton;
 
-	/**
-	 * widget_scripts
-	 *
-	 * Load required plugin core files.
-	 *
-	 * @since 1.2.0
-	 * @access public
-	 */
-	public function widget_scripts() {
-		//wp_register_script( 'elementor-hello-world', plugins_url( '/assets/js/hello-world.js', __FILE__ ), [ 'jquery' ], false, true );
-	}
+
+/**
+ * Register a new widget category.
+ *
+ * This function adds a custom category 'dwl-items' to the Elementor elements
+ * manager, allowing widgets to be grouped under 'DWL Elements' with a specified
+ * icon.
+ *
+ * @param object $elements_manager Elementor Elements Manager.
+ * @since 1.2.0
+ */
 
 	public function register_widget_category( $elements_manager ) {
 
@@ -94,9 +94,6 @@ class ElementorWidgets {
 	protected function init(){
 
 		\add_action( 'elementor/controls/register', [ $this, 'registerControls' ] );
-
-		// Register widget scripts
-		\add_action( 'elementor/frontend/after_register_scripts', [ $this, 'widget_scripts' ] );
 
 		// Register widgets
 		\add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets' ] );

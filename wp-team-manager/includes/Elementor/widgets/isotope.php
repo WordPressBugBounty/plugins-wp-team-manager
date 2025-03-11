@@ -212,7 +212,7 @@ class Isotope extends \Elementor\Widget_Base
 			'isotope_img_section',
 			[
 				'label' => esc_html__('Image Settings', 'wp-team-manager'),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
 
@@ -322,7 +322,7 @@ class Isotope extends \Elementor\Widget_Base
 			'isotope_pagination',
 			[
 				'label' => esc_html__('Pagination', 'wp-team-manager'),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
 
@@ -353,6 +353,33 @@ class Isotope extends \Elementor\Widget_Base
 
 		$this->end_controls_section();
 
+		if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
+
+			//Pro tab info
+			$this->start_controls_section(
+				'wtm_pro_info',
+				[
+					'label' => esc_html__('Go Premium for More Features', 'wp-team-manager'),
+					'tab' => Controls_Manager::TAB_CONTENT,
+	
+				]
+			);
+
+			$this->add_control(
+				'pro_notice',
+				[
+					'type' => \Elementor\Controls_Manager::RAW_HTML,
+					'raw' => '<div class="team-pro-notice">
+								<h3>Unlock more possibilities</h3>
+								<p>Get the <strong style="color: #ff4a4a;">PRO VERSION</strong> for more stunning layouts and customization options.</p>
+								<a class="team-go-pro" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">Get Pro</a>
+							</div>',
+				]
+			);
+
+			$this->end_controls_section();
+		}
+
 	}
 
 	private function settings_controls()
@@ -379,22 +406,24 @@ class Isotope extends \Elementor\Widget_Base
 			[
 				'label' => esc_html__('Enable Isotope Filters Button', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'wp-team-manager'),
-				'label_off' => esc_html__('Hide', 'wp-team-manager'),
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'no',
+				'description' => __( 'Switch on to show team member isotope filters button.', 'wp-team-manager' ),
 			],
 		);
 
 		$this->add_control(
 			'isotope_name_switcher',
 			[
-				'label' => esc_html__('Show Title', 'wp-team-manager'),
+				'label' => esc_html__('Name', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'wp-team-manager'),
-				'label_off' => esc_html__('Hide', 'wp-team-manager'),
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
+				'description' => __( 'Switch on to show team member name.', 'wp-team-manager' ),
 			]
 		);
 		$this->add_control(
@@ -408,10 +437,11 @@ class Isotope extends \Elementor\Widget_Base
 			[
 				'label' => esc_html__('Job Title', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'wp-team-manager'),
-				'label_off' => esc_html__('Hide', 'wp-team-manager'),
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
+				'description' => __( 'Switch on to show team job title.', 'wp-team-manager' ),
 			]
 		);
 		$this->add_control(
@@ -443,12 +473,13 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'isotope_bio_switcher',
 			[
-				'label' => esc_html__('Show Short Biography', 'wp-team-manager'),
+				'label' => esc_html__('Short Biography', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'wp-team-manager'),
-				'label_off' => esc_html__('Hide', 'wp-team-manager'),
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
+				'description' => __( 'Switch on to show team short biography.', 'wp-team-manager' ),
 			]
 		);
 
@@ -483,12 +514,13 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'show_other_info',
 			[
-				'label' => __('Show Other Info', 'wp-team-manager'),
+				'label' => __('Other Info', 'wp-team-manager'),
 				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('Show', 'wp-team-manager'),
-				'label_off' => __('Hide', 'wp-team-manager'),
+				'label_on' => __('On', 'wp-team-manager'),
+				'label_off' => __('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
+				'description' => __( 'Switch on to show team member other info(E-mail,Phone Number etc).', 'wp-team-manager' ),
 
 			]
 		);
@@ -496,12 +528,13 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'show_read_more',
 			[
-				'label' => __('Show Read More', 'wp-team-manager'),
+				'label' => __('Read More', 'wp-team-manager'),
 				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('Show', 'wp-team-manager'),
-				'label_off' => __('Hide', 'wp-team-manager'),
+				'label_on' => __('On', 'wp-team-manager'),
+				'label_off' => __('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
+				'description' => __( 'Switch on to show team member read more.', 'wp-team-manager' ),
 
 			]
 		);
@@ -633,12 +666,13 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'isotope_social_media_switch',
 			[
-				'label' => esc_html__('Show Social Media', 'wp-team-manager'),
+				'label' => esc_html__('Social Media', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SWITCHER,
-				'label_on' => esc_html__('Show', 'wp-team-manager'),
-				'label_off' => esc_html__('Hide', 'wp-team-manager'),
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'no',
+				'description' => __( 'Switch on to show team member social media.', 'wp-team-manager' ),
 			]
 		);
 
@@ -684,7 +718,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'isotope_filter_button_text_color',
 			[
-				'label' => esc_html__('button text color', 'wp-team-manager'),
+				'label' => esc_html__('Text color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .dwl-team-isotope-container button' => 'color: {{VALUE}};',
@@ -703,7 +737,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'isotope_filter_background_color',
 			[
-				'label' => esc_html__('background color', 'wp-team-manager'),
+				'label' => esc_html__('Background color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .dwl-team-isotope-container button' => 'background-color: {{VALUE}};',
@@ -781,6 +815,7 @@ class Isotope extends \Elementor\Widget_Base
 		// );
 
 		// $this->end_controls_section();
+
 	}
 
 	private function style_options()
@@ -850,7 +885,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'posts_title_color',
 			[
-				'label' => esc_html__('Title Color', 'wp-team-manager'),
+				'label' => esc_html__('Color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .team-member-title' => 'color: {{VALUE}};',
@@ -904,7 +939,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'posts_sub_title_color',
 			[
-				'label' => esc_html__('Job Title Color', 'wp-team-manager'),
+				'label' => esc_html__('Color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .team-position' => 'color: {{VALUE}};',
@@ -938,7 +973,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->start_controls_section(
 			'team_short_bio',
 			[
-				'label' => esc_html__('Short Bio', 'wp-team-manager'),
+				'label' => esc_html__('Short Biography', 'wp-team-manager'),
 				'tab' => Controls_Manager::TAB_STYLE
 			]
 		);
@@ -992,13 +1027,14 @@ class Isotope extends \Elementor\Widget_Base
 			[
 				'label' => __('Show Full Biograph', 'wp-team-manager'),
 				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('Show', 'wp-team-manager'),
-				'label_off' => __('Hide', 'wp-team-manager'),
+				'label_on' => __('On', 'wp-team-manager'),
+				'label_off' => __('Off', 'wp-team-manager'),
 				'return_value' => 'yes',
 				'default' => 'yes',
 				'condition' => [
 					'table_style_type' => 'style-2',
 				],
+				'description' => __( 'Switch on to show team member full biography.', 'wp-team-manager' ),
 			]
 		);
 
@@ -1006,7 +1042,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'show_social_icon_color',
 			[
-				'label' => esc_html__('Social Icon Color', 'wp-team-manager'),
+				'label' => esc_html__('Color', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .fas' => 'color: {{VALUE}}',
@@ -1018,7 +1054,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'show_social_icon_hover_color',
 			[
-				'label' => esc_html__('Social Icon Hover Color', 'wp-team-manager'),
+				'label' => esc_html__('Hover', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .team-member-socials a:hover' => 'background-color: {{VALUE}}',
@@ -1055,11 +1091,12 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'wtm_read_more_color',
 			[
-				'label' => esc_html__('Title Color', 'wp-team-manager'),
+				'label' => esc_html__('Color', 'wp-team-manager'),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .wtm-read-more' => 'color: {{VALUE}};',
 				],
+				'description' => __( 'Change team member read more text color.', 'wp-team-manager' ),
 			]
 		);
 
@@ -1084,6 +1121,9 @@ class Isotope extends \Elementor\Widget_Base
 		);
 
 		$this->end_controls_section();
+
+
+
 	}
 
 

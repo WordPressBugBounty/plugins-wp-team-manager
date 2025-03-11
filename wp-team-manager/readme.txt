@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,teams,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,13 +13,13 @@ Best plugin to showcase your team members with grid, list and Carousel layout. F
 
 == Description ==
 
-[WP Team Manager](https://wpteammanager.com/) is the best free team plugin for WordPress, designed to create engaging and professional team displays effortlessly. With fully customizable layouts, responsive design, and Elementor integration, it lets you showcase team members in grid, list, or table formats. Highlight names, roles, bios, and social media links to create a dynamic and visually appealing team section. Perfect for businesses, nonprofits, and creative teams, this plugin is optimized for performance and SEO. 
-The plugin offers **four unique layout** presets and a variety of impressive styling options. With it, you can quickly and easily create a visually appealing team members section on your WordPress site. Displaying members of a team or staff is the main purpose of the plugin, it can also be used to showcase other types of content that combine images and text, allowing for creative applications!
+[WP Team Manager](https://wpteammanager.com/) is the best free team plugin for WordPress, designed to create engaging and professional team displays effortlessly. With fully customizable layouts, responsive design, and Elementor integration, it lets you showcase team members in grid, list, slider, table or isotope pro formats. Highlight names, roles, bios, and social media links to create a dynamic and visually appealing team section. Perfect for businesses, nonprofits, and creative teams, this plugin is optimized for performance and SEO. 
+The plugin offers **five unique layout** presets and a variety of impressive styling options. With it, you can quickly and easily create a visually appealing team members section on your WordPress site. Displaying members of a team or staff is the main purpose of the plugin, it can also be used to showcase other types of content that combine images and text, allowing for creative applications!
 
 It’s the perfect solution for displaying and managing the members of your staff, team, or workforce.
 
 
-👉 [Live Demo](https://wpteammanager.com/demos/) | [Documentation](https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/) | [Support](https://dynamicweblab.com/submit-a-request/) 👈
+👉 [Live Demo](https://wpteammanager.com/demos/) | [Documentation](https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/) | [Support](https://dynamicweblab.com/submit-a-request/) | [Go Pro](https://wpteammanager.com/pricing/) 👈
 
 🏆 **How To install WordPress Team Manager:**
 
@@ -37,17 +37,18 @@ https://www.youtube.com/watch?v=T-cF14_TxXE
 
 == 🏆 Fields available for input: ==
 
-- Team/Member name
-- Position/Job title
-- Photo/Image
-- Short Bio
-- Long Bio
-- Website Url
-- Location
-- Email Address
-- Mobile/Telephone number
-- Years of Experience
-- Social links (Facebook, x, Pinterest, Instragram, etc.)
+- Team/Member name - Memeber Name
+- Short Bio – A brief description of the team member.
+- Long Bio – A detailed description of the team member with a rich text editor.
+- Job Title – The official role/designation of the team member.
+- Email Address – The professional email contact.
+- Telephone (Office) – Office contact number for business inquiries.
+- Mobile (Personal) – Personal mobile number for direct contact.
+- Location – The geographical location or office branch of the team member.
+- Years of Experience – Number of years the team member has been in their profession.
+- Social Profile – Show all popular social profile links.
+- Memeber Skill – Show memeber skills with Skill Name and Percentage.
+- Memeber gallery – Display additiona images of a team memeber.
 
 You can easily show/hide and customize every field.
 
@@ -55,34 +56,39 @@ You can easily show/hide and customize every field.
 
 👉 **Grid Layouts:** The WordPress Team plugin’s grid layout arranges your posts in a responsive and visually appealing grid format, making it easy for visitors to browse through multiple posts at once while maintaining a clean and organized presentation on your website.
 
-[Grid Layout Demo](https://wpteammanager.com/grid/)
+[View Demo](https://wpteammanager.com/grid/)
 
 👉 **Slider Layout:** The WordPress Team plugin provides a list layout option that displays your posts in a clean and structured format, allowing readers to easily scan through titles, excerpts, and meta information in a familiar and user-friendly layout.
 
-[Slider Layout Demo](https://wpteammanager.com/slider/)
+[View Demo](https://wpteammanager.com/slider/)
 
 👉 **List Layouts:** For a visually appealing and engaging layout, the WordPress Team plugin could incorporate a slider feature that displays featured posts or categories in a rotating carousel format, allowing visitors to easily navigate through highlighted content.
 
-[List Layout Demo](https://wpteammanager.com/list/)
+[View Demo](https://wpteammanager.com/list/)
 
 **🏆 Elementor Widget**
 
 You can display team members with Elementor widget with lots of customization options.
 
-[Elementor Widget Demo](https://wpteammanager.com/elementor-widget/)
+[View Demo](https://wpteammanager.com/elementor-widget/)
 
 
 **🏆 Elementor Table layout**
 
-With Table laout display team members' details, such as names, photos, designations, and social media links, in an organized layout.
+With Table layout display team members' details, such as names, photos, designations, and social media links, in an organized layout.
 
-[Elementor Table Layout Demo](https://wpteammanager.com/elementor-table-layout-demo/)
+[View Demo](https://wpteammanager.com/elementor-table-layout-demo/)
 
+**🏆 Elementor Isotope layout (Pro) **
+
+The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable team showcase for WordPress. Ideal for large teams, it allows visitors to sort members based on categories or roles. Fully responsive and optimized for SEO, this interactive layout enhances user experience with smooth filtering animations and custom styling options.
+
+[View Demo](https://wpteammanager.com/elementor-widget/elementor-widget-isotope-pro-demo/)
 
 **🏆 Features of The WordPress Team Plugin**
 
 - Create unlimited teams, members.
-- 4 Unique layouts (Carousel, Grid, Table and List).
+- 5 Unique layouts (Carousel, Grid, Table, list and Isotope).
 - Fully responsive and mobile-ready.
 - Shortcode Generator.
 - Multiple team shortcodes on one page.
@@ -126,14 +132,8 @@ With Table laout display team members' details, such as names, photos, designati
 **👉 Page Builders Ready**
 
 - Gutenberg
-- WPBakery
 - Elementor 
-- Divi Builders 
-- BeaverBuilder
-- SiteOrgin
-- Themify Builder
-- Fusion Builder
-- Genesis Framework
+
 
 == Installation ==
 
@@ -175,6 +175,10 @@ Team manager list all the image size on the wordpress.To change default image si
 
 Yes you can use this plugin with any theme it will work. If face any issue mail our support we will help.
 
+= Is WP Team Manager support Elementor? =
+
+Yes! WP Team Manager works perfectly with the Elementor Team Member Widget, allowing you to easily design and customize your team showcase using Elementor’s drag-and-drop interface.
+
 = Need Any Help? =
 
 Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamicweblab.com/submit-a-request/)
@@ -194,6 +198,13 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 11. Team generator
 
 == Changelog ==
+
+= 2.2.2 =
+* Added New list layout for elementor widget
+* Added few new settings for elementor
+* Improved code for performance and security
+* Remove few old template file
+* Update PO file
 
 = 2.2.1 =
 * Added flush_rewrite_rules
