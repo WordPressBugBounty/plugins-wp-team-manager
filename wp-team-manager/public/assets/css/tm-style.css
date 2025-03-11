@@ -5588,17 +5588,13 @@ margin-top: 17px;
 }
 
 .style-2.dwl-team-wrapper .team-member-title {
-  margin: 0 0 10px;
   text-align: left;
-  color: var(--wtm-color-white);
   font-size: 24px;
   line-height: 1;
 }
 
 .style-2 .team-member-info-wrap .team-position {
-  margin: 0;
   text-align: left;
-  color: #FAF5F5;
   font-size: 16px;
   font-weight: 400;
 }
@@ -6736,9 +6732,9 @@ progress[value]::after {
   margin-bottom: 0px;
 }
 
-.dwl-team-wrapper  .dwl-team-elementor-layout-list .team-position {
+/* .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-position {
   text-align: right;
-}
+} */
 
 .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-member-info-wrap img {
   border-radius: 50%;
@@ -6758,9 +6754,9 @@ progress[value]::after {
   transition: .4s ease-in;
 }
 
-.dwl-team-wrapper  .dwl-team-elementor-layout-list .team-member-socials {
+/* .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-member-socials {
   justify-content: flex-end;
-}
+} */
 
 .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-list-feature-img {
   width: 45%;
