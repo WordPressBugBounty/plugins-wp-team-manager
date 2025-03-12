@@ -185,6 +185,14 @@
 #wptm_support .wp-team-card-section .wp-team-document-box.wp-team-document-box-card {
     width: 50%;
 }
+
+/* pro features style*/
+
+#wpwrap .wp-team-document-wrap .wp-team-features-box li {
+    font-size: 16px;
+    line-height: 26px;
+}
+
 @media screen and (min-width: 1024px) {
     #wptm_support .wp-team-card-section  {
         margin-top: 22px;

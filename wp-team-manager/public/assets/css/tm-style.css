@@ -6703,35 +6703,37 @@ progress[value]::after {
 }
 
 
-/* Slider style 2 */
+/* List style 3 */
 
-.style-2 .dwl-team-layout-list {
+
+.dwl-team-wrapper.style-3 .dwl-team-layout-list {
   flex-direction: row;
 }
-
-.team-list-style-2-wrap .team-member-desc {
+.team-list-style-3-wrap .team-member-desc {
   display: flex;
   justify-content: space-between;
   gap: 25px;
   padding-bottom: 10px;
 }
 
-.dwl-team-elementor-layout-list .dwl-team-list-style-2 .team-member-skill {
+.dwl-team-elementor-layout-list .dwl-team-list-style-3 .team-member-skill {
   text-align: right;
 }
 
-.team-list-style-2-wrap .team-list-content {
+.team-list-style-3-wrap .team-list-content {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   width: 50%;
 }
 
-.dwl-team-wrapper  .dwl-team-elementor-layout-list .dwl-team-list-style-2 .team-member-title {
+.dwl-team-wrapper  .dwl-team-elementor-layout-list .dwl-team-list-style-3 .team-member-title {
   text-align: right;
   margin-bottom: 0px;
 }
-
+.dwl-team-wrapper .team-member-info-content.dwl-team-list-style-3 p {
+  text-align: right;
+}
 /* .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-position {
   text-align: right;
 } */
@@ -6747,8 +6749,20 @@ progress[value]::after {
   box-shadow: 0px 2px 10px 0px rgba(107, 107, 107, 0.6);
   border: 1px solid #dddddd;
   border-radius: 50%;
+  overflow: hidden;
 }
-
+.dwl-team-list-style-3 .team-member-social-layout-5 {
+  justify-content: end;
+  display: flex;
+}
+.dwl-team-list-style-3 .wtm-read-more-wrap {
+  justify-content: end;
+  display: flex;
+}
+.dwl-team-list-style-3 
+.team-short-bio {
+text-align: right;
+}
 .team-feature-img-round:hover {
   transform: scale(1.03);
   transition: .4s ease-in;
@@ -6762,17 +6776,17 @@ progress[value]::after {
   width: 45%;
 }
 
-.dwl-team-elementor-layout-list .dwl-team-list-style-2 .team-member-skill progress:after {
+.dwl-team-elementor-layout-list .dwl-team-list-style-3 .team-member-skill progress:after {
   display: none;
 }
 
-.dwl-team-elementor-layout-list .dwl-team-list-style-2 .team-member-skill progress {
+.dwl-team-elementor-layout-list .dwl-team-list-style-3 .team-member-skill progress {
   --progress-value-color: #116F70;
   height: 7px;
 }
 
 @media screen and (min-width: 650px) {
-  .team-member-info-wrap.team-list-style-2-wrap {
+  .team-member-info-wrap.team-list-style-3-wrap {
     width: 50%;
   }  
 }
@@ -6782,3 +6796,4 @@ progress[value]::after {
     padding: 20px 20px 20px 20px;
   }
 }
+

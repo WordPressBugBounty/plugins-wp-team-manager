@@ -52,7 +52,6 @@ namespace DWL\Wtm\Classes;
      * @since 1.0
      */
     public function team_manager_setting_function() {
-
         ?>
 
             <section class="wp-team-get-help wp-team-header">
@@ -62,16 +61,12 @@ namespace DWL\Wtm\Classes;
                     <div class="wp-team-container">
                         <div class="wp-team-header-logo">
                             <img src="<?php echo esc_url( 'https://wpteammanager.com/wp-content/uploads/2024/07/Logo.svg' )?>" alt="team logo">
-                            <span><?php esc_html_e( '2.2.2', 'wp-team-manager' )?></span>
+                            <span><?php echo TM_VERSION; ?></span>
                         </div>
                     </div>
 
                     <div class="wp-team-header-logo-shape">
-                       <?php
-                        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
-                            return '<a href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">Upgrade to Pro !</a>';
-                        }
-                        ?>
+   
                     </div>
 
                 </div>
@@ -84,7 +79,7 @@ namespace DWL\Wtm\Classes;
 
                     <div class="wp-team-box-icon">
                         <i class="dashicons dashicons-media-document"></i>
-                        <h3 class="wp-team-main-title"><?php esc_html_e( 'Thank you for installing Team Plugin', 'wp-team-manager' )?></h3>
+                        <h3 class="wp-team-main-title"><?php esc_html_e( 'Thank you for installing WP Team Manager Plugin', 'wp-team-manager' )?></h3>
                     </div>
 
                     <div class="wp-team-box-content">
@@ -102,6 +97,47 @@ namespace DWL\Wtm\Classes;
                 </div>
 
             </section>
+
+            <section class="wp-team-document-wrap">
+
+                <div class="wp-team-document-box">
+
+                    <div class="wp-team-box-icon">
+                        <i class="dashicons dashicons-megaphone"></i>
+                        <h3 class="wp-team-main-title"><?php esc_html_e( 'Pro Features of the WP team manager plugin', 'wp-team-manager' )?></h3>
+                    </div>
+                    <div class="wp-team-features-box-wrapper">
+
+                        <ul style="margin-left: 20px;">
+                            <li><strong>8+ Additional Layouts:</strong></li>
+                            <li><strong>Grid Layouts (Elementor)</strong> – Multiple grid styles for showcasing team members.</li>
+                            <li><strong>List Layouts (Elementor)</strong> – Stylish list-based layouts for better readability.</li>
+                            <li><strong>Slider Layouts (Elementor)</strong> – Over 4 dynamic slider designs for engaging displays.</li>
+                            <li><strong>Isotope Layouts</strong> – 2+ advanced filtering layouts for interactive team showcases.</li>
+                        </ul>
+
+                        <ul style="margin-left: 20px;">
+                            <li><strong>Customization & Features:</strong></li>
+                            <li><strong>Customizable Bio Field Labels</strong> – Edit and personalize team member bio labels.</li>
+                            <li><strong>Ajax-Based Navigation</strong> – Includes number pagination, load more button, and smooth transitions.</li>
+                            <li><strong>Progress Bar for Skills</strong> – Showcase expertise with animated skill bars.</li>
+                            <li><strong>Image Gallery Popup</strong> – View member images in a sleek lightbox on the details page.</li>
+                            <li>…and many more powerful features to enhance your team display!</li>
+                        </ul>
+
+                    </div>
+
+                    <div class="wp-team-box-content">
+                        <?php if (tmwstm_fs()->is_not_paying()): ?>
+                            <div>
+                                <a href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url())?>" class="wp-team-upgrade-button" target="_blank"><?php esc_html_e( 'Upgrade to Pro !', 'wp-team-manager' )?></a>
+                            </div>
+                        <?php endif; ?>        
+                    </div>
+
+                </div>
+
+            </section>
         
             <section class="wp-team-document-wrap">
 
@@ -109,7 +145,7 @@ namespace DWL\Wtm\Classes;
 
                     <div class="wp-team-box-icon">
                         <i class="dashicons dashicons-thumbs-up"></i>
-                        <h3 class="wp-team-box-title"><?php esc_html_e( 'Happy clients of Team plugin', 'wp-team-manager' )?></h3>
+                        <h3 class="wp-team-box-title"><?php esc_html_e( 'Happy clients of WP Team Manager plugin', 'wp-team-manager' )?></h3>
                     </div>
 
                     <div class="wp-team-box-content">

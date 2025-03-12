@@ -71,6 +71,10 @@
     flex: 1;
     padding: 15px;
 }
+.tm-tab-content-wrapper th {
+    width: auto;
+    vertical-align: middle;
+}
 .tm-nice-checkbox-wrapper {
     display: flex;
     padding: 10px 0;
@@ -177,4 +181,59 @@
     width: 97%;
     float: left;
 }
+}
+/* toggle switch */
+.wtm-toggle-switch input[type=checkbox]{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+.wtm-toggle-switch label {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 60px;
+	height: 30px;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+}
+
+.wtm-toggle-switch label:after {
+	content: '';
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 20px;
+	height: 20px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+}
+
+.wtm-toggle-switch input:checked + label {
+	background: #A259FF;
+}
+
+.wtm-toggle-switch input:checked + label:after {
+	left: calc(100% - 5px);
+	transform: translateX(-100%);
+}
+
+.wtm-toggle-switch label:active:after {
+	width: 130px;
+}
+
+#wpwrap .tm-tab-content-wrapper .team-satting-customize-field-labels p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 65%;
+    margin-bottom: 25px;
+}
+
+#wpwrap .tm-tab-content-wrapper .team-satting-customize-field-labels p .regular-text{
+    width: 230px;
 }

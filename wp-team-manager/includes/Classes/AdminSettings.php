@@ -68,19 +68,11 @@ namespace DWL\Wtm\Classes;
                 <?php 
                     settings_fields( 'tm-settings-group' );
                     do_settings_sections( 'tm-settings-group' );
-                    $tm_social_size           = get_option('tm_social_size');
-                    $tm_custom_css            = get_option('tm_custom_css');
-                    $tm_link_new_window       = get_option('tm_link_new_window');
-                    $single_team_member_view  = get_option('single_team_member_view');
-                    $old_team_manager_style   = get_option( 'old_team_manager_style' );
-                    $tm_slug                  = get_option('tm_slug');
-                    $tm_single_fields         = get_option('tm_single_fields');
-                    $tm_taxonomy_fields       = get_option('tm_taxonomy_fields');
-                    $tm_image_size_fields     = get_option('image_size_fields');
-                    $team_image_size_change   = get_option('team_image_size_change');
-                    $tm_single_team_lightbox  = get_option('tm_single_team_lightbox');
                     
-                    include_once TM_PATH . '/admin/includes/content-settings.php';
+                    $file_path = realpath(TM_PATH . '/admin/includes/content-settings.php');
+                    if ($file_path && strpos($file_path, TM_PATH) === 0) {
+                        include_once $file_path;
+                    }
 
                  submit_button(); ?>
             </form>
@@ -96,10 +88,10 @@ namespace DWL\Wtm\Classes;
 
                         <div class="wp-team-box-content">
                             <p><?php esc_html_e( 'Get started by spending some time with the documentation we included step by step process with screenshots with video.', 'wp-team-manager' )?></p>
-                            <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></a>
+                            <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></a>
                         </div>
                     </div>
-
+                    
                     <div class="wp-team-document-box wp-team-document-box-card">
                         <div class="wp-team-box-icon">
                             <i class="dashicons dashicons-sos"></i>
@@ -111,6 +103,7 @@ namespace DWL\Wtm\Classes;
                             <a href="<?php echo esc_url( 'https://dynamicweblab.com/submit-a-request/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Get Support', 'wp-team-manager' )?></a>
                         </div>
                     </div>
+
                 </div>
 
             </div>
@@ -123,15 +116,28 @@ namespace DWL\Wtm\Classes;
      * Register and add settings
      */
     public function page_init(){    
-        register_setting( 'tm-settings-group', 'tm_social_size');
+       register_setting( 
+           'tm-settings-group', 
+           'tm_social_size', 
+           array( $this, 'tm_social_sanitize' ) // Add sanitization
+       );
         register_setting( 'tm-settings-group', 'tm_link_new_window' );
         register_setting( 'tm-settings-group', 'single_team_member_view' );
-        register_setting( 'tm-settings-group', 'tm_custom_css' );
+        register_setting( 
+            'tm-settings-group', 
+            'tm_custom_css', 
+            array( $this, 'tm_custom_css_sanitize' ) // Add sanitization
+        );
         register_setting( 'tm-settings-group', 'old_team_manager_style' );
         register_setting( 'tm-settings-group', 'tm_single_fields');
         register_setting( 'tm-settings-group', 'tm_taxonomy_fields');
         register_setting( 'tm-settings-group', 'tm_custom_template' );
         register_setting( 'tm-settings-group', 'tm_single_team_lightbox' );
+        register_setting( 
+            'tm-settings-group', 
+            'tm_vcard_btn_text', 
+            array( $this, 'tm_vcard_btn_sanitize' ) // Add sanitization
+        );
         register_setting( 'tm-settings-group', 'tm_single_gallery_column' );
         register_setting( 
             'tm-settings-group', 
@@ -140,37 +146,99 @@ namespace DWL\Wtm\Classes;
         );
         
         register_setting( 'tm-settings-group', 'team_image_size_change' );
+        register_setting( 
+            'tm-settings-group', 
+            'tm_custom_labels', 
+            array( $this, 'tm_custom_labels_sanitize' ) // Add sanitization
+        );
     }
 
     /**
-     * Sanitize Social
+     * Sanitize the custom CSS input for the team manager.
      *
-     * @param array $input Contains current data
+     * This function is hooked to the settings api and will sanitize the input
+     * for the custom CSS. It will make sure that the input is sanitized and
+     * removes any unwanted tags, HTML tags, and potential script injections.
+     *
+     * @param string $input The input string for the custom CSS.
+     *
+     * @return string The sanitized string for the custom CSS.
      */
-    public function tm_social_sanitize( $input ){
-
-        $new_input = array();
-
-        if( isset( $input ) ){
-            $new_input = absint( $input );
-        }
-            
-        return $new_input;
+    public function tm_custom_css_sanitize( $input ) {
+        return esc_textarea( $input ); // Removes HTML tags but preserves formatting
+    }
+    
+    /**
+     * Sanitize the vCard button text.
+     *
+     * This function is used to sanitize the input for the vCard button text
+     * setting. It removes unwanted characters, HTML tags, and trims spaces
+     * to ensure the input is safe and clean.
+     *
+     * @param string $input The input string for the vCard button text.
+     *
+     * @return
+     */
+    public function tm_vcard_btn_sanitize( $input ) {
+        return sanitize_text_field( $input ); // Removes unwanted characters, HTML tags, and trims spaces
     }
 
     /**
-     * Sanitize Slug
+     * Sanitize the social links input for the team manager.
      *
-     * @param array $input Contains current data
+     * This function is hooked to the settings api and will sanitize the input
+     * for the social links. It will make sure that the key is sanitized and the
+     * value is an escaped URL.
+     *
+     * @param array $input The input array that contains the social links.
+     *
+     * @return array The sanitized array with the social links.
      */
-    public function tm_slug_sanitize( $input ){
+    public function tm_social_sanitize( $input ) {
+        return ( is_numeric( $input ) && $input > 0 ) ? absint( $input ) : get_option( 'tm_social_size', 16 ); // Default to 16px if invalid
+    }
 
-        $new_input = array();
 
-        if( isset( $input ) ){
-            $new_input = sanitize_text_field( $input );
+    /**
+     * Sanitize the slug input for the team manager.
+     *
+     * This function removes unwanted characters, converts the input to lowercase,
+     * and ensures that the resulting slug is not empty or a reserved slug.
+     * If the input is invalid, it adds a settings error and returns the existing
+     * valid slug option.
+     *
+     * @param string $input The slug input to sanitize.
+     * @return string The sanitized slug or the existing slug if input is invalid.
+     */
+
+    public function tm_slug_sanitize( $input ) {
+        // Remove any unwanted characters and make it lowercase
+        $slug = sanitize_title( $input );
+    
+        // Ensure it's not empty
+        if ( empty( $slug ) ) {
+            add_settings_error( 'tm_slug', 'invalid-slug', __( 'The slug cannot be empty. Using default: team-details.', 'wp-team-manager' ) );
+            return 'team-details'; // Return default slug if invalid
         }
-            
-        return $new_input;
+    
+        // List of reserved slugs (prevent conflicts with WP default pages)
+        $reserved_slugs = array( 'page', 'post', 'category', 'tag', 'team', 'admin', 'login' );
+    
+        if ( in_array( $slug, $reserved_slugs ) ) {
+            add_settings_error( 'tm_slug', 'reserved-slug', __( 'This slug is reserved. Using default: team-details.', 'wp-team-manager' ) );
+            return 'team-details'; // Return default slug if reserved
+        }
+    
+        return $slug;
+    }
+
+    public function tm_custom_labels_sanitize( $input ) {
+        $sanitized = array();
+        if ( is_array( $input ) ) {
+            foreach ( $input as $key => $value ) {
+                $sanitized[$key] = sanitize_text_field( $value );
+            }
+        }
+        return $sanitized;
     }
 }

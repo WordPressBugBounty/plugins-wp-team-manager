@@ -1,15 +1,15 @@
-=== Team Manager - WordPress Showcase Team Members ===
+=== Team Manager - Team Member Showcase with grid , slider with Elementor widget & shortcode ===
 Contributors: maidulcu,dynamicweblab
 Donate link: https://wpteammanager.com/
-Tags: team slider,teams,team,team members,team showcase
+Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.2.3
+Stable tag: 2.2.4
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Best plugin to showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
+Team plugin to showcase team members with grid, list, Slider, table layout. Fully customizable with Elementor widget and shortcode builder.
 
 == Description ==
 
@@ -198,6 +198,13 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 11. Team generator
 
 == Changelog ==
+
+= 2.2.4 =
+* Fix securty issue on team settings page
+* Add few settings on elementor and settings page
+* Update css for list layout
+* Update helper function for performance
+* Update single page template
 
 = 2.2.3 =
 * Update css for list layout
@@ -460,3 +467,8 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 
 = 1.0 =
 * Initial Release
+
+== Upgrade Notice ==
+
+= 2.2.4 =
+This version fixes a security related bug.  Upgrade immediately.

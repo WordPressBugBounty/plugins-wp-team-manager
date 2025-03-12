@@ -200,25 +200,6 @@ class Helper {
     }
 
 
-
-        /**
-         * Display the skills output
-         *
-         * This function retrieves the skills data associated with a team member
-         * and then iterates over the retrieved data to generate a set of HTML
-         * elements representing the skills.
-         *
-         * The generated HTML includes a wrapper, a set of labels, and a set of
-         * progress bars. The labels are the skill labels, and the progress bars
-         * are styled to represent the percentage of the skill completed.
-         *
-         * @param int $post_id The team member post ID.
-         *
-         * @return string
-         */
-  
-
-
         /**
          * Retrieves additional information about a team member and formats it into HTML.
          *
@@ -232,51 +213,82 @@ class Helper {
          * @return string The HTML representation of the team member's additional information.
          */
         public static function get_team_other_infos($post_id) {
-            // Retrieve option once and ensure it's an array
+            // Retrieve the stored options for single fields
             $tm_single_fields = (array) get_option('tm_single_fields', []);
+
+            //get label settings
+            $custom_labels    = get_option('tm_custom_labels', array());
+            $web_btn_text = isset($custom_labels['tm_web_url']) ? $custom_labels['tm_web_url'] : 'Bio';
+            $vcard_btn_text = isset($custom_labels['tm_vcard']) ? $custom_labels['tm_vcard'] : 'Download CV';
         
-            // Fetch all metadata at once (reducing database calls)
+            // Fetch all metadata for the post at once
             $meta = get_post_meta($post_id);
         
             // Define all required fields with safe sanitization
             $fields = [
-                'tm_mobile'          => isset($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
-                'tm_year_experience' => isset($meta['tm_year_experience'][0]) ? sanitize_text_field($meta['tm_year_experience'][0]) : '',
-                'tm_email'           => isset($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '',
-                'tm_telephone'       => isset($meta['tm_telephone'][0]) ? sanitize_text_field($meta['tm_telephone'][0]) : '',
-                'tm_location'        => isset($meta['tm_location'][0]) ? sanitize_text_field($meta['tm_location'][0]) : '',
-                'tm_web_url'         => isset($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
-                'tm_vcard'           => isset($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
+                'tm_mobile'          => !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
+                'tm_year_experience' => !empty($meta['tm_year_experience'][0]) ? sanitize_text_field($meta['tm_year_experience'][0]) : '',
+                'tm_email'           => !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '',
+                'tm_telephone'       => !empty($meta['tm_telephone'][0]) ? sanitize_text_field($meta['tm_telephone'][0]) : '',
+                'tm_location'        => !empty($meta['tm_location'][0]) ? sanitize_text_field($meta['tm_location'][0]) : '',
+                'tm_web_url'         => !empty($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
+                'tm_vcard'           => !empty($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
             ];
+        
+            // Return early if no fields have values
+            if (empty(array_filter($fields))) {
+                return '';
+            }
         
             $output = '<div class="team-member-other-info">';
         
             // Define field mappings for icons and text
             $field_mappings = [
-                'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel://', 'is_link' => true],
-                'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel://', 'is_link' => true],
+                'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel:', 'is_link' => true],
+                'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel:', 'is_link' => true],
                 'tm_year_experience' => ['icon' => 'fas fa-history', 'is_link' => false],
                 'tm_location'        => ['icon' => 'fas fa-map-marker', 'is_link' => false],
                 'tm_email'           => ['icon' => 'fas fa-envelope', 'prefix' => 'mailto:', 'is_link' => true],
-                'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => __('Bio', 'wp-team-manager')],
-                'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => __('Download CV', 'wp-team-manager')],
+                'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
+                'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
             ];
         
-            // Generate HTML only for allowed fields
+            // Generate HTML with filtering logic
             foreach ($field_mappings as $key => $info) {
-                if (!empty($fields[$key]) && !in_array($key, $tm_single_fields)) {
-                    $output .= '<div class="team-member-info"><i class="' . esc_attr($info['icon']) . '"></i> ';
+                // Apply filter only on singular team pages
+                if (is_singular('team_manager') && in_array($key, $tm_single_fields)) {
+                    continue; // Skip hidden fields on team single pages
+                }
         
-                    if ($info['is_link']) {
-                        $text = isset($info['link_text']) ? esc_html($info['link_text']) : esc_html($fields[$key]);
-                        $output .= '<a href="' . esc_url($info['prefix'] . $fields[$key]) . '" target="_blank">' . $text . '</a>';
-                    } else {
-                        $output .= esc_html($fields[$key]);
+                if (!empty($fields[$key])) {
+                    $output .= '<div class="team-member-info">';
+            
+                    // Ensure the icon class is safe
+                    if (!empty($info['icon'])) {
+                        $output .= '<i class="' . esc_attr($info['icon']) . '"></i> ';
                     }
-        
+                
+                    // Properly escape and validate link
+                    if (!empty($info['is_link']) && isset($info['prefix'])) {
+                        $url = esc_url($info['prefix'] . sanitize_text_field($fields[$key]));
+                        $text = isset($info['link_text']) ? esc_html($info['link_text']) : esc_html($fields[$key]);
+                
+                        // Validate URL before output
+                        if (filter_var($url, FILTER_VALIDATE_URL)) {
+                            $output .= '<a href="' . $url . '" target="_blank" rel="noopener noreferrer"><span>' . $text . '</span></a>';
+                        } else {
+                            $output .= '<span>' . $text . '</span>'; // If URL is invalid, display text only
+                        }
+                    } else {
+                        $output .= '<span>' . esc_html($fields[$key]) . '</span>'; // Wrap plain text in span
+                    }
+                
                     $output .= '</div>';
                 }
+            
+       
             }
+            
         
             $output .= '</div>';
         
@@ -435,57 +447,57 @@ class Helper {
          * @return void
          */
         public static function generatorShortcodeCss($scID)
-{
-    global $wp_filesystem;
+    {
+        global $wp_filesystem;
 
-    // Validate `$scID` to prevent injection
-    if (!is_numeric($scID)) {
-        die('Invalid shortcode ID.');
-    }
+        // Validate `$scID` to prevent injection
+        if (!is_numeric($scID)) {
+            die('Invalid shortcode ID.');
+        }
 
-    // Ensure the user has the capability to modify files
-    if (!current_user_can('manage_options')) {
-        die('Unauthorized access.');
-    }
+        // Ensure the user has the capability to modify files
+        if (!current_user_can('manage_options')) {
+            die('Unauthorized access.');
+        }
 
-    // Initialize WP filesystem securely
-    if (empty($wp_filesystem)) {
-        require_once ABSPATH . '/wp-admin/includes/file.php';
-        WP_Filesystem();
-    }
+        // Initialize WP filesystem securely
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . '/wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
 
-    $upload_dir = wp_upload_dir();
-    $upload_basedir = $upload_dir['basedir'];
+        $upload_dir = wp_upload_dir();
+        $upload_basedir = $upload_dir['basedir'];
 
-    // Validate and securely construct the CSS file path
-    $allowedPath = realpath($upload_basedir);
-    $cssFile = $allowedPath . '/wp-team-manager/team.css';
+        // Validate and securely construct the CSS file path
+        $allowedPath = realpath($upload_basedir);
+        $cssFile = $allowedPath . '/wp-team-manager/team.css';
 
-    if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
-        die('Invalid file path.');
-    }
+        if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
+            die('Invalid file path.');
+        }
 
-    // Generate CSS content
-    if ($css = self::render('style', compact('scID'), true)) {
-        $css = sprintf('/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, (int)$scID);
+        // Generate CSS content
+        if ($css = self::render('style', compact('scID'), true)) {
+            $css = sprintf('/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, (int)$scID);
 
-        if (file_exists($cssFile)) {
-            $oldCss = $wp_filesystem->get_contents($cssFile);
-            if ($oldCss && strpos($oldCss, '/*wp_team-' . $scID . '-start') !== false) {
-                $oldCss = preg_replace('/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
-                $oldCss = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $oldCss);
+            if (file_exists($cssFile)) {
+                $oldCss = $wp_filesystem->get_contents($cssFile);
+                if ($oldCss && strpos($oldCss, '/*wp_team-' . $scID . '-start') !== false) {
+                    $oldCss = preg_replace('/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
+                    $oldCss = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $oldCss);
+                }
+                $css = $oldCss . $css;
+            } else {
+                $wp_filesystem->mkdir($allowedPath . '/wp-team-manager');
             }
-            $css = $oldCss . $css;
-        } else {
-            $wp_filesystem->mkdir($allowedPath . '/wp-team-manager');
-        }
 
-        // Use secure file writing with WP Filesystem API
-        if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
-            error_log('Team: Error generating CSS file');
+            // Use secure file writing with WP Filesystem API
+            if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
+                error_log('Team: Error generating CSS file');
+            }
         }
     }
-}
 
     /**
      * Generate Shortcode for remove css
@@ -495,7 +507,7 @@ class Helper {
      * @return void
     */
     public static function removeGeneratorShortcodeCss($scID)
-{
+    {
     // Ensure the user has admin privileges
     if (!current_user_can('manage_options')) {
         die('Unauthorized access.');
@@ -557,16 +569,19 @@ class Helper {
      * @return string
      */
     public static function get_wysiwyg_output( $meta_key, $post_id = 0 ) {
-        global $wp_embed;
-        $post_id = $post_id ? $post_id : get_the_ID();
-        $content = get_post_meta( $post_id, $meta_key, 1 );
-
-        if($content){
-            $content = $wp_embed->autoembed( $content );
-            $content = $wp_embed->run_shortcode( $content );
-            $content = wpautop( $content );
-            $content = do_shortcode( $content );
+        $post_id = $post_id ? intval($post_id) : get_the_ID();
+    
+        // Retrieve post meta safely
+        $content = get_post_meta( $post_id, $meta_key, true );
+    
+        if (!empty($content)) {
+            // Process content using WordPress filters (including autoembed, shortcodes, and autop)
+            $content = apply_filters( 'the_content', $content );
+    
+            // Sanitize output to prevent XSS
+            $content = wp_kses_post( $content );
         }
+    
         return $content;
     }
 
@@ -592,7 +607,7 @@ class Helper {
         $is_lightbox_selected = get_option( 'tm_single_team_lightbox' );
         $team_image_column    = get_option( 'tm_single_gallery_column' );
 
-        if ( 'True' === $is_lightbox_selected ) {
+        if ( 'True' === $is_lightbox_selected && tmwstm_fs()->is_paying_or_trial()) {
             $light_box_selector = 'wtm-image-gallery-lightbox';
         }
 
@@ -659,61 +674,94 @@ class Helper {
 
     }
 
-    public static function get_image_sizes(){
+    /**
+     * Outputs a select dropdown list of image sizes to use for the team member pictures.
+     *
+     * The list of options is generated from the $fields array, which includes the
+     * 'medium', 'thumbnail', 'medium_large', 'large', and 'full' image sizes.
+     *
+     * The selected attribute is set based on the value of the 'team_image_size_change'
+     * option in the database. If no value is set, the default value is 'medium'.
+     */
+    public static function get_image_sizes() {
 
-        $selected =  get_option('team_image_size_change')
-        ? get_option('team_image_size_change') : 
-        'medium';
-
+        // Get the selected image size from options
+        $selected = get_option('team_image_size_change', 'medium');
+    
+        // Default image sizes
         $fields = array(
-            'medium'       => 'Medium',
-            'thumbnail'    => 'Thumbnail',
-            'medium_large' => 'Medium Large',
-            'large'        => 'Large',
-            'full'         => 'Full',
-
+            'medium'       => __('Medium', 'wp-team-manager'),
+            'thumbnail'    => __('Thumbnail', 'wp-team-manager'),
+            'medium_large' => __('Medium Large', 'wp-team-manager'),
+            'large'        => __('Large', 'wp-team-manager'),
+            'full'         => __('Full', 'wp-team-manager'),
         );
-        
+    
+        // Allow developers to modify the available image sizes dynamically
+        $fields = apply_filters('wp_team_manager_image_sizes', $fields);
+    
         foreach ($fields as $key => $value) {
-
             printf(
                 '<option value="%s" %s>%s</option>',
-                esc_attr( $key ) ,
-                selected( $selected , $key, false),
-                esc_html( $value ) ,
-                
+                esc_attr($key),
+                selected($selected, $key, false),
+                esc_html($value)
             );
-
         }
-
     }
-    public static function get_gallery_columns(){
+    /**
+     * Generates and outputs HTML <option> elements for gallery column selection.
+     *
+     * This function retrieves the current setting for the number of gallery columns
+     * from the WordPress options table and then generates a set of HTML <option>
+     * elements. Each <option> represents a possible column configuration (e.g., one column,
+     * two columns, etc.), and the current setting is marked as selected.
+     *
+     * The generated HTML is intended for use in a <select> dropdown, allowing users
+     * to select the number of columns to display in an image gallery.
+     */
 
-        $selected =  get_option('tm_single_gallery_column')
-        ? get_option('tm_single_gallery_column') : 
-        'four_columns';
-
+     public static function get_gallery_columns() {
+        // Retrieve selected gallery column option
+        $selected = get_option('tm_single_gallery_column', 'four_columns');
+    
+        // Default gallery column options
         $fields = array(
-            'one_column'    => 'One Column',
-            'two_columns'   => 'Two Columns',
-            'three_columns' => 'Three Columns',
-            'four_columns'  => 'Four Columns',
-
+            'one_column'    => __('One Column', 'wp-team-manager'),
+            'two_columns'   => __('Two Columns', 'wp-team-manager'),
+            'three_columns' => __('Three Columns', 'wp-team-manager'),
+            'four_columns'  => __('Four Columns', 'wp-team-manager'),
         );
-        
+    
+        // Allow developers to modify the gallery columns list
+        $fields = apply_filters('wp_team_manager_gallery_columns', $fields);
+    
+        // Return early if no valid options are available
+        if (empty($fields) || !is_array($fields)) {
+            return;
+        }
+    
         foreach ($fields as $key => $value) {
-
             printf(
                 '<option value="%s" %s>%s</option>',
-                esc_attr( $key ) ,
-                selected( $selected , $key, false),
-                esc_html( $value ) ,
-                
+                esc_attr($key),
+                selected($selected, $key, false),
+                esc_html($value)
             );
-
         }
-
     }
+
+    /**
+     * Outputs HTML checkboxes for taxonomy settings.
+     *
+     * This function retrieves taxonomy field options from the WordPress database
+     * and iterates over a predefined list of taxonomy keys and labels to generate
+     * corresponding checkbox inputs. Each checkbox represents a taxonomy option and
+     * will be checked if its key exists in the retrieved options.
+     *
+     * The generated HTML includes a wrapper, input checkbox, label, and display name
+     * for each taxonomy option.
+     */
 
     public static function get_taxonomy_settings(){
 
@@ -871,6 +919,19 @@ class Helper {
     
         return $template;
     }
+
+    /**
+     * Retrieves team data based on the provided query arguments.
+     *
+     * This function performs a WordPress query using the specified arguments
+     * to fetch team-related posts and returns the results along with the maximum
+     * number of pages available for pagination.
+     *
+     * @param array $args Arguments for the WP_Query to retrieve team posts.
+     * @return array An associative array containing 'posts' (list of team posts)
+     *               and 'max_num_pages' (total number of pagination pages), or an
+     *               empty array if no posts are found.
+     */
 
     public static function get_team_data($args){
         $tmQuery = new \WP_Query( $args );
@@ -1113,12 +1174,18 @@ class Helper {
      *
      * @return string The link HTML, or an empty string if the current user has a paid license.
      */
-    public static function showProFeatureLink( $link_text = 'Upgrade Now!'){
-
-        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
-            return '<a href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">' . esc_html($link_text) . '</a>';
+    public static function showProFeatureLink( $link_text = 'Upgrade Now!') {
+        // Validate the link text to ensure it contains safe characters
+        $link_text = sanitize_text_field($link_text);
+    
+        // Ensure the upgrade URL is retrieved once
+        $upgrade_url = esc_url(tmwstm_fs()->get_upgrade_url());
+    
+        // Check if the user is not paying and is not on a trial
+        if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) {
+            return '<a href="' . $upgrade_url . '" target="_blank" rel="noopener noreferrer">' . esc_html($link_text) . '</a>';
         }
-
+    
         return '';
     }
     

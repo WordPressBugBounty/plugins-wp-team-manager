@@ -10,7 +10,7 @@ get_header();
 /**
  * Enqueue scripts and styles for the Single Team Member page if Lightbox is enabled
  */
-if (get_option('tm_single_team_lightbox') === 'True') {
+if (get_option('tm_single_team_lightbox') === 'True' && tmwstm_fs()->is_paying_or_trial()) {
     wp_enqueue_script('wp-team-magnific-popup');
     wp_enqueue_script('wp-team-pro');
     wp_enqueue_style('wp-team-magnific-popup');
@@ -50,9 +50,17 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                             } ?>
                         </div>
 
-                        <div class="wp-team-manager-long-bio">
-                            <?php echo wp_kses_post(Helper::get_wysiwyg_output('tm_long_bio', $post_id)); ?>
-                        </div>
+                        <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
+                                <div class="wtm-progress-bar">
+                                    <?php
+                                    if (class_exists('DWL_Wtm_Pro')) {
+
+                                        $obj_skill = new \DWL_Wtm_Pro();
+                                        echo $obj_skill->display_skills_output($post_id);
+
+                                    } ?>
+                                </div>
+                        <?php endif; ?>
 
                         <?php 
                         echo wp_kses_post(Helper::get_team_other_infos($post_id));
@@ -60,11 +68,16 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                         ?>
                     </div>
 
+                    <div class="wtm-col-12 py-md-3 wp-team-manager-long-bio">
+                            <?php echo Helper::get_wysiwyg_output('tm_long_bio', $post_id); ?>
+                        </div>
+
                     <div class="wtm-col-12 py-md-3">
                         <?php the_content(); ?>
                     </div>
 
                     <?php echo wp_kses_post(Helper::get_image_gallery_output($post_id)); ?>
+
                 </div>
             <?php endwhile; ?>
         </article>

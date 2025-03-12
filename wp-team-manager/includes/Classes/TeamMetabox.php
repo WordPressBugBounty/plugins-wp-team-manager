@@ -735,7 +735,7 @@ class TeamMetabox {
          * Image
          */
         $dwl_team_general->add_field( array(
-            'name'    => 'Add File',
+            'name'    => 'Add vCard File',
             'desc'    => 'Upload a File',
             'id'      => 'tm_vcard',
             'type'    => 'file',
@@ -781,35 +781,40 @@ class TeamMetabox {
             'classes'    => 'col-12',
         ) );
 
+        $social_options = array(
+            'select_type' => __( 'Select Icon', 'wp-team-manager' ),
+            'facebook'       => __( 'Facebook', 'wp-team-manager' ),
+            'twitter'        => __( 'Twitter', 'wp-team-manager' ),
+            'linkedin'       => __( 'LinkedIn', 'wp-team-manager' ),
+            'googleplus'     => __( 'Google Plus', 'wp-team-manager' ),
+            'dribbble'       => __( 'Dribbble', 'wp-team-manager' ),
+            'youtube'        => __( 'Youtube', 'wp-team-manager' ),
+            'vimeo'          => __( 'Vimeo', 'wp-team-manager' ),
+            'email'          => __( 'Email', 'wp-team-manager' ),
+            'instagram'      => __( 'Instagram', 'wp-team-manager' ),
+            'discord'        => __( 'Discord', 'wp-team-manager' ),
+            'tiktok'         => __( 'Tiktok', 'wp-team-manager' ),
+            'github'         => __( 'Github', 'wp-team-manager' ),
+            'stack-overflow' => __( 'Stack Overflow', 'wp-team-manager' ),
+            'medium'         => __( 'Medium', 'wp-team-manager' ),
+            'telegram'       => __( 'Telegram', 'wp-team-manager' ),
+            'pinterest'      => __( 'Pinterest', 'wp-team-manager' ),
+            'square-reddit'  => __( 'Square Reddit', 'wp-team-manager' ),
+            'tumblr'         => __( 'Tumblr', 'wp-team-manager' ),
+            'quora'          => __( 'Quora', 'wp-team-manager' ),
+            'snapchat'       => __( 'Snapchat', 'wp-team-manager' ),
+            'goodreads'      => __( 'Goodreads', 'wp-team-manager' ),
+            'twitch'         => __( 'Twitch', 'wp-team-manager' ),
+        );
+        
+        // Allow developers to add custom social media options
+        $social_options = apply_filters( 'wp_team_manager_social_options', $social_options );
+
         $dwl_team_social->add_group_field( $dwl_team_social_id, array(
             'name'    => __( 'Type', 'wp-team-manager' ),
             'id'      => 'type',
             'type'    => 'select',
-            'options' => array(
-                'select_type' => __( 'Select Icon', 'wp-team-manager' ),
-                'facebook'       => __( 'Facebook', 'wp-team-manager' ),
-                'twitter'        => __( 'Twitter', 'wp-team-manager' ),
-                'linkedin'       => __( 'LinkedIn', 'wp-team-manager' ),
-                'googleplus'     => __( 'Google Plus', 'wp-team-manager' ),
-                'dribbble'       => __( 'Dribbble', 'wp-team-manager' ),
-                'youtube'        => __( 'Youtube', 'wp-team-manager' ),
-                'vimeo'          => __( 'Vimeo', 'wp-team-manager' ),
-                'email'          => __( 'Email', 'wp-team-manager' ),
-                'instagram'      => __( 'Instagram', 'wp-team-manager' ),
-                'discord'        => __( 'Discord', 'wp-team-manager' ),
-                'tiktok'         => __( 'Tiktok', 'wp-team-manager' ),
-                'github'         => __( 'Github', 'wp-team-manager' ),
-                'stack-overflow' => __( 'Stack overflow', 'wp-team-manager' ),
-                'medium'         => __( 'Medium', 'wp-team-manager' ),
-                'telegram'       => __( 'Telegram', 'wp-team-manager' ),
-                'pinterest'      => __( 'Pinterest', 'wp-team-manager' ),
-                'square-reddit'  => __( 'Square Reddit', 'wp-team-manager' ),
-                'tumblr'         => __( 'Tumblr', 'wp-team-manager' ),
-                'quora'          => __( 'Quora', 'wp-team-manager' ),
-                'snapchat'       => __( 'Snapchat', 'wp-team-manager' ),
-                'goodreads'      => __( 'Goodreads', 'wp-team-manager' ),
-                'twitch'         => __( 'Twitch', 'wp-team-manager' ),
-            ),
+            'options' => $social_options,
         ) );
 
         $dwl_team_social->add_group_field( $dwl_team_social_id, array(

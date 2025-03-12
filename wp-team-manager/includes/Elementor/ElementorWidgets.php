@@ -1,6 +1,9 @@
 <?php
 namespace DWL\Wtm\Elementor;
 
+if (!defined('ABSPATH'))
+	exit; // Exit if accessed directly
+
 use Elementor\Plugin;
 /**
  * Class Plugin
@@ -57,9 +60,29 @@ class ElementorWidgets {
 	 * @access private
 	 */
 	private function include_widgets_files() {
-		require_once( __DIR__ . '/widgets/team.php' );
-		require_once(__DIR__ . '/widgets/isotope.php');
+		$files = [
+			__DIR__ . '/widgets/team.php',
+			__DIR__ . '/widgets/isotope.php',
+		];
+	
+		foreach ($files as $file) {
+			if ( file_exists( $file ) ) {
+				require_once $file;
+			} else {
+				error_log( "Missing file: " . $file ); // Log error instead of breaking the site
+			}
+		}
 	}
+	
+	/**
+	 * Enqueue Editor Scripts
+	 *
+	 * This function enqueues the necessary JavaScript files for the Elementor editor.
+	 * Specifically, it enqueues the 'wp-team-el-admin' script to ensure the editor
+	 * has access to the required functionalities and features.
+	 *
+	 * @since 1.2.0
+	 */
 
 	public function editor_scripts(){
 		wp_enqueue_script( 'wp-team-el-admin' );

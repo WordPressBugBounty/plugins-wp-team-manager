@@ -13,7 +13,7 @@ if ( ! empty( $data ) ) :
     $team_arrow_position = isset( $settings['team_arrow_position'] ) && ( $settings['team_arrow_position'] === 'side' ) ? 'team-arrow-postion-side' : '';
 
     ?>
-    <div class="team-member-slider-wrap <?php echo esc_attr( $team_arrow_positon ); ?>" data-slider_settings="<?php echo esc_attr( json_encode( $settings['slider_settings'] ) ); ?>">
+    <div class="team-member-slider-wrap <?php echo esc_attr( $team_arrow_position ); ?>" data-slider_settings="<?php echo esc_attr( json_encode( $settings['slider_settings'] ) ); ?>">
     <?php
         foreach ( $data as $team ) :
 

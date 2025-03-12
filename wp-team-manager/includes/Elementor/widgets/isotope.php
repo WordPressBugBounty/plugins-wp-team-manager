@@ -71,6 +71,10 @@ class Isotope extends \Elementor\Widget_Base
 					'style-1' => [
 						'title' => esc_html__('Style 1', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS . '/icons/layout/isotope-1.svg',
+					],
+					'style-2' => [
+						'title' => esc_html__('Style 2', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS . '/icons/layout/isotope-2.svg',
 					]
 				],
 				'default' => 'style-1',
@@ -204,117 +208,6 @@ class Isotope extends \Elementor\Widget_Base
 				],
 			]
 		);
-
-		$this->end_controls_section();
-
-
-		$this->start_controls_section(
-			'isotope_img_section',
-			[
-				'label' => esc_html__('Image Settings', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_CONTENT,
-			]
-		);
-
-		$this->add_control(
-			'show_image',
-			[
-				'label' => __('Show Image', 'wp-team-manager'),
-				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('Show', 'wp-team-manager'),
-				'label_off' => __('Hide', 'wp-team-manager'),
-				'return_value' => 'yes',
-				'default' => 'yes',
-			]
-		);
-
-
-
-		$this->add_control(
-			'image_style',
-			[
-				'label' => esc_html__('Border Style', 'wp-team-manager'),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => '0',
-				'options' => [
-					'50%' => esc_html__('Circle', 'wp-team-manager'),
-					'15px' => esc_html__('Rounded', 'wp-team-manager'),
-					'0' => esc_html__('Boxed', 'wp-team-manager'),
-				],
-				'selectors' => [
-					'{{WRAPPER}} .team-member-info-content header img' => 'border-radius: {{VALUE}}',
-					'{{WRAPPER}} .dwl-table-img-wraper a img' => 'border-radius: {{VALUE}}',
-				],
-			]
-		);
-
-		$this->add_control(
-			'image_size',
-			[
-				'label' => esc_html__('Image Size', 'wp-team-manager'),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => 'medium',
-				'options' => [
-					'thumbnail' => esc_html__('Thumbnail', 'wp-team-manager'),
-					'medium' => esc_html__('Medium', 'wp-team-manager'),
-					'large' => esc_html__('Large', 'wp-team-manager'),
-					'full' => esc_html__('Full', 'wp-team-manager'),
-				],
-			]
-		);
-
-		// $this->add_control(
-		// 	'isotope_show_feature_img',
-		// 	[
-		// 		'label' => esc_html__( 'Show Feature Image', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	],
-		// );
-
-		// $this->add_control(
-		// 	'isotope_show_feature_img_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_img_width',
-		// 	[
-		// 		'label' => esc_html__( 'Image Width', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SELECT,
-		// 		'default' => 'medium',
-		// 		'options' => [
-		// 			'thumbnail' => esc_html__( 'Thumbnail (150 x 150)', 'wp-team-manager' ),
-		// 			'medium' => esc_html__( 'Small (300 x 300)', 'wp-team-manager' ),
-		// 			'large' => esc_html__( 'Large (1024 x 1024)', 'wp-team-manager' ),
-		// 			'full' => esc_html__( 'Full', 'wp-team-manager' ),
-		// 		],
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_img_width_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_grayscale_img',
-		// 	[
-		// 		'label' => esc_html__( 'Grayscale Image', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'no',
-		// 	],
-		// );
 
 		$this->end_controls_section();
 
@@ -873,6 +766,137 @@ class Isotope extends \Elementor\Widget_Base
 
 		$this->end_controls_section();
 
+		$this->start_controls_section(
+			'isotope_img_section',
+			[
+				'label' => esc_html__('Image Settings', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_control(
+			'show_image',
+			[
+				'label' => __('Show Image', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('On', 'wp-team-manager'),
+				'label_off' => __('Off', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+			]
+		);
+
+
+
+		$this->add_control(
+			'image_style',
+			[
+				'label' => esc_html__('Border Style', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'default' => '0',
+				'options' => [
+					'50%' => esc_html__('Circle', 'wp-team-manager'),
+					'15px' => esc_html__('Rounded', 'wp-team-manager'),
+					'0' => esc_html__('Boxed', 'wp-team-manager'),
+				],
+				'selectors' => [
+					'{{WRAPPER}} .team-member-info-content header img' => 'border-radius: {{VALUE}}',
+					'{{WRAPPER}} .dwl-table-img-wraper a img' => 'border-radius: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_control(
+			'image_size',
+			[
+				'label' => esc_html__('Image Size', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::SELECT,
+				'default' => 'medium',
+				'options' => [
+					'thumbnail' => esc_html__('Thumbnail', 'wp-team-manager'),
+					'medium' => esc_html__('Medium', 'wp-team-manager'),
+					'large' => esc_html__('Large', 'wp-team-manager'),
+					'full' => esc_html__('Full', 'wp-team-manager'),
+				],
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Border::get_type(),
+			[
+				'name' => 'image_border',
+				'label' => esc_html__('Image Border', 'wp-team-manager'),
+				'selector' => '{{WRAPPER}} .team-member-info-content header img', // Change class based on your image wrapper
+			]
+		);
+		// $this->add_control(
+		// 	'team_member_image_margin',
+		// 	[
+		// 		'label' => esc_html__('Image Margin', 'wp-team-manager'),
+		// 		'type' => \Elementor\Controls_Manager::DIMENSIONS,
+		// 		'size_units' => ['px', '%', 'em'],
+		// 		'selectors' => [
+		// 			'{{WRAPPER}} .team-member-info-content header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+		// 		],
+		// 	]
+		// );
+		
+
+		// $this->add_control(
+		// 	'isotope_show_feature_img',
+		// 	[
+		// 		'label' => esc_html__( 'Show Feature Image', 'wp-team-manager' ),
+		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
+		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
+		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
+		// 		'return_value' => 'yes',
+		// 		'default' => 'yes',
+		// 	],
+		// );
+
+		// $this->add_control(
+		// 	'isotope_show_feature_img_separator',
+		// 	[
+		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'isotope_img_width',
+		// 	[
+		// 		'label' => esc_html__( 'Image Width', 'wp-team-manager' ),
+		// 		'type' => \Elementor\Controls_Manager::SELECT,
+		// 		'default' => 'medium',
+		// 		'options' => [
+		// 			'thumbnail' => esc_html__( 'Thumbnail (150 x 150)', 'wp-team-manager' ),
+		// 			'medium' => esc_html__( 'Small (300 x 300)', 'wp-team-manager' ),
+		// 			'large' => esc_html__( 'Large (1024 x 1024)', 'wp-team-manager' ),
+		// 			'full' => esc_html__( 'Full', 'wp-team-manager' ),
+		// 		],
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'isotope_img_width_separator',
+		// 	[
+		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
+		// 	]
+		// );
+
+		// $this->add_control(
+		// 	'isotope_grayscale_img',
+		// 	[
+		// 		'label' => esc_html__( 'Grayscale Image', 'wp-team-manager' ),
+		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
+		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
+		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
+		// 		'return_value' => 'yes',
+		// 		'default' => 'no',
+		// 	],
+		// );
+
+		$this->end_controls_section();
+
 		//Title
 		$this->start_controls_section(
 			'posts_title',
@@ -1013,6 +1037,89 @@ class Isotope extends \Elementor\Widget_Base
 
 		$this->end_controls_section();
 
+		//others info
+		$this->start_controls_section(
+			'others_info_icon',
+			[
+				'label' => esc_html__('Others Info', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE
+			]
+		);
+		$this->add_control(
+			'others_info_icon_color',
+			[
+				'label' => esc_html__('Icon Color', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .fas' => 'color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'content_typography',
+				'selector' => '{{WRAPPER}} .team-member-other-info a, {{WRAPPER}} .team-member-other-info span',
+				'label_block' => true,
+			]
+		);
+		$this->end_controls_section();
+
+		//skills options
+		$this->start_controls_section(
+			'skills_section_isotope',
+			[
+				'label' => esc_html__( 'Skills', 'wp-team-manager' ) . Helper::showProFeatureLabel(),
+				'tab' => Controls_Manager::TAB_STYLE
+			]
+			
+		);
+
+		$this->add_control(
+			'progress_bar_show_isotope',
+			[
+				'label' => __( 'Progress Bar', 'wp-team-manager' ),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __( 'On', 'wp-team-manager' ),
+				'label_off' => __( 'Off', 'wp-team-manager' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => Helper::showProFeatureLink( 'Pro Feature' ),
+			]
+		);
+
+		$this->add_control(
+			'text_color',
+			[
+				'label' => esc_html__( 'Text Color', 'textdomain' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				
+				'selectors' => [
+					'{{WRAPPER}} .team-member-skill-title' => 'color: {{VALUE}}',
+				],
+				'condition' => [
+					'progress_bar_show_isotope' => 'yes',  
+				],
+				
+			]
+		);
+
+		$this->add_group_control(
+			\Elementor\Group_Control_Typography::get_type(),
+			[
+				'name' => 'content_typography',
+				'selector' => '{{WRAPPER}} .team-member-skill-title',
+				'label_block' => true,
+				'condition' => [
+					'progress_bar_show_isotope' => 'yes',  
+				],
+			]
+		);
+
+
+		$this->end_controls_section();
+
 		//Social info
 		$this->start_controls_section(
 			'social_icon_heading',
@@ -1021,43 +1128,77 @@ class Isotope extends \Elementor\Widget_Base
 				'tab' => Controls_Manager::TAB_STYLE
 			]
 		);
-
+		
 		$this->add_control(
-			'show_full_biograph',
+			'social_icon_color',
 			[
-				'label' => __('Show Full Biograph', 'wp-team-manager'),
-				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('On', 'wp-team-manager'),
-				'label_off' => __('Off', 'wp-team-manager'),
-				'return_value' => 'yes',
-				'default' => 'yes',
-				'condition' => [
-					'table_style_type' => 'style-2',
+				'label' => esc_html__('Icon Color', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .team-member-socials a i' => 'color: {{VALUE}};',
 				],
-				'description' => __( 'Switch on to show team member full biography.', 'wp-team-manager' ),
 			]
 		);
-
-
 		$this->add_control(
 			'show_social_icon_color',
 			[
-				'label' => esc_html__('Color', 'wp-team-manager'),
+				'label' => esc_html__('Background Color', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .fas' => 'color: {{VALUE}}',
+					// '{{WRAPPER}} .fas' => 'color: {{VALUE}}',
 					'{{WRAPPER}} .team-member-socials a' => 'background-color: {{VALUE}}',
 				],
 			]
 		);
 
 		$this->add_control(
-			'show_social_icon_hover_color',
+			'social_icon_hover_color',
 			[
-				'label' => esc_html__('Hover', 'wp-team-manager'),
+				'label' => esc_html__('Icon Hover Color', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::COLOR,
 				'selectors' => [
-					'{{WRAPPER}} .team-member-socials a:hover' => 'background-color: {{VALUE}}',
+					'{{WRAPPER}} .team-member-socials a:hover i' => 'color: {{VALUE}};',
+				],
+			]
+		);
+		
+		$this->add_control(
+			'social_icon_bg_hover_color',
+			[
+				'label' => esc_html__('Background Hover Color', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .team-member-socials a:hover' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		// $this->add_control(
+		// 	'show_social_icon_hover_color',
+		// 	[
+		// 		'label' => esc_html__('Hover', 'wp-team-manager'),
+		// 		'type' => \Elementor\Controls_Manager::COLOR,
+		// 		'selectors' => [
+		// 			'{{WRAPPER}} .team-member-socials a:hover' => 'background-color: {{VALUE}}',
+		// 		],
+		// 	]
+		// );
+
+		$this->add_control(
+			'button_border_radius',
+			[
+				'label' => esc_html__('Border Radius', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'default' => [
+					'top' => '5',
+					'right' => '5',
+					'bottom' => '5',
+					'left' => '5',
+					'unit' => 'px',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .team-member-socials a' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -1073,20 +1214,28 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-
 		$this->add_control(
-			'read_more_type',
+			'button_text',
 			[
-				'label' => esc_html__('Link Type', 'wp-team-manager'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'link',
-				'options' => [
-					'link' => __('Link', 'wp-team-manager'),
-					//'popup'  => __( 'Popup', 'wp-team-manager' ),
-				],
+				'label' => esc_html__('Button Text', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Read More', 'wp-team-manager'),
+				'label_block' => true,
 			]
 		);
 
+		// $this->add_control(
+		// 	'read_more_type',
+		// 	[
+		// 		'label' => esc_html__('Link Type', 'wp-team-manager'),
+		// 		'type' => Controls_Manager::SELECT,
+		// 		'default' => 'link',
+		// 		'options' => [
+		// 			'link' => __('Link', 'wp-team-manager'),
+		// 			//'popup'  => __( 'Popup', 'wp-team-manager' ),
+		// 		],
+		// 	]
+		// );
 
 		$this->add_control(
 			'wtm_read_more_color',
@@ -1108,6 +1257,45 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
+		$this->add_control(
+			'wtm_read_more_background_color',
+			[
+				'label' => esc_html__('Background Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} a.wtm-read-more' => 'background-color: {{VALUE}};',
+				],
+				'description' => __( 'Change background color of the read more button.', 'wp-team-manager' ),
+			]
+		);
+		
+		$this->add_control(
+			'wtm_read_more_padding',
+			[
+				'label' => esc_html__('Padding', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} a.wtm-read-more' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'description' => __( 'Adjust padding of the read more button.', 'wp-team-manager' ),
+			]
+		);
+		
+		$this->add_control(
+			'wtm_read_more_border_radius',
+			[
+				'label' => esc_html__('Border Radius', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} a.wtm-read-more' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'description' => __( 'Adjust border radius of the read more button.', 'wp-team-manager' ),
+			]
+		);
+
+
 		$this->add_responsive_control(
 			'wtm_read_more_margin',
 			[
@@ -1121,8 +1309,6 @@ class Isotope extends \Elementor\Widget_Base
 		);
 
 		$this->end_controls_section();
-
-
 
 	}
 

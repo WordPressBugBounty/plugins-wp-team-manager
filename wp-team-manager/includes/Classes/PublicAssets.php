@@ -63,7 +63,7 @@ class PublicAssets {
 		wp_register_script( 'wp-team-script', TM_PUBLIC . '/assets/js/team.js', array('jquery'), TM_VERSION, true );
 		wp_register_script( 'wpteam-admin-js', TM_ADMIN_ASSETS.'/js/admin.js', array('jquery'), time(), true );
 		wp_register_script( 'wp-team-el-slider', TM_PUBLIC . '/assets/js/team-el-slider.js', array(), TM_VERSION, true );
-		wp_register_script( 'wp-team-isotope', TM_PUBLIC . '/assets/js/team-isotope.js', array(), TM_VERSION, true );
+	
 	
 		$ajaxurl = '';
 

@@ -199,10 +199,10 @@ class Team extends Widget_Base
 						'title' => esc_html__('Style 2', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS . '/icons/layout/List-style-2.svg',
 					],
-					// 'style-3' => [
-					// 	'title' => esc_html__('Style 3', 'wp-team-manager'),
-					// 	'url' => TM_ADMIN_ASSETS .'/icons/layout/List-1.svg',
-					// ],
+					'style-3' => [
+						'title' => esc_html__('Style 3', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/List-1.svg',
+					],
 					
 				],
 				'default' => 'style-1',
@@ -597,6 +597,7 @@ class Team extends Widget_Base
 				'selectors' => [
 					'{{WRAPPER}} .team-member-info-content header img' => 'border-radius: {{VALUE}}',
 					'{{WRAPPER}} .dwl-team-overlay' => 'border-radius: {{VALUE}}',
+					'{{WRAPPER}} .team-feature-img-round:has(img)' => 'border-radius: {{VALUE}}',				
 					'{{WRAPPER}} .team-member-thumbnail img' => 'border-radius: {{VALUE}}',
 					'{{WRAPPER}} .dwl-table-img-wraper a img' => 'border-radius: {{VALUE}}',
 				],
@@ -1084,7 +1085,7 @@ class Team extends Widget_Base
 		$this->start_controls_section(
 			'wtm_read_more',
 			[
-				'label' => esc_html__('Details Settings', 'wp-team-manager'),
+				'label' => esc_html__('Read More', 'wp-team-manager'),
 				'tab' => Controls_Manager::TAB_STYLE,
 				// 'condition' => [
 				// 	'grid_style_type' => ['style-1', 'style-2', 'style-3', 'style-4'],

@@ -4,7 +4,23 @@ use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
- ?>
+$tm_social_size           = get_option('tm_social_size');
+$tm_custom_css            = get_option('tm_custom_css');
+$tm_link_new_window       = get_option('tm_link_new_window');
+$single_team_member_view  = get_option('single_team_member_view');
+$old_team_manager_style   = get_option( 'old_team_manager_style' );
+$tm_slug                  = get_option('tm_slug','team-details');
+$tm_single_fields         = get_option('tm_single_fields');
+$tm_taxonomy_fields       = get_option('tm_taxonomy_fields');
+$tm_image_size_fields     = get_option('image_size_fields');
+$team_image_size_change   = get_option('team_image_size_change');
+$tm_single_team_lightbox  = get_option('tm_single_team_lightbox');
+$custom_labels            = get_option('tm_custom_labels', array());
+$fields = array(
+    'tm_web_url'         => 'Web URL',
+    'tm_vcard'           => 'Add vCard File',
+);
+?>
 <div class="wp-core-ui">
     <!-- Tab items -->
     <div class="tm-tabs">
@@ -43,20 +59,43 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <?php esc_html_e('Open social links on new window','wp-team-manager'); ?>
                         </label>
                     </th>
-                    <td>
-                        <input type="checkbox" name="tm_link_new_window" value="True" <?php checked( $tm_link_new_window, 'True' ); ?>>
-                        <?php esc_html_e('Yes', 'wp-team-manager'); ?>
+                    <td class="wtm-toggle-switch">
+                        <input type="checkbox" name="tm_link_new_window" id="tm_link_new_window" value="True" <?php checked( $tm_link_new_window, 'True' ); ?>>
+                        <label for="tm_link_new_window"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
                     </td>
                 </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        <label>
+                            <?php esc_html_e('Customize Field Labels', 'wp-team-manager'); ?>
+                            <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                                <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                            <?php endif; ?>
+                        </label>
+                    </th>
+                    <td class="team-satting-customize-field-labels">
+                        <?php 
+                        
+                        foreach ($fields as $key => $default_label) {
+                            $label_value = isset($custom_labels[$key]) ? $custom_labels[$key] : $default_label;
+                            ?>
+                            <p>
+                                <label for="<?php echo esc_attr($key); ?>"><?php echo esc_html($default_label); ?>:</label>
+                                <input type="text" class="regular-text" name="tm_custom_labels[<?php echo esc_attr($key); ?>]" <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) { echo 'disabled'; } ?> id="<?php echo esc_attr($key); ?>" value="<?php echo esc_attr($label_value); ?>">
+                            </p>
+                        <?php } ?>
+                    </td>
+                </tr>
+
                 <tr valign="top">
                     <th scope="row">
                         <label>
                             <?php esc_html_e('Disable single team member view','wp-team-manager'); ?>
                         </label>
                     </th>
-                    <td>
-                        <input type="checkbox" name="single_team_member_view" value="True" <?php checked( $single_team_member_view, 'True' ); ?>>
-                        <?php esc_html_e('Yes', 'wp-team-manager'); ?>
+                    <td class="wtm-toggle-switch">
+                        <input type="checkbox" name="single_team_member_view" id="single_team_member_view" value="True" <?php checked( $single_team_member_view, 'True' ); ?>>
+                        <label for="single_team_member_view"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -65,24 +104,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <?php esc_html_e('Use "Old" Team-manager style','wp-team-manager'); ?>
                         </label>
                     </th>
-                    <td>
-                        <input type="checkbox" name="old_team_manager_style" value="True" <?php checked( $old_team_manager_style, 'True' ); ?>>
-                        <?php esc_html_e('Yes', 'wp-team-manager'); ?>
+                    <td class="wtm-toggle-switch">
+                        <input type="checkbox" name="old_team_manager_style" id="old_team_manager_style" value="True" <?php checked( $old_team_manager_style, 'True' ); ?>>
+                        <label for="old_team_manager_style"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
                     </td>
                 </tr>
 
-                <tr valign="top">
-                    <th scope="row">
-                        <label>
-                            <?php esc_html_e('Change Image size','wp-team-manager'); ?>
-                        </label>
-                    </th>
-                    <td>
-                        <select name="team_image_size_change">
-                            <?php Helper::get_image_sizes(); ?>
-                        </select>
-                    </td>
-                </tr>
             </table>
         </div>
         <div class="tab-pane">
@@ -101,18 +128,29 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <th scope="row">
                         <label>
                             <?php esc_html_e('Enable Gallery Lightbox','wp-team-manager'); ?>
+                            <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                                <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                            <?php endif; ?>
                         </label>
                     </th>
-                    <td>
-                        <input type="checkbox" name="tm_single_team_lightbox" value="True" 
+                    <td class="wtm-toggle-switch">
+                        <input type="checkbox" name="tm_single_team_lightbox" id="tm_single_team_lightbox" value="True" 
                             <?php checked( $tm_single_team_lightbox, 'True' ); ?> 
                             <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) { echo 'disabled'; } ?>>
 
-                        <?php esc_html_e('Yes', 'wp-team-manager'); 
-
-                        if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
-                            <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
-                        <?php endif; ?>
+                            <label for="tm_single_team_lightbox"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">
+                        <label>
+                            <?php esc_html_e('Change Image size','wp-team-manager'); ?>
+                        </label>
+                    </th>
+                    <td>
+                        <select name="team_image_size_change">
+                            <?php Helper::get_image_sizes(); ?>
+                        </select>
                     </td>
                 </tr>
                 <tr valign="top">
