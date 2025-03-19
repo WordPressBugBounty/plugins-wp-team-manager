@@ -21,12 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
             <header class="wtm-col-12 wtm-col-lg-4 wtm-col-md-6">
             <div class="dwl-team-overlay-container">
               <?php if("yes" == $settings['show_image']): ?>
-                <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                <a href="#" class="team-popup" data-id="<?php echo esc_attr($teamInfo->ID); ?>">
                 <?php echo wp_kses_post(Helper::get_team_picture($teamInfo->ID, $image_size, 'dwl-box-shadow')); ?>
-                <div class="dwl-team-overlay">
-                    <div class="list-icon"><i class="fa fa-plus"></i></div>
+                <div class="list-style-overlay">
+                  <div class="list-icon"><i class="fa fa-plus"></i></div>
                 </div>
-                </a>
+              </a>
+
               <?php endif;?>
             </div>
             </header>

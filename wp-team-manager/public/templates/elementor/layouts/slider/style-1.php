@@ -56,13 +56,7 @@ if ( ! empty( $data ) ) :
                         <?php echo wp_kses_post( Helper::get_team_other_infos( $team->ID ) ); ?>
                     <?php endif; ?>
 
-                    <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
-                        <div class="wtm-read-more-wrap">
-                            <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>" class="wtm-read-more">
-                                <?php echo esc_html( $team_read_more ); ?>
-                            </a>
-                        </div>
-                    <?php endif; ?>
+
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                         <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>
                             <div class="wtm-progress-bar">
@@ -78,6 +72,13 @@ if ( ! empty( $data ) ) :
                     <?php endif; ?>
                     <?php if ( isset( $settings['show_social'] ) && 'yes' === $settings['show_social'] ) : ?>
                         <?php echo wp_kses_post( Helper::display_social_profile_output( $team->ID ) ); ?>
+                    <?php endif; ?>
+                    <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
+                        <div class="wtm-read-more-wrap">
+                            <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>" class="wtm-read-more">
+                                <?php echo esc_html( $team_read_more ); ?>
+                            </a>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>

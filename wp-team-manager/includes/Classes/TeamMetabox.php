@@ -538,7 +538,7 @@ class TeamMetabox {
         $dwl_team_metabox->add_field( 
 			array(
 				'name'    => __( 'Show Read More', 'wp-team-manager' ),
-                'desc' =>  __( 'Hide/Show', 'wp-team-manager' ),
+                'desc' =>  __( 'Show/Hide', 'wp-team-manager' ),
 				'id'      => $this->prefix . 'team_show_read_more',
 				'type'    => 'checkbox',
 			)

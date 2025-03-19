@@ -158,7 +158,7 @@ class Isotope extends \Elementor\Widget_Base
 		);
 
 		$this->add_control(
-			'isotope_include',
+			'include',
 			[
 				'label' => esc_html__('Include only', 'wp-team-manager'),
 				'type' => Controls_Manager::TEXT,
@@ -168,7 +168,7 @@ class Isotope extends \Elementor\Widget_Base
 		);
 
 		$this->add_control(
-			'isotope_exclude',
+			'exclude',
 			[
 				'label' => esc_html__('Exclude', 'the-post-grid'),
 				'type' => Controls_Manager::TEXT,
@@ -228,6 +228,7 @@ class Isotope extends \Elementor\Widget_Base
 				'options' => [
 					'none' => esc_html__('None', 'wp-team-manager'),
 					'numbers' => esc_html__('Numbers', 'wp-team-manager'),
+					'ajax' => esc_html__('Ajax', 'wp-team-manager'),
 				],
 			]
 		);
@@ -801,6 +802,7 @@ class Isotope extends \Elementor\Widget_Base
 				],
 				'selectors' => [
 					'{{WRAPPER}} .team-member-info-content header img' => 'border-radius: {{VALUE}}',
+					'{{WRAPPER}} .dwl-team-wrapper .team-isotope-feature-img-round' => 'border-radius: {{VALUE}}',
 					'{{WRAPPER}} .dwl-table-img-wraper a img' => 'border-radius: {{VALUE}}',
 				],
 			]
@@ -1323,19 +1325,17 @@ class Isotope extends \Elementor\Widget_Base
 
 	protected function render()
 	{
-
+		$settings = $this->get_settings_for_display();
 
 		if (tmwstm_fs()->is_paying_or_trial()) {
 
-			
-			
 			if (class_exists('DWL_Wtm_Pro')) {
 				$settings = $this->get_settings_for_display();
 				$obj_isotop = new \DWL_Wtm_Pro();
 				$obj_isotop->IsotopeOptions($settings);
-
 			}
 
+			
 		} else {
 			return false;
 		}

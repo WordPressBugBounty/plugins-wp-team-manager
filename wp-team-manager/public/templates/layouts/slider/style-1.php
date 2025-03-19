@@ -4,10 +4,10 @@ use DWL\Wtm\Classes\Helper;
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 // Retrieve settings with default values
-$image_size = sanitize_text_field($settings['dwl_team_select_image_size'][0] ?? 'thumbnail');
-$show_other_info = !empty($settings['dwl_team_team_show_other_info']);
-$show_social = !empty($settings['dwl_team_team_show_social']);
-$show_read_more = empty($settings['dwl_team_team_show_read_more']);
+$image_size = $settings['dwl_team_select_image_size'][0] ?? 'thumbnail';
+$show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
+$show_social = !empty($settings['dwl_team_team_show_social'][0]);
+$show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
 $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
 
 // Determine if the single template should be disabled
@@ -29,7 +29,7 @@ if (!empty($data['posts'])) {
 
         ?>
 
-        <div <?php post_class('team-member-info-wrap'); ?>>
+        <div <?php post_class('team-member-info-wrap m-0 p-2 '); ?>>
             <header>
                 <?php if (!$disable_single_template): ?>
                     <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
@@ -59,20 +59,30 @@ if (!empty($data['posts'])) {
                     <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
                 <?php endif; ?>
 
-                <?php if (!$show_read_more): ?>
+                <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
+                        <?php if (!$show_progress_bar): ?>
+                            <div class="wtm-progress-bar">
+                                <?php
+                                if (class_exists('DWL_Wtm_Pro')) {
+
+                                    $obj_skill = new \DWL_Wtm_Pro();
+                                    echo $obj_skill->display_skills_output($teamInfo->ID);
+
+                                } ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                <?php if (!$show_social): ?>
+                    <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
+                <?php endif; ?>
+
+                <?php if ($show_read_more): ?>
                     <div class="wtm-read-more-wrap">
                         <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
                             <?php esc_html_e('Read More', 'wp-team-manager'); ?>
                         </a>
                     </div>
-                <?php endif; ?>
-
-                <?php if (function_exists('tmwstm_fs') && tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() && !$show_progress_bar): ?>
-                    <?php echo wp_kses_post(Helper::display_skills_output($teamInfo->ID)); ?>
-                <?php endif; ?>
-
-                <?php if (!$show_social): ?>
-                    <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
                 <?php endif; ?>
             </div>
         </div>

@@ -24,7 +24,7 @@ if(!empty($data)){
       
       ?>
 
-          <div <?php post_class('team-member-info-wrap wtm-col-12'); ?>>
+          <div <?php post_class('team-member-info-wrap m-0 p-2 wtm-col-12'); ?>>
           <div class="wtm-row g-0 team-member-info-content"> 
            <header class="wtm-col-12 wtm-col-lg-3 wtm-col-md-6">
               <?php if(!$disable_single_template): ?>

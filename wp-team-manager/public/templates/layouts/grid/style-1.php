@@ -12,12 +12,12 @@ if (!$data) {
     return; // Stop execution if no posts exist
 }
 
-// Retrieve settings with default values and sanitize inputs
-$image_size = isset($settings['dwl_team_select_image_size'][0]) ? sanitize_text_field($settings['dwl_team_select_image_size'][0]) : 'thumbnail';
-$show_other_info = isset($settings['dwl_team_team_show_other_info']) && $settings['dwl_team_team_show_other_info'] === 'yes';
-$show_social = isset($settings['dwl_team_team_show_social']) && $settings['dwl_team_team_show_social'] === 'yes';
-$show_progress_bar = isset($settings['dwl_team_show_progress_bar'][0]) && $settings['dwl_team_show_progress_bar'][0] === 'yes';
-$show_read_more = !isset($settings['dwl_team_team_show_read_more']) || $settings['dwl_team_team_show_read_more'] === 'no';
+// Retrieve settings with default values
+$image_size = $settings['dwl_team_select_image_size'][0] ?? 'thumbnail';
+$show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
+$show_social = !empty($settings['dwl_team_team_show_social'][0]);
+$show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
+$show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
 
 // Validate and retrieve single fields with proper defaults
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -44,7 +44,7 @@ foreach ($data['posts'] as $teamInfo) {
  
     ?>
 
-    <div <?php post_class("team-member-info-wrap " . esc_attr($bootstrap_class)); ?>>
+    <div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class)); ?>>
         <div class="team-member-info-content">
             <header>
                 <?php if (!$disable_single_template): ?>
@@ -73,16 +73,8 @@ foreach ($data['posts'] as $teamInfo) {
                     <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
                 <?php endif; ?>
 
-                <?php if (!$show_read_more): ?>
-                    <div class="wtm-read-more-wrap">
-                        <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
-                            <?php esc_html_e('Read More', 'wp-team-manager'); ?>
-                        </a>
-                    </div>
-                <?php endif; ?>
-
                 <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
-                        <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>
+                        <?php if (!$show_progress_bar): ?>
                             <div class="wtm-progress-bar">
                                 <?php
                                 if (class_exists('DWL_Wtm_Pro')) {
@@ -97,6 +89,14 @@ foreach ($data['posts'] as $teamInfo) {
 
                 <?php if (!$show_social): ?>
                     <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
+                <?php endif; ?>
+
+                <?php if ($show_read_more): ?>
+                    <div class="wtm-read-more-wrap">
+                        <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
+                            <?php esc_html_e('Read More', 'wp-team-manager'); ?>
+                        </a>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

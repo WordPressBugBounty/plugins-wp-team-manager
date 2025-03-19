@@ -66,7 +66,11 @@ namespace DWL\Wtm\Classes;
                     </div>
 
                     <div class="wp-team-header-logo-shape">
-   
+                       <?php
+                        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
+                            echo '<a class="wp-team-upgrade-button" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">Upgrade to Pro !</a>';
+                        }
+                        ?>
                     </div>
 
                 </div>
@@ -107,13 +111,21 @@ namespace DWL\Wtm\Classes;
                         <h3 class="wp-team-main-title"><?php esc_html_e( 'Pro Features of the WP team manager plugin', 'wp-team-manager' )?></h3>
                     </div>
                     <div class="wp-team-features-box-wrapper">
+                        <ul class="wp-team-features-box" style="margin-left: 20px;">
 
-                        <ul style="margin-left: 20px;">
                             <li><strong>8+ Additional Layouts:</strong></li>
-                            <li><strong>Grid Layouts (Elementor)</strong> – Multiple grid styles for showcasing team members.</li>
-                            <li><strong>List Layouts (Elementor)</strong> – Stylish list-based layouts for better readability.</li>
-                            <li><strong>Slider Layouts (Elementor)</strong> – Over 4 dynamic slider designs for engaging displays.</li>
-                            <li><strong>Isotope Layouts</strong> – 2+ advanced filtering layouts for interactive team showcases.</li>
+                            <li>• <strong>Grid Layouts (Elementor)</strong> – Multiple grid styles for showcasing team members.</li>
+                            <li>• <strong>List Layouts (Elementor)</strong> – Stylish list-based layouts for better readability.</li>
+                            <li>• <strong>Slider Layouts (Elementor)</strong> – Over 4 dynamic slider designs for engaging displays.</li>
+                            <li>• <strong>Isotope Layouts</strong> – 2+ advanced filtering layouts for interactive team showcases.</li>
+                            <li><strong>Customization &amp; Features:</strong></p>
+                            <li>• <strong>Customizable Bio Field Labels</strong> – Edit and personalize team member bio labels.</li>
+                            <li>• <strong>Ajax-Based Navigation</strong> – Includes number pagination, load more button, and smooth transitions.</li>
+                            <li>• <strong>Progress Bar for Skills</strong> – Showcase expertise with animated skill bars.</li>
+                            <li>• <strong>Image Gallery Popup</strong> – View member images in a sleek lightbox on the details page.</li>
+                            <li>…and many more powerful features to enhance your team display!</li>
+
+                            
                         </ul>
 
                         <ul style="margin-left: 20px;">
@@ -128,7 +140,7 @@ namespace DWL\Wtm\Classes;
                     </div>
 
                     <div class="wp-team-box-content">
-                        <?php if (tmwstm_fs()->is_not_paying()): ?>
+                        <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()): ?>
                             <div>
                                 <a href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url())?>" class="wp-team-upgrade-button" target="_blank"><?php esc_html_e( 'Upgrade to Pro !', 'wp-team-manager' )?></a>
                             </div>

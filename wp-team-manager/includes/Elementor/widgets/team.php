@@ -201,7 +201,7 @@ class Team extends Widget_Base
 					],
 					'style-3' => [
 						'title' => esc_html__('Style 3', 'wp-team-manager'),
-						'url' => TM_ADMIN_ASSETS .'/icons/layout/List-1.svg',
+						'url' => TM_ADMIN_ASSETS .'/icons/layout/List-3.svg',
 					],
 					
 				],
@@ -1703,7 +1703,12 @@ class Team extends Widget_Base
 		if ($settings['exclude']) {
 			$excluded_ids = explode(',', $settings['exclude']);
 			$excluded_ids = array_map('trim', $excluded_ids);
-			$query_args['post__not_in'] = array_unique($excluded_post_ids);
+			$query_args['post__not_in'] = array_unique(!empty($excluded_ids) ? (array) $excluded_ids : []);
+		}
+		if (!empty($settings['include'])) {
+			$included_ids = explode(',', $settings['include']);
+			$included_ids = array_map('trim', $included_ids);
+			$query_args['post__in'] = array_unique(array_filter($included_ids));
 		}
 
 		$style_type_name = $settings['layout_type'] . '_' . 'style_type';
@@ -1713,14 +1718,11 @@ class Team extends Widget_Base
 		 * Slider settings
 		 * 
 		 */
-		$slider_settings = ['fdfdfd'];
+		$slider_settings = [];
 		$slider_settings['arrows'] = isset($settings['show_arrow']) && $settings['show_arrow'] ? true : false;
 		$slider_settings['dot_nav'] = isset($settings['show_dot_navigation']) && $settings['show_dot_navigation'] ? true : false;
 		$slider_settings['autoplay'] = isset($settings['enable_autoplay']) && $settings['enable_autoplay'] ? true : false;
-		/**
-		 * @todo Need to check if the all_settings exists on not
-		 */
-		$slider_settings['arrow_position'] = isset($all_settings['wc_pcd_arrow_position']) ? $all_settings['wc_pcd_arrow_position'][0] : 'side';
+		$slider_settings['arrow_position'] = isset($settings['team_arrow_position']) ? $settings['team_arrow_position'] : 'side';
 		$slider_settings['desktop'] = isset($settings['columns']) ? $settings['columns'] : '4';
 		$slider_settings['tablet'] = isset($settings['columns_tablet']) ? $settings['columns_tablet'] : '3';
 		$slider_settings['mobile'] = isset($settings['columns_mobile']) ? $settings['columns_mobile'] : '1';
@@ -1745,6 +1747,7 @@ class Team extends Widget_Base
 		$ajax_settings = [
 			'layout_type' => $settings['layout_type'],
 			'image_size' => $settings['image_size'],
+			'progress_bar_show' => $settings['progress_bar_show'],
 			'team_show_short_bio' => $settings['team_show_short_bio'],
 			'slider_style_type' => $settings['slider_style_type'],
 			'grid_style_type' => $settings['grid_style_type'],
@@ -1768,7 +1771,8 @@ class Team extends Widget_Base
 			data-settings="<?php echo esc_attr(json_encode($ajax_settings_all)) ?>">
 			<div
 				class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr($settings['layout_type']) ?> <?php echo esc_attr($wrapper_calss); ?> dwl-team-layout-<?php echo esc_attr($settings['layout_type']) ?>">
-				<?php Helper::renderElementorLayout($settings['layout_type'], $team_data['posts'], $settings); ?>
+				<?php 
+				Helper::renderElementorLayout($settings['layout_type'], $team_data['posts'], $settings); ?>
 			</div><!--.wp-team-manager-widget-->
 		</div><!--.wp-team-manager-widget-->
 

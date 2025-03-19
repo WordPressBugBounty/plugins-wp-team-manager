@@ -47,14 +47,14 @@ $disable_single_template = ( false !== $single_team_member_view && filter_var( $
                 <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID ) ); ?>
             <?php endif; ?>
 
+            <?php if(isset($settings['show_social']) AND 'yes' == $settings['show_social']) : ?>
+                <?php echo wp_kses_post( Helper::get_team_social_links($teamInfo->ID) ); ?>
+            <?php endif; ?>
+
             <?php if(isset($settings['show_read_more']) AND 'yes' == $settings['show_read_more']) : ?>
                 <div class="wtm-read-more-wrap">
                     <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID) ); ?>" class="wtm-read-more"><?php esc_html_e( 'Read More', 'wp-team-manager' )?></a>
                 </div>
-            <?php endif; ?>
-
-            <?php if(isset($settings['show_social']) AND 'yes' == $settings['show_social']) : ?>
-                <?php echo wp_kses_post( Helper::get_team_social_links($teamInfo->ID) ); ?>
             <?php endif; ?>
                 
         </div>

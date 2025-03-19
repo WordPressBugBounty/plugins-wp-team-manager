@@ -32,7 +32,7 @@ foreach ($data['posts'] as $teamInfo) {
     $job_title = sanitize_text_field(get_post_meta($teamInfo->ID, 'tm_jtitle', true));
     ?>
 
-    <div <?php post_class("team-member-info-wrap " . esc_attr($bootstrap_class)); ?>>
+<div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class)); ?>>
         <div class="team-member-info-content">
             <div class="team-member-grid-style-two">
                 <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="grid-team-inner">

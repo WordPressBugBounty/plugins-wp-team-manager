@@ -10,7 +10,7 @@ get_header();
 /**
  * Enqueue scripts and styles for the Single Team Member page if Lightbox is enabled
  */
-if (get_option('tm_single_team_lightbox') === 'True' && tmwstm_fs()->is_paying_or_trial()) {
+if (get_option('tm_single_team_lightbox') === 'True' && function_exists('tmwstm_fs') && tmwstm_fs()->is_paying_or_trial()) {
     wp_enqueue_script('wp-team-magnific-popup');
     wp_enqueue_script('wp-team-pro');
     wp_enqueue_style('wp-team-magnific-popup');
@@ -27,6 +27,7 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                 $post_id   = absint(get_the_ID()); // Ensure post ID is an integer
                 $job_title = esc_html(get_post_meta($post_id, 'tm_jtitle', true)); // Escape early
                 $short_bio = wp_kses_post(get_post_meta($post_id, 'tm_short_bio', true)); 
+                $long_bio = Helper::get_wysiwyg_output('tm_long_bio', $post_id);
             ?>
                 <div class="entry-content wtm-row">
                     <div class="team-bio-image wtm-col-12 wtm-col-md-6">
@@ -44,11 +45,11 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                             <h3 class="team-position my-0"><?php echo $job_title; ?></h3>
                         <?php endif; ?>
 
-                        <div class="team-short-bio">
-                            <?php if (!empty($short_bio)) {
-                                echo $short_bio;
-                            } ?>
-                        </div>
+                        <?php if (!empty($short_bio)) : ?>
+                            <div class="team-short-bio">
+                                <?php echo $short_bio; ?>
+                            </div>
+                        <?php endif; ?>
 
                         <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                                 <div class="wtm-progress-bar">
@@ -68,9 +69,11 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                         ?>
                     </div>
 
-                    <div class="wtm-col-12 py-md-3 wp-team-manager-long-bio">
-                            <?php echo Helper::get_wysiwyg_output('tm_long_bio', $post_id); ?>
+                    <?php if (!empty($long_bio)) : ?>
+                        <div class="wtm-col-12 py-md-3 wp-team-manager-long-bio">
+                            <?php echo $long_bio; ?>
                         </div>
+                    <?php endif; ?>
 
                     <div class="wtm-col-12 py-md-3">
                         <?php the_content(); ?>

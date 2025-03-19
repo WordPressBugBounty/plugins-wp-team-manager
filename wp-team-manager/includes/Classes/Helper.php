@@ -127,15 +127,9 @@ class Helper {
      *
      * @return string The social media profile output.
      */
-    public static function display_social_profile_output( $post_id = 0 ) {
+    public static function display_social_profile_output($post_id = 0) {
         // Ensure a valid post ID is retrieved
         $post_id = $post_id ? intval($post_id) : get_the_ID();
-    
-        // Fetch social group metadata once, ensuring it's an array
-        $wptm_social_data = get_post_meta($post_id, 'wptm_social_group', true);
-        if (empty($wptm_social_data) || !is_array($wptm_social_data)) {
-            return false;
-        }
     
         // Retrieve and cache social settings
         static $social_size = null;
@@ -149,7 +143,16 @@ class Helper {
             $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
         }
     
-        // Validate social media mappings (Font Awesome classes)
+        // Fetch all metadata at once (reducing database queries)
+        $post_meta = get_post_custom($post_id);
+        $wptm_social_data = isset($post_meta['wptm_social_group'][0]) ? maybe_unserialize($post_meta['wptm_social_group'][0]) : [];
+    
+        // Return early if no social data exists
+        if (empty($wptm_social_data) || !is_array($wptm_social_data)) {
+            return '';
+        }
+    
+        // Define social media mappings (Font Awesome classes)
         $social_media_icons = [
             'email'          => ['icon' => 'far fa-envelope', 'title' => __('Email', 'wp-team-manager')],
             'facebook'       => ['icon' => 'fab fa-facebook-f', 'title' => __('Facebook', 'wp-team-manager')],
@@ -177,25 +180,28 @@ class Helper {
     
         // Start output buffering for better performance
         ob_start();
+        ?>
+        <div class="team-member-socials size-<?php echo esc_attr($social_size); ?>">
+            <?php
+            foreach ($wptm_social_data as $data) {
+                if (!isset($data['type'], $data['url']) || !isset($social_media_icons[$data['type']])) {
+                    continue;
+                }
     
-        echo '<div class="team-member-socials size-' . esc_attr($social_size) . '">';
+                $type  = sanitize_key($data['type']);
+                $icon  = esc_attr($social_media_icons[$type]['icon']);
+                $title = esc_attr($social_media_icons[$type]['title']);
+                $url   = ($type === 'email') ? 'mailto:' . sanitize_email($data['url']) : esc_url($data['url']);
     
-        foreach ($wptm_social_data as $data) {
-            if (!isset($data['type'], $data['url']) || !isset($social_media_icons[$data['type']])) {
-                continue;
+                ?>
+                <a class="<?php echo esc_attr($type . '-' . $social_size); ?>" href="<?php echo $url; ?>" <?php echo $link_window; ?> title="<?php echo $title; ?>">
+                    <i class="<?php echo $icon; ?>"></i>
+                </a>
+                <?php
             }
-    
-            $type  = sanitize_key($data['type']);
-            $icon  = esc_attr($social_media_icons[$type]['icon']);
-            $title = esc_attr($social_media_icons[$type]['title']);
-            $url   = $type === 'email' ? 'mailto:' . sanitize_email($data['url']) : esc_url($data['url']);
-    
-            echo '<a class="' . esc_attr($type) . '-' . esc_attr($social_size) . '" href="' . $url . '" ' . $link_window . ' title="' . $title . '">';
-            echo '<i class="' . $icon . '"></i></a>';
-        }
-    
-        echo '</div>';
-    
+            ?>
+        </div>
+        <?php
         return ob_get_clean();
     }
 

@@ -31,7 +31,7 @@ if ( ! empty( $data ) ) {
         $team_picture = Helper::get_team_picture( $teamInfo->ID, $image_size );
 
         ?>
-        <div <?php post_class( 'team-member-info-wrap' ); ?>>
+        <div <?php post_class( 'team-member-info-wrap m-0 p-2' ); ?>>
           <header>
             <?php if ( ! $disable_single_template ) : ?>
                 <a href="<?php echo esc_url( $team_permalink ); ?>">
