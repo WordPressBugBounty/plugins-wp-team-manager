@@ -5318,6 +5318,11 @@ text-align: center;
 	padding: 0;
 }
 
+/* Reverse it */
+
+.style-3 .dwl-team-elementor-layout-list .team-member-info{
+      flex-direction: row-reverse;
+}
 
 .dwl-team-wrapper .dwl-slide-arrow {
   position: absolute;
@@ -5725,13 +5730,20 @@ margin-top: 17px;
   margin-left: 10px;
 }
 
+.style-2 .dwl-team-elementor-layout-grid .team-member-title,
+.style-2 .dwl-team-elementor-layout-grid .team-member-info-wrap .team-position{
+  color: var(--wtm-color-white);
+}
 
 /* Slider Style 5 */
 .style-5 .team-member-info-wrap .team-member-info-content {
-  width: 100%;
-  display: flex;
+  flex-grow: 1; /* Makes it take up all available height */
+  height: 100%; /* Ensures it fills the height */
+  display: flex; /* If needed, allows child elements to distribute properly */
   flex-direction: column;
-  align-items: center;
+  box-shadow: 0 1px 6px -4px #777;
+  border-radius: 15px;
+  background-color: var(--wtm-color-white);
 }
 
 .style-5 .team-member-thumbnail {
@@ -6417,13 +6429,12 @@ th.dwl-table-head-cotact {
 /* layout style grid 5 */
 .team-grid-style-5-wrap {
   display: flex;
-  align-items: end;
+  flex-direction: column; /* Ensures children stack vertically */
+  align-items: stretch; /* Ensures children stretch to full height */
   margin-top: 80px;
-  /* height: 311px; */
 }
 .team-member-info-content.dwl-team-grid-style-5{
   position: relative;
-  /* height: 280px; */
 }
 .dwl-team-grid-style-5 .team-member-desc{
   width: 100%;
@@ -6433,10 +6444,6 @@ th.dwl-table-head-cotact {
 }
 .dwl-team-grid-style-5 .team-member-desc {
   padding-top: 65px;
-  /* margin-top: -58px; */
-  background-color: var(--wtm-color-white);
-  border-radius: 17px;
-  box-shadow: 0 1px 6px -4px #777;
 }
 
 .dwl-team-grid-style-5 header{

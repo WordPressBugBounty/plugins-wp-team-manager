@@ -61,6 +61,10 @@
                         <?php endif; ?>
                     <?php endif; ?>
 
+                        <?php if(isset($settings['show_social']) && 'yes' == $settings['show_social']) : ?>
+                            <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
+                        <?php endif; ?>
+
                         <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
                             <div class="wtm-read-more-wrap">
                                 <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>" class="wtm-read-more">
@@ -68,10 +72,7 @@
                                 </a>
                             </div>
                         <?php endif; ?>
-
-                        <?php if(isset($settings['show_social']) && 'yes' == $settings['show_social']) : ?>
-                            <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
-                        <?php endif; ?>
+                        
                     </div>
                 </div>
             </div>

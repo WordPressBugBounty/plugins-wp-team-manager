@@ -625,7 +625,7 @@ class Helper {
             <?php foreach( $team_gallery_data[0] as $attachment_id => $attachment_url ): ?>
                 <div class="wtm-single-image">
                     <a href="<?php echo esc_url( wp_get_attachment_url( $attachment_id ) ); ?>" title="">
-                        <?php echo wp_get_attachment_image( $attachment_id ); ?>
+                        <?php echo wp_get_attachment_image( $attachment_id , 'medium'); ?>
                     </a>
                 </div>
             <?php endforeach;?>
@@ -733,10 +733,10 @@ class Helper {
     
         // Default gallery column options
         $fields = array(
-            'one_column'    => __('One Column', 'wp-team-manager'),
-            'two_columns'   => __('Two Columns', 'wp-team-manager'),
-            'three_columns' => __('Three Columns', 'wp-team-manager'),
-            'four_columns'  => __('Four Columns', 'wp-team-manager'),
+            'one_column'    => __('One', 'wp-team-manager'),
+            'two_columns'   => __('Two', 'wp-team-manager'),
+            'three_columns' => __('Three', 'wp-team-manager'),
+            'four_columns'  => __('Four', 'wp-team-manager'),
         );
     
         // Allow developers to modify the gallery columns list

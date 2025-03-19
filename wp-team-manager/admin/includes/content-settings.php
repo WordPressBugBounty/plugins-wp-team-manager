@@ -144,7 +144,7 @@ $fields = array(
                 <tr valign="top">
                     <th scope="row">
                         <label>
-                            <?php esc_html_e('Change Image size','wp-team-manager'); ?>
+                            <?php esc_html_e('Change Single Image size','wp-team-manager'); ?>
                         </label>
                     </th>
                     <td>
