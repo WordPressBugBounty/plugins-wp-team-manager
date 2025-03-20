@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.2.6';
+	const version = '2.2.7';
 
 	/**
 	 * Class init.
@@ -72,7 +72,6 @@ final class Wp_Team_Manager {
 			ControllerClass\ShortcodeGenerator::class,
 			ControllerClass\Shortcodes::class,
 			ControllerClass\PublicAssets::class,
-			ControllerClass\LoadMore::class,
 		];
 
 		if ( is_admin() ) {
