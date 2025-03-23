@@ -16,6 +16,77 @@
     text-decoration: none;
 }
 
+
+.dwl-team-wrapper .team-isotope-feature-img-round img {
+    border-radius: 50%;
+    margin: 0 auto;
+  }
+  
+  .dwl-team-isotope-container.istyle-2 .team-member-info-content {
+    background-color: #4F959D;
+  }
+  .dwl-team-isotope-container.istyle-2 h2.team-member-title {
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 .team-member-desc a {
+    text-decoration: none;
+  }
+  .dwl-team-isotope-container.istyle-2 .team-member-info-wrap .team-position {
+    color: #fff;
+  }
+  .dwl-team-wrapper.dwl-team-isotope-container.istyle-2 .dwl-team-filter-button.active {
+    background: #4F959D;
+  }
+  .dwl-team-wrapper.dwl-team-isotope-container.istyle-2 .dwl-team-filter-button:hover {
+    background: #4F959D;
+  }
+  .dwl-team-wrapper.dwl-team-isotope-container.istyle-2  button {
+  
+    background: #205781;
+  }
+  .dwl-team-isotope-container .team-member-other-info {
+    text-align: center;
+  }
+  
+  .dwl-team-isotope-container.istyle-2 .team-member-info
+   {
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 .team-member-info a
+   {
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 .team-short-bio
+   {
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 .team-member-info i {
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 .wtm-read-more-wrap .wtm-read-more{
+    color: #fff;
+  }
+  .dwl-team-isotope-container.istyle-2 span.team-member-skill-title{
+    color: #fff;
+  }
+  .dwl-team-elementor-layout-isotope .team-member{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+    box-shadow: 0 1px 6px -4px #777;
+}
+  .dwl-team-elementor-layout-isotope .team-member-info-content{
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    
+    border-radius: 5px;
+    background-color: var(--wtm-color-white);
+    overflow: hidden;
+}
+  
 .dwl-team-isotope-container button {
     background: var(--wtm-color-light_blue);
     border: none;
@@ -46,6 +117,7 @@
 }
 .wtm-isotope-item{
     min-height: 400px;
+    margin-bottom: 25px;
 }
 .elementor-editor-preview .wtm-isotope-grid,
 .elementor-editor-active .wtm-isotope-grid{

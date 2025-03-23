@@ -39,7 +39,13 @@ $disable_single_template = ( false !== $single_team_member_view && filter_var( $
                 <?php if( !empty( $short_bio ) ): ?>
                     <?php echo wp_kses_post( $short_bio ); ?>
                     <?php else: ?>
-                    <?php echo wp_kses_post( wp_trim_words( get_the_content(null, false,$teamInfo->ID), 40, '...' ) ); ?>
+                        <?php 
+                        $post_content = !empty($teamInfo->post_excerpt) 
+                            ? $teamInfo->post_excerpt 
+                            : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
+
+                        echo esc_html($post_content);
+                    ?>
                 <?php endif; ?>
             </div>
 
@@ -48,7 +54,7 @@ $disable_single_template = ( false !== $single_team_member_view && filter_var( $
             <?php endif; ?>
 
             <?php if(isset($settings['show_social']) AND 'yes' == $settings['show_social']) : ?>
-                <?php echo wp_kses_post( Helper::get_team_social_links($teamInfo->ID) ); ?>
+                <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
             <?php endif; ?>
 
             <?php if(isset($settings['show_read_more']) AND 'yes' == $settings['show_read_more']) : ?>

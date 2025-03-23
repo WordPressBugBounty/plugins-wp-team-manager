@@ -53,13 +53,12 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
 
                         <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                                 <div class="wtm-progress-bar">
-                                    <?php
-                                    if (class_exists('DWL_Wtm_Pro')) {
+                                <?php
+                                        if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                        $obj_skill = new \DWL_Wtm_Pro();
-                                        echo $obj_skill->display_skills_output($post_id);
+                                            echo DWL_Wtm_Pro_Helper::display_skills_output($team_member->ID);
 
-                                    } ?>
+                                        } ?>
                                 </div>
                         <?php endif; ?>
 

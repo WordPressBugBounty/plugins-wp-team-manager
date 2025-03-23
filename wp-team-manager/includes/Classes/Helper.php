@@ -46,11 +46,12 @@ class Helper {
         }
     
         // Return the formatted image with proper escaping for class attributes
-        return wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]);
+        return apply_filters('wp_team_manager_team_picture_html', wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]), $post_id, $thumb_image_size, $class);
     }
 
 
     /**
+     * @todo Need to remove
      * Retrieves the team member's social media links as an HTML structure.
      *
      * This function retrieves the social media links associated with a team member
@@ -95,11 +96,12 @@ class Helper {
         ob_start();
     
         echo '<div class="team-member-socials size-' . esc_attr($social_size) . '">';
+        do_action('wp_team_manager_before_social_links', $post_id);
+        $social_links = apply_filters('wp_team_manager_social_links', $social_links, $post_id);
     
         foreach ($social_links as $network => $data) {
             // Get the social URL from metadata
             $value = isset($meta[$data['key']][0]) ? trim($meta[$data['key']][0]) : '';
-    
             if (!empty($value)) {
                 $href = ($network === 'email') ? 'mailto:' . sanitize_email($value) : esc_url($value);
                 echo '<a class="' . esc_attr($network . '-' . $social_size) . '" href="' . $href . '" ' . esc_attr($link_window) . ' title="' . esc_attr($data['title']) . '">';
@@ -108,6 +110,7 @@ class Helper {
         }
     
         echo '</div>';
+        do_action('wp_team_manager_after_social_links', $post_id);
     
         return ob_get_clean();
     }
@@ -258,6 +261,7 @@ class Helper {
                 'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
                 'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
             ];
+            $field_mappings = apply_filters('wp_team_manager_other_info_fields', $field_mappings, $fields, $post_id);
         
             // Generate HTML with filtering logic
             foreach ($field_mappings as $key => $info) {
@@ -298,6 +302,7 @@ class Helper {
         
             $output .= '</div>';
         
+            $output = apply_filters('wp_team_manager_other_info_html', $output, $post_id);
             return $output;
         }
 
@@ -940,6 +945,7 @@ class Helper {
      */
 
     public static function get_team_data($args){
+        $args = apply_filters('wp_team_manager_query_args', $args);
         $tmQuery = new \WP_Query( $args );
         return ($tmQuery->posts) ? ['posts' => $tmQuery->posts,'max_num_pages' => $tmQuery->max_num_pages] : [];
     }
@@ -1117,6 +1123,7 @@ class Helper {
             }
         
             $templateFile = $allowedLayouts[$layout];
+            $templateFile = apply_filters('wp_team_manager_template_file', $templateFile, $layout, $settings);
         
             // Locate and validate template path
             $templatePath = self::wtm_locate_template($templateFile);
@@ -1158,6 +1165,7 @@ class Helper {
 		}
 		$terms_html .= '</div>';
 
+		$terms_html = apply_filters('wp_team_manager_terms_output', $terms_html, $term, $post_id);
 		return $terms_html;
 	}
 

@@ -62,7 +62,6 @@ public function shortcode_callback($atts) {
   $settings = array_map('sanitize_text_field', $settings);
 
   // Validate Integer Inputs
-  $settings['posts_per_page'] = absint($settings['posts_per_page']);
   $settings['large_column']   = absint($settings['large_column']);
   $settings['tablet_column']  = absint($settings['tablet_column']);
   $settings['mobile_column']  = absint($settings['mobile_column']);

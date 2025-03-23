@@ -1,4 +1,3 @@
-
 <?php 
 use DWL\Wtm\Classes\Helper;
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -41,12 +40,16 @@ if(!empty($data)):
                         
                             foreach ($data as $key => $teamInfo):
                                 
-                                $team_department = wp_get_post_terms( $teamInfo->ID, 'team_department');
-                                $team_designation = wp_get_post_terms( $teamInfo->ID, 'team_designation');
-                                $job_title = get_post_meta( $teamInfo->ID, 'tm_jtitle', true );
-                                $short_bio = get_post_meta( $teamInfo->ID, 'tm_short_bio', true );
-                                $tm_email = get_post_meta($teamInfo->ID,'tm_email',true);
-                                $tm_mobile = get_post_meta($teamInfo->ID,'tm_mobile',true);?>
+                                $team_department = wp_get_post_terms($teamInfo->ID, 'team_department');
+                                $team_designation = wp_get_post_terms($teamInfo->ID, 'team_designation');
+
+                                $meta = get_post_custom($teamInfo->ID);
+                                $job_title = !empty($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
+                                $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+                                $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
+                                $tm_mobile = !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '';
+                                
+                                ?>
                                 
                                 
                                 <tr class="dwl-table-row">
@@ -85,7 +88,6 @@ if(!empty($data)):
                                             <?php if(isset($tm_mobile) && !empty($tm_mobile)): ?>
                                             <div class="team-member-mobile-info">
                                                 <a href="tel://<?php echo esc_html($tm_mobile) ?>" target="_blank">
-                                                    <!-- <i class="fas fa-phone-alt"></i> -->
                                                     <?php echo esc_html($tm_mobile) ?>
                                                 </a>
                                             </div>

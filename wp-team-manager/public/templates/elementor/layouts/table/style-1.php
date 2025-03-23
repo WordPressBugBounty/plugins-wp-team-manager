@@ -44,9 +44,10 @@ if(!empty($data)):
                     
                         foreach ($data as $key => $teamInfo):
 
-                            $job_title = get_post_meta( $teamInfo->ID, 'tm_jtitle', true );
-                            $short_bio = get_post_meta( $teamInfo->ID, 'tm_short_bio', true );
-                            $tm_email = get_post_meta($teamInfo->ID,'tm_email',true);
+                            $meta = get_post_custom($teamInfo->ID);
+                            $job_title = !empty($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
+                            $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+                            $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                             
                             ?>
                             
@@ -92,7 +93,13 @@ if(!empty($data)):
                                             <?php if( !empty( $short_bio ) && 'yes'== $settings['team_show_short_bio'] ): ?>
                                                 <?php echo esc_html( wp_trim_words( $short_bio, 20, '...' ) ); ?>
                                             <?php else: ?>
-                                                <?php echo esc_html( wp_trim_words( get_the_content(null, false, $teamInfo->ID), 20, '...' ) ); ?>
+                                                <?php 
+                                                $post_content = !empty($teamInfo->post_excerpt) 
+                                                    ? $teamInfo->post_excerpt 
+                                                    : wp_trim_words(strip_tags($teamInfo->post_content), 20, '...');
+
+                                                echo esc_html($post_content);
+                                                ?>
                                             <?php endif; ?>
                                         </div>
                                     </td>

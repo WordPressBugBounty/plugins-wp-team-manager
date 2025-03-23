@@ -396,6 +396,7 @@ class TeamMetabox {
                             $this->prefix . 'team_show_other_info',
                             $this->prefix . 'team_show_social',
                             $this->prefix . 'show_progress_bar',
+                            $this->prefix . 'hide_short_bio',
                             $this->prefix . 'team_show_read_more',
                         ),
                     ),
@@ -528,7 +529,7 @@ class TeamMetabox {
 
         $dwl_team_metabox->add_field( 
 			array(
-				'name'    => __( 'Show Other Info', 'wp-team-manager' ),
+				'name'    => __( 'Hide Other Info', 'wp-team-manager' ),
                 'desc' => 'Show/hide',
 				'id'      => $this->prefix . 'team_show_other_info',
 				'type'    => 'checkbox',
@@ -537,7 +538,7 @@ class TeamMetabox {
 
         $dwl_team_metabox->add_field( 
 			array(
-				'name'    => __( 'Show Read More', 'wp-team-manager' ),
+				'name'    => __( 'Hide Read More', 'wp-team-manager' ),
                 'desc' =>  __( 'Show/Hide', 'wp-team-manager' ),
 				'id'      => $this->prefix . 'team_show_read_more',
 				'type'    => 'checkbox',
@@ -546,7 +547,7 @@ class TeamMetabox {
 
         $dwl_team_metabox->add_field( 
 			array(
-				'name'    => __( 'Show Social', 'wp-team-manager' ),
+				'name'    => __( 'Hide Social', 'wp-team-manager' ),
                 'desc' => 'Show/hide',
 				'id'      => $this->prefix . 'team_show_social',
 				'type'    => 'checkbox',
@@ -554,13 +555,13 @@ class TeamMetabox {
 		);
 
         $show_progress_bar =  array(
-            'name'    => __( 'Show Progress Bar', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
+            'name'    => __( 'Hide Progress Bar', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
             'desc' => 'Show/hide',
             'id'      => $this->prefix . 'show_progress_bar',
             'type'    => 'checkbox',
         );
 
-        if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()){
+        if( !tmwstm_fs()->is_paying_or_trial() ){
 
             $show_progress_bar['attributes'] =   array(
                 'disabled' => true
@@ -569,6 +570,23 @@ class TeamMetabox {
         }
 
         $dwl_team_metabox->add_field( $show_progress_bar );
+
+        $hide_short_bio =  array(
+            'name'    => __( 'Hide Short Bio', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
+            'desc' => 'Show/hide',
+            'id'      => $this->prefix . 'hide_short_bio',
+            'type'    => 'checkbox',
+        );
+
+        if( !tmwstm_fs()->is_paying_or_trial() ){
+
+            $hide_short_bio['attributes'] =   array(
+                'disabled' => true
+            );
+
+        }
+
+        $dwl_team_metabox->add_field( $hide_short_bio );
         
         // Image Setting
         $dwl_team_metabox->add_field( 
@@ -580,11 +598,9 @@ class TeamMetabox {
                 'type'    => 'select',
                 'options' => array(
                     'thumbnail'                     => __( 'Thumbnail', 'wp-team-manager' ),
-                    '1536x1536'                     => __( '1536x1536', 'wp-team-manager' ),
-                    '2048x2048'                     => __( '2048x2048', 'wp-team-manager' ),
-                    'woocommerce_thumbnail'         => __( 'Woocommerce Thumbnail', 'wp-team-manager' ),
-                    'woocommerce_single'            => __( 'Woocommerce Single', 'wp-team-manager' ),
-                    'woocommerce_gallery_thumbnail' => __( 'Woocommerce Gallery Thumbnail', 'wp-team-manager' ),
+                    'medium'                        => __( 'Medium', 'wp-team-manager' ),
+                    'large'                         => __( 'Large', 'wp-team-manager' ),
+                    'full'                          => __( 'Full', 'wp-team-manager' ),
                 ),
             )
         );

@@ -9,6 +9,7 @@ $show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
 $show_social = !empty($settings['dwl_team_team_show_social'][0]);
 $show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
 $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
+$hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
 
 // Determine if the single template should be disabled
 $disable_single_template = get_option('single_team_member_view') === 'True';
@@ -42,18 +43,27 @@ if (!empty($data['posts'])) {
                 <?php endif; ?>
             </header>
 
-            <div class="team-member-desc">
+            <div class="team-member-desc team-member-info-content">
                 <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
 
                 <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
                     <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                 <?php endif; ?>
+                <?php if (!$hide_short_bio_control): ?>
+                    <div class="team-short-bio">
+                        <?php if( !empty( $short_bio ) ): ?>
+                            <?php echo esc_html( $short_bio ); ?>
+                        <?php else: ?>
+                            <?php 
+                                $post_content = !empty($teamInfo->post_excerpt) 
+                                    ? $teamInfo->post_excerpt 
+                                    : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
 
-                <div class="team-short-bio">
-                    <?php 
-                    echo esc_html(!empty($short_bio) ? $short_bio : wp_trim_words(get_the_content(null, false, $teamInfo->ID), 40, '...')); 
-                    ?>
-                </div>
+                                echo esc_html($post_content);
+                                ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
 
                 <?php if (!$show_other_info): ?>
                     <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
@@ -62,13 +72,12 @@ if (!empty($data['posts'])) {
                 <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                         <?php if (!$show_progress_bar): ?>
                             <div class="wtm-progress-bar">
-                                <?php
-                                if (class_exists('DWL_Wtm_Pro')) {
+                        <?php
+                                    if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                    $obj_skill = new \DWL_Wtm_Pro();
-                                    echo $obj_skill->display_skills_output($teamInfo->ID);
+                                        echo DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID);
 
-                                } ?>
+                                    } ?>
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>

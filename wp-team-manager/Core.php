@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.2.7';
+	const version = '2.2.6';
 
 	/**
 	 * Class init.
@@ -105,6 +105,7 @@ final class Wp_Team_Manager {
 		require_once TM_PATH . '/lib/cmb2-radio-image/cmb2-radio-image.php';
 		require_once TM_PATH . '/lib/cmb2-tabs/cmb2-tabs.php';
 		require_once TM_PATH . '/includes/functions.php';
+		require_once TM_PATH . '/includes/Classes/GutenbergBlock.php';
 	}
 
 	/**

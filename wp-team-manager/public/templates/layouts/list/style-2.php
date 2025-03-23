@@ -42,25 +42,30 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
               <p class="team-position"><?php echo esc_html( $job_title ); ?></p>
             <?php endif;?>
             <div class="team-short-bio">
-              <?php if( !empty( $short_bio ) && 'yes'== $settings['team_show_short_bio'] ): ?>
-                  <?php echo esc_html( $short_bio ); ?>
-              <?php else: ?>
-                  <?php echo esc_html( wp_trim_words( get_the_content(null, false,$teamInfo->ID), 40, '...' ) ); ?>
-              <?php endif; ?>
-            </div>
+                    <?php if( !empty( $short_bio ) ): ?>
+                        <?php echo esc_html( $short_bio ); ?>
+                    <?php else: ?>
+                        <?php 
+                            $post_content = !empty($teamInfo->post_excerpt) 
+                                ? $teamInfo->post_excerpt 
+                                : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
+
+                            echo esc_html($post_content);
+                            ?>
+                    <?php endif; ?>
+                </div>
             <?php if('yes' == $settings['show_other_info']) : ?>
               <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID )); ?>
             <?php endif; ?>
             <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                         <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>
                             <div class="wtm-progress-bar">
-                                <?php
-                                if (class_exists('DWL_Wtm_Pro')) {
+                            <?php
+                                  if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                    $obj_skill = new \DWL_Wtm_Pro();
-                                    echo $obj_skill->display_skills_output($teamInfo->ID);
+                                      echo DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID);
 
-                                } ?>
+                                  } ?>
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>

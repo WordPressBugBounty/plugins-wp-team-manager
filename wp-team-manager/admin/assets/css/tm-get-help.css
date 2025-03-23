@@ -18,7 +18,15 @@
     align-items: center;
     flex-wrap: wrap;
 }
-
+.wp-team-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.wp-team-header-pro{
+    padding-right: 30px;
+}
 .wp-team-box-content{
     display: flex;
     flex-wrap: wrap;

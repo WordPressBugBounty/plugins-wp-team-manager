@@ -1216,10 +1216,9 @@ class Isotope extends \Elementor\Widget_Base
 
 		if (tmwstm_fs()->is_paying_or_trial()) {
 
-			if (class_exists('DWL_Wtm_Pro')) {
+			if (class_exists('DWL_Wtm_Pro_Helper')) {
 				$settings = $this->get_settings_for_display();
-				$obj_isotop = new \DWL_Wtm_Pro();
-				$obj_isotop->IsotopeOptions($settings);
+				\DWL_Wtm_Pro_Helper::IsotopeOptions($settings);
 			}
 
 			

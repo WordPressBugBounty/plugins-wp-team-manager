@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wpml-config>
+    <!-- Define translatable custom post types -->
+    <custom-types>
+        <custom-type translate="1">team_manager</custom-type>
+    </custom-types>
+
+    <!-- Define translatable custom taxonomies -->
+    <taxonomies>
+        <taxonomy translate="1">team_groups</taxonomy>
+    </taxonomies>
+
+    <!-- Define translatable plugin options -->
+    <admin-texts>
+        <key name="wp_team_manager_options">
+            <key name="show_other_info" />
+            <key name="show_read_more" />
+            <key name="bgColor" />
+            <key name="socialColor" />
+        </key>
+    </admin-texts>
+
+    <!-- Define translatable strings -->
+    <strings>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Show Other Info?</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Show Read More?</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Background Color</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Social Color</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Team Manager</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Category</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Layout</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Order By</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Grid</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Slider</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>List</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Title</source>
+        </string>
+        <string name="wp-team-manager" context="wp-team-manager">
+            <source>Date</source>
+        </string>
+    </strings>
+</wpml-config>

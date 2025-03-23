@@ -45,7 +45,13 @@ if(!empty($data)){
             <?php if( !empty( $short_bio ) ): ?>
               <?php echo esc_html( $short_bio ); ?>
               <?php else: ?>
-                <?php echo esc_html( wp_trim_words( get_the_content(null, false,$teamInfo->ID), 40, '...' ) ); ?>
+                <?php 
+                    $post_content = !empty($teamInfo->post_excerpt) 
+                        ? $teamInfo->post_excerpt 
+                        : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
+
+                    echo esc_html($post_content);
+                    ?>
             <?php endif; ?>
             </div>
             <?php if('yes' == $settings['show_other_info']) : ?>
