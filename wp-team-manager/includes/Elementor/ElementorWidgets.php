@@ -32,7 +32,7 @@ class ElementorWidgets {
 		$elements_manager->add_category(
 			'dwl-items',
 			[
-				'title' => __( 'DWL Elements', 'wp-team-manager' ),
+				'title' => __( 'Team Manager', 'wp-team-manager' ),
 				'icon' => 'fa fa-plug',
 			]
 		);
@@ -69,7 +69,10 @@ class ElementorWidgets {
 			if ( file_exists( $file ) ) {
 				require_once $file;
 			} else {
-				error_log( "Missing file: " . $file ); // Log error instead of breaking the site
+				if (defined('WP_DEBUG') && WP_DEBUG) {
+					error_log( "Missing file: " . $file ); // Log error instead of breaking the site
+				}
+				
 			}
 		}
 	}

@@ -30,7 +30,7 @@ class Isotope extends \Elementor\Widget_Base
 
 	public function get_icon()
 	{
-		return 'eicon-user-circle-o';
+		return 'eicon-container-grid';
 	}
 
 	public function get_categories()

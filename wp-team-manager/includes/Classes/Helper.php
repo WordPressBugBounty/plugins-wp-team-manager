@@ -485,7 +485,9 @@ class Helper {
         $cssFile = $allowedPath . '/wp-team-manager/team.css';
 
         if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
-            error_log('Team: Error Invalid file path team.css');
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('Team: Error Invalid file path team.css');
+            }
         }
 
         // Generate CSS content
@@ -505,7 +507,9 @@ class Helper {
 
             // Use secure file writing with WP Filesystem API
             if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
-                error_log('Team: Error generating CSS file');
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('Team: Error generating CSS file');
+                }
             }
         }
     }
@@ -545,14 +549,18 @@ class Helper {
 
     // Validate the path to prevent path traversal
     if (!$upload_basedir || strpos($upload_basedir, realpath(WP_CONTENT_DIR . '/uploads')) !== 0) {
-        error_log('Team: Invalid file path uploads for team.css');
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Team: Invalid file path uploads for team.css');
+        }
     }
 
     $cssFile = realpath($upload_basedir . '/wp-team-manager/team.css');
 
     // Ensure `$cssFile` is inside the allowed directory
     if (!$cssFile || strpos($cssFile, $upload_basedir) !== 0) {
-        error_log('Team: Invalid file path team.css');
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('Team: Invalid file path team.css');
+        }
     }
 
     // Securely read the existing CSS file
@@ -565,7 +573,10 @@ class Helper {
 
             // Securely write the updated CSS file
             if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
-                error_log('Team: Error updating CSS file');
+               
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log('Team: Error updating CSS file');
+                }
             }
         }
     }
