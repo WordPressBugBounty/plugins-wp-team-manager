@@ -25,7 +25,8 @@ class Shortcodes{
 
     \add_shortcode( 'team_manager', [$this, 'shortcode_callback'] );
     \add_shortcode( 'dwl_create_team', [$this, 'create_team_callback'] );
-
+		//\add_action('wp_ajax_dwl_team_member_search', [$this, 'dwl_team_member_search']);
+		//\add_action('wp_ajax_nopriv_dwl_team_member_search', [$this, 'dwl_team_member_search']);
   }
 
 
@@ -197,13 +198,14 @@ public function shortcode_callback($atts) {
     
     $post_id            = intval( $default['id'] );
     $all_settings       = get_post_meta( $post_id );
-    $posts_per_page     = isset( $all_settings['dwl_team_show_total_members'][0] ) ? $all_settings['dwl_team_show_total_members'][0]                : -1;
+    
     $asc_desc           = isset( $all_settings['dwl_team_team_order'][0] ) ? $all_settings['dwl_team_team_order'][0]                                : 'ASC';
     $order_by           = isset( $all_settings['dwl_team_team_order_by'][0] ) ? $all_settings['dwl_team_team_order_by'][0]                          : 'name';
     $display_members    = isset( $all_settings['dwl_team_show_team_member_by_ids'][0] ) ? $all_settings['dwl_team_show_team_member_by_ids'][0]      : '';
     $remove_members     = isset( $all_settings['dwl_team_remove_team_members_by_ids'][0] ) ? $all_settings['dwl_team_remove_team_members_by_ids'][0]: '';
     $layout = isset( $all_settings['dwl_team_layout_option'][0] ) ? $all_settings['dwl_team_layout_option'][0] : 'grid';	
-    $_paged        = is_front_page() ? "page" : "paged";
+    $show_pagination = isset( $all_settings['dwl_team_show_pagination'][0] ) ? $all_settings['dwl_team_show_pagination'][0] : 'none';	
+    
     $wrapper_calss = '';
     $social_size = ( false !== get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
     $shortcode_id = 'dwl-team-wrapper-'.$post_id;
@@ -223,11 +225,17 @@ public function shortcode_callback($atts) {
       $wrapper_calss = 'wtm-row g-2 g-lg-3';
     }
 
+    $posts_per_page     = isset( $all_settings['dwl_team_show_total_members'][0] ) ? $all_settings['dwl_team_show_total_members'][0]: -1;
+    $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+    $_paged   = is_front_page() ? "page" : "paged";
+  
+    $settings_json = esc_attr(json_encode($all_settings));
+
     $args = array(
       'post_type'      => 'team_manager',
       'post_status'    => 'publish',
       'posts_per_page' => $posts_per_page,
-      'paged'          => get_query_var( $_paged ) ? absint( get_query_var( $_paged ) ): 1,
+      'paged'          => $paged,
       'order'          => $asc_desc,
       'orderby'        => $order_by,
     );
@@ -284,7 +292,10 @@ public function shortcode_callback($atts) {
     $imageStyle =  isset($all_settings['dwl_team_image_style'])? $all_settings['dwl_team_image_style'] [0] : '';
 
     ?>
-      <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-wrapper wtm-container-fluid wtm-team-manager-shortcode-generator">
+  <!-- <div class="dwl-team-search-container">
+    <input type="text" id="dwl-team-search-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-search" placeholder="Search team members..." data-post-id="<?php echo esc_attr( $post_id ); ?>">
+  </div> -->
+      <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-wrapper wtm-container-fluid wtm-team-manager-shortcode-generator" data-settings="<?php echo $settings_json; ?>">
         <div class="dwl-team-wrapper--main dwl-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-<?php echo esc_attr( $teamplate_layout ); ?>-<?php echo esc_attr( $teamplate_style ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $imageStyle );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
           data-arrows="<?php echo esc_attr($arrows); ?>" 
           data-dots="<?php echo esc_attr($dot_nav); ?>"  
@@ -293,10 +304,45 @@ public function shortcode_callback($atts) {
           data-tablet="<?php echo esc_attr(  $tablet )?>" 
           data-mobile="<?php echo esc_attr(  $mobile )?>" 
         >  
+        
           <?php Helper::renderTeamLayout( $teamplate_layout, $team_data, $style_type, $all_settings ); ?>
+          
         </div>
+        <?php if('none' !== $show_pagination && $layout !== 'slider'): ?>
+        <?php echo wp_kses_post(Helper::get_pagination_markup(new \WP_Query($args), $posts_per_page)); ?>
+        <?php endif; ?>
       </div>
     <?php
+
+    wp_enqueue_script( ['wp-team-search'] );
+    
       return ob_get_clean();
     }
+
+
+  public function dwl_team_member_search() {
+    check_ajax_referer('dwl_team_search_nonce', 'nonce');
+
+    $search_term = sanitize_text_field($_POST['keyword']);
+    $post_id = intval($_POST['post_id']);
+
+    $args = array(
+        'post_type' => 'team_manager',
+        'post_status' => 'publish',
+        's' => $search_term,
+        'posts_per_page' => -1,
+    );
+
+    // Get settings from AJAX request for layout and style
+    $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
+    $layout = isset($settings['dwl_team_layout_option'][0]) ? $settings['dwl_team_layout_option'][0] : 'grid';
+    $style = isset($settings['dwl_team_grid_style_option'][0]) ? $settings['dwl_team_grid_style_option'][0] : 'style-1';
+
+    $team_data = \DWL\Wtm\Classes\Helper::get_team_data($args);
+
+    ob_start();
+    \DWL\Wtm\Classes\Helper::renderTeamLayout($layout, $team_data, $style, $settings);
+    wp_send_json_success(ob_get_clean());
+  }
+
 }

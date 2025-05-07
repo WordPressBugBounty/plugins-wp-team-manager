@@ -74,6 +74,10 @@ final class Wp_Team_Manager {
 			ControllerClass\PublicAssets::class,
 		];
 
+		if (tmwstm_fs()->is_paying_or_trial() && class_exists('LoadMore')) {
+			$controllers[] = ControllerClass\LoadMore::class;
+		}
+
 		if ( is_admin() ) {
 			$controllers[] = ControllerClass\Admin::class;
 			$controllers[] = ControllerClass\AdminAssets::class;

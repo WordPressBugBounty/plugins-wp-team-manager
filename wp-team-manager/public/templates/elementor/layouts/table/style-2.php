@@ -25,6 +25,14 @@ if(!empty($data)):
                                 <th><?php esc_html_e( "Designation", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
+                            <?php if( 'yes'== $settings['show_job_title'] ): ?>
+                                <th><?php esc_html_e( "Profession", " wp-team-manager " )?></th>
+                            <?php endif; ?>
+
+                            <?php if( 'yes'== $show_shortBio ): ?>
+                                <th><?php esc_html_e( "Short Bio", " wp-team-manager " )?></th>
+                            <?php endif; ?>
+
                             <?php if( 'yes' === $settings['show_team_mobile_number'] ) : ?>
                                 <th><?php esc_html_e( "Number", " wp-team-manager " )?></th>
                             <?php endif; ?>
@@ -48,7 +56,6 @@ if(!empty($data)):
                                 $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
                                 $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                                 $tm_mobile = !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '';
-                                
                                 ?>
                                 
                                 
@@ -80,6 +87,20 @@ if(!empty($data)):
                                     <?php if( 'yes'== $settings['show_designation'] ): ?>
                                         <td class="dwl-table-data">
                                             <?php echo wp_kses_post(Helper::render_terms($teamInfo->ID, 1, 'team_designation')); ?>
+                                        </td>
+                                    <?php endif;?>
+
+                                    <?php if( 'yes'== $settings['show_job_title'] ): ?>
+                                        <td class="dwl-table-data">
+                                            <span class="team-member-job-title"><?php echo esc_html($job_title) ?></span>
+                                        </td>
+                                    <?php endif;?>
+
+                                    <?php if( 'yes'== $show_shortBio ): ?>
+                                        <td class="dwl-table-data">
+                                            <div class="team-short-bio">
+                                                <?php echo esc_html( wp_trim_words( $short_bio, 20, '...' ) ); ?>
+                                            </div>
                                         </td>
                                     <?php endif;?>
                                     

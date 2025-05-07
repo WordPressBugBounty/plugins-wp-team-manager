@@ -26,6 +26,8 @@ class PublicAssets {
 		\add_action( 'wp_enqueue_scripts', [ $this, 'wp_team_manager_public_assets' ] );
 		\add_action( 'wp_head', [ $this, 'team_manager_add_custom_css'] );
 		\add_action( 'wp_head', [ $this, 'general_settings'] );
+		\add_action('wp_ajax_dwl_team_member_search', '\dwl_team_member_search');
+		\add_action('wp_ajax_nopriv_dwl_team_member_search', '\dwl_team_member_search');
 	}
 
 	/**
@@ -59,6 +61,21 @@ class PublicAssets {
 			'3.0.6', 
 			true 
 		);
+
+		
+		wp_register_script( 
+			'wp-team-search', 
+			TM_PUBLIC . '/assets/js/team-search.js', 
+			array('jquery'), 
+			'3.0.6', 
+			true 
+		);
+
+		wp_localize_script('wp-team-search', 'dwlTeamSearch', [
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'nonce'    => wp_create_nonce('dwl_team_search_nonce'),
+		]);
+		
 
 		wp_register_script( 'wp-team-script', TM_PUBLIC . '/assets/js/team.js', array('jquery'), TM_VERSION, true );
 		wp_register_script( 'wpteam-admin-js', TM_ADMIN_ASSETS.'/js/admin.js', array('jquery'), time(), true );
@@ -116,4 +133,46 @@ class PublicAssets {
 			);
 		}
 	}
+
+	function dwl_team_member_search() {
+		check_ajax_referer('dwl_team_search_nonce', 'nonce');
+	
+		$search_term = sanitize_text_field($_POST['keyword']);
+		$post_id = intval($_POST['post_id']);
+	
+		$args = array(
+			'post_type' => 'team_manager',
+			'post_status' => 'publish',
+			's' => $search_term,
+			'posts_per_page' => -1,
+		);
+	
+		$query = new WP_Query($args);
+		$team_data = [];
+	
+		if ($query->have_posts()) {
+			while ($query->have_posts()) {
+				$query->the_post();
+				$team_data[] = [
+					'ID' => get_the_ID(),
+					'title' => get_the_title(),
+					'content' => get_the_excerpt(),
+					'link' => get_permalink(),
+				];
+			}
+			wp_reset_postdata();
+		}
+	
+		ob_start();
+		foreach ($team_data as $member) {
+			echo '<div class="team-member">';
+			echo '<h4><a href="' . esc_url($member['link']) . '">' . esc_html($member['title']) . '</a></h4>';
+			echo '<p>' . esc_html($member['content']) . '</p>';
+			echo '</div>';
+		}
+	
+		wp_send_json_success(ob_get_clean());
+	}
 }
+
+

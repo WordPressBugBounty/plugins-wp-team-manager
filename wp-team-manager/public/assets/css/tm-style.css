@@ -6179,6 +6179,7 @@ margin-top: 17px;
   padding: 10px;
   font-size: 16px;
   font-weight: 300;
+  text-decoration: none;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-1 .team-member-info a .fas{
@@ -6203,6 +6204,10 @@ margin-top: 17px;
   font-weight: 300;
   color: var(--wtm-text-color);
   padding: 0px;
+}
+
+.team-table-style-2.team-table-short-code .dwl-table-data-short-bio .team-short-bio{
+  text-align: left;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-1 .team-member-head {
@@ -6246,10 +6251,18 @@ margin-top: 17px;
   line-height: 24px;
   font-style: normal;
 }
-.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-img-wraper a img{
+
+.dwl-team-elementor-layout-table .team-table-style-2.team-table-short-code  table thead th {
+  text-align: left;
+}
+.dwl-team-elementor-layout-table .team-table-style-2.team-table-short-code .dwl-table-img-wraper a img{
   max-width: 40px;
   max-height: 40px;
   border-radius: 50%;
+}
+
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-member-title{
+  text-align: left;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data .team-member-title{
@@ -6300,6 +6313,7 @@ th.dwl-table-head-cotact {
   line-height: 22px;
   text-align: center;
   margin: 0px 0px;
+  text-decoration: none;
   color: var(--wtm-color-white);
 }
 
@@ -6351,6 +6365,7 @@ th.dwl-table-head-cotact {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
+  text-decoration: none;
   color: #000000;
 }
 
@@ -6823,6 +6838,11 @@ text-align: right;
   transition: .4s ease-in;
 }
 
+.dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-img-wraper a img {
+  max-width: 50px;
+  max-height: 50px;
+  border-radius: 50%;
+}
 
 /* .dwl-team-wrapper  .dwl-team-elementor-layout-list .team-member-socials {
   justify-content: flex-end;

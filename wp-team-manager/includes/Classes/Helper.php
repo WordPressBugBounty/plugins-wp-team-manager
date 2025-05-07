@@ -485,7 +485,7 @@ class Helper {
         $cssFile = $allowedPath . '/wp-team-manager/team.css';
 
         if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
-            die('Invalid file path.');
+            error_log('Team: Error Invalid file path team.css');
         }
 
         // Generate CSS content
@@ -545,14 +545,14 @@ class Helper {
 
     // Validate the path to prevent path traversal
     if (!$upload_basedir || strpos($upload_basedir, realpath(WP_CONTENT_DIR . '/uploads')) !== 0) {
-        die('Invalid file path.');
+        error_log('Team: Invalid file path uploads for team.css');
     }
 
     $cssFile = realpath($upload_basedir . '/wp-team-manager/team.css');
 
     // Ensure `$cssFile` is inside the allowed directory
     if (!$cssFile || strpos($cssFile, $upload_basedir) !== 0) {
-        die('Invalid file path.');
+        error_log('Team: Invalid file path team.css');
     }
 
     // Securely read the existing CSS file

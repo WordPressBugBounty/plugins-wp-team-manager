@@ -690,7 +690,11 @@ class Team extends Widget_Base
 			'posts_sub_title',
 			[
 				'label' => esc_html__('Job Title', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_STYLE
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'layout_type' => 'table',
+					'table_style_type' => 'style-1',
+				],
 			]
 		);
 
@@ -908,6 +912,63 @@ class Team extends Widget_Base
 				'size_units' => ['px', '%', 'em'],
 				'selectors' => [
 					'{{WRAPPER}} .team-member-mobile-info a' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->end_controls_section();
+
+		//Job Title
+		$this->start_controls_section(
+			'team_profession',
+			[
+				'label' => esc_html__('Job Title (Profession)', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'table_style_type' => 'style-2',
+				],
+			]
+		);
+
+		$this->add_control(
+			'show_job_title',
+			[
+				'label' => __('Show Job Title', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Show', 'wp-team-manager'),
+				'label_off' => __('Hide', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'no',
+			]
+		);
+
+		$this->add_control(
+			'team_job_title_color',
+			[
+				'label' => esc_html__('Job Title Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .team-member-job-title' => 'color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'team_job_title_typography',
+				'selector' => '{{WRAPPER}} .team-member-job-title',
+			]
+		);
+
+		$this->add_responsive_control(
+			'team_job_title_margin',
+			[
+				'label' => esc_html__('Margin', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} .team-member-job-title' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
