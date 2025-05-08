@@ -48,7 +48,8 @@ if(!empty($data)):
                             $job_title = !empty($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
                             $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
                             $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
-                            
+                            $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
+                                
                             ?>
                             
                             <tr class="dwl-table-row" scope="row">
@@ -115,8 +116,19 @@ if(!empty($data)):
                                             </a>
                                         </div>
                                         <?php endif; ?>
-                                    </td>
+                                
+                                    <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
+                                    <div class="wtm-read-more-wrap">
+                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="wtm-read-more">
+                                        <?php echo esc_html( $team_read_more ); ?>
+                                        </a>
+                                    </div>
                                 <?php endif; ?>
+                                   
+                                    </td>
+                             
+                                <?php endif; ?>
+                  
 
                             </tr>
 

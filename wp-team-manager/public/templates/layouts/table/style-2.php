@@ -123,6 +123,7 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
                                                         <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="dwl-table-button"><?php echo esc_attr_e( 'Full Biograph', 'wp-team-manager' )?></a>
                                                     </div>
                                                 <?php endif; ?>
+                                        
                                             </div>
                                         </td>
                                     

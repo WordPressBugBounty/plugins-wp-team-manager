@@ -40,6 +40,7 @@ if(!empty($data)):
                             <?php if("yes" == $settings['show_social'] || 'yes' == $settings['show_full_biograph'] ) : ?>
                                 <th class="dwl-table-head-cotact"><?php esc_html_e( "Contact", " wp-team-manager " )?></th>
                             <?php endif; ?>
+                            
                         </tr>
                     </thead>
 
@@ -56,6 +57,7 @@ if(!empty($data)):
                                 $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
                                 $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                                 $tm_mobile = !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '';
+                                $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
                                 ?>
                                 
                                 
@@ -127,6 +129,14 @@ if(!empty($data)):
                                                         <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="dwl-table-button"><?php echo esc_attr_e( 'Full Biograph', 'wp-team-manager' )?></a>
                                                     </div>
                                                 <?php endif; ?>
+
+                                                <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
+                                                <div class="wtm-read-more-wrap">
+                                                    <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="wtm-read-more">
+                                                    <?php echo esc_html( $team_read_more ); ?>
+                                                    </a>
+                                                </div>
+                                            <?php endif; ?>
                                             </div>
                                         </td>
                                     <?php endif; ?>
