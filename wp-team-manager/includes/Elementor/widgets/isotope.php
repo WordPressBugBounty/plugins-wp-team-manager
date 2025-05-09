@@ -40,7 +40,7 @@ class Isotope extends \Elementor\Widget_Base
 
 	public function get_keywords()
 	{
-		return ['team layout'];
+		return ['team layout isotope'];
 	}
 	public function get_style_depends()
 	{
@@ -109,28 +109,6 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'isotope_column_style_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_grid_style',
-		// 	[
-		// 		'label' => esc_html__( 'Grid Styles', 'wp-team-manager' ),
-		// 		'type' => Controls_Manager::SELECT,
-		// 		'default' => 'masonry', 
-		// 		'options' => [
-		// 			'masonry' => esc_html__( 'Masonry', 'wp-team-manager' ),
-		// 			'grid_2' => esc_html__( 'Grid 2', 'wp-team-manager' ),
-		// 			'grid_3' => esc_html__( 'Grid 3', 'wp-team-manager' ),
-		// 			'grid_4' => esc_html__( 'Grid 4', 'wp-team-manager' ),
-		// 		]
-		// 	]
-		// );
-
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -157,10 +135,71 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
+		if (class_exists('DWL_Wtm_Pro_Helper')) {
+
+			$this->add_control(
+				'include_team_groups',
+				[
+					'label' => __('Include Groups', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_groups'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_groups',
+					],
+				]
+			);
+
+			$this->add_control(
+				'include_team_department',
+				[
+					'label' => __('Include Departments', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_department'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_department',
+					],
+				]
+			);
+	
+			$this->add_control(
+				'include_team_genders',
+				[
+					'label' => __('Include Departments', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_genders'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_genders',
+					],
+				]
+			);
+	
+			$this->add_control(
+				'include_team_designation',
+				[
+					'label' => __('Include Departments', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_designation'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_designation',
+					],
+				]
+			);
+
+		}
+
+
 		$this->add_control(
 			'include',
 			[
-				'label' => esc_html__('Include only', 'wp-team-manager'),
+				'label' => esc_html__('Include Team Members', 'wp-team-manager'),
 				'type' => Controls_Manager::TEXT,
 				'description' => esc_html__('Enter the post IDs separated by comma for include', 'wp-team-manager'),
 				'placeholder' => 'Eg. 10, 15, 17',
@@ -170,7 +209,7 @@ class Isotope extends \Elementor\Widget_Base
 		$this->add_control(
 			'exclude',
 			[
-				'label' => esc_html__('Exclude', 'the-post-grid'),
+				'label' => esc_html__('Exclude Team Members', 'the-post-grid'),
 				'type' => Controls_Manager::TEXT,
 				'description' => esc_html__('Enter the post IDs separated by comma for exclude', 'wp-team-manager'),
 				'placeholder' => 'Eg. 12, 13',
@@ -232,18 +271,6 @@ class Isotope extends \Elementor\Widget_Base
 				],
 			]
 		);
-
-		// $this->add_control(
-		// 	'isotope_show_pagination',
-		// 	[
-		// 		'label' => esc_html__( 'Show Ajax Pagination', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'textdomain' ),
-		// 		'label_off' => esc_html__( 'Hide', 'textdomain' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	]
-		// );
 
 		$this->end_controls_section();
 
@@ -345,24 +372,6 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'isotope_department_switcher',
-		// 	[
-		// 		'label' => esc_html__('Show Department', 'wp-team-manager'),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__('Show', 'wp-team-manager'),
-		// 		'label_off' => esc_html__('Hide', 'wp-team-manager'),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_department_switcher_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
 
 		$this->add_control(
 			'isotope_bio_switcher',
@@ -377,24 +386,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'isotope_bio_switcher_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
 
-		// $this->add_control(
-		// 	'isotope_team_member_skill_switch',
-		// 	[
-		// 		'label' => esc_html__('Show Team Member Skill', 'wp-team-manager'),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__('Show', 'wp-team-manager'),
-		// 		'label_off' => esc_html__('Hide', 'wp-team-manager'),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	]
-		// );
 
 		$this->end_controls_tab();
 
@@ -457,31 +449,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'isotope_social_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'icons',
-		// 	[
-		// 		'label' => esc_html__( 'Which icons to show', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SELECT2,
-		// 		'label_block' => true,
-		// 		'multiple' => true,
-		// 		'options' => [
-		// 			'facebook'  => esc_html__( 'Facebook', 'wp-team-manager' ),
-		// 			'twitter' => esc_html__( 'Twitter', 'wp-team-manager' ),
-		// 			'linkedin' => esc_html__( 'Linkedin', 'wp-team-manager' ),
-		// 			'pinterest' => esc_html__('Pinterest', 'wp-team-manager'),
-		// 		],
-		// 		'default' => [ 'title', 'description' ],
-		// 	]
-		// );
-
-
+		
 
 		$this->end_controls_tab();
 		$this->end_controls_tabs();
@@ -551,51 +519,6 @@ class Isotope extends \Elementor\Widget_Base
 
 		$this->end_controls_section();
 
-
-		// $this->start_controls_section(
-		// 	'isotope_details_page',
-		// 	[
-		// 		'label' => __( 'Details Page', 'wp-team-manager' ),
-		// 		'tab' => Controls_Manager::TAB_SETTINGS,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_link_to_details_page',
-		// 	[
-		// 		'label' => esc_html__( 'Link to Details Page', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'no',
-		// 	],
-		// );
-
-		// $this->end_controls_section();
-
-
-		// $this->start_controls_section(
-		// 	'isotope_content_limit',
-		// 	[
-		// 		'label' => __( 'Content Limit', 'wp-team-manager' ),
-		// 		'tab' => Controls_Manager::TAB_SETTINGS,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'short_bio_limit',
-		// 	[
-		// 		'label' => esc_html__( 'Short Biography Limit', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::NUMBER,
-		// 		'min' => 10,
-		// 		'max' => 50,
-		// 		'step' => 1,
-		// 		'default' => 10,
-		// 	]
-		// );
-
-		// $this->end_controls_section();
 
 	}
 
@@ -718,72 +641,7 @@ class Isotope extends \Elementor\Widget_Base
 				'selector' => '{{WRAPPER}} .team-member-info-content header img', // Change class based on your image wrapper
 			]
 		);
-		// $this->add_control(
-		// 	'team_member_image_margin',
-		// 	[
-		// 		'label' => esc_html__('Image Margin', 'wp-team-manager'),
-		// 		'type' => \Elementor\Controls_Manager::DIMENSIONS,
-		// 		'size_units' => ['px', '%', 'em'],
-		// 		'selectors' => [
-		// 			'{{WRAPPER}} .team-member-info-content header' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-		// 		],
-		// 	]
-		// );
 		
-
-		// $this->add_control(
-		// 	'isotope_show_feature_img',
-		// 	[
-		// 		'label' => esc_html__( 'Show Feature Image', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	],
-		// );
-
-		// $this->add_control(
-		// 	'isotope_show_feature_img_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_img_width',
-		// 	[
-		// 		'label' => esc_html__( 'Image Width', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SELECT,
-		// 		'default' => 'medium',
-		// 		'options' => [
-		// 			'thumbnail' => esc_html__( 'Thumbnail (150 x 150)', 'wp-team-manager' ),
-		// 			'medium' => esc_html__( 'Small (300 x 300)', 'wp-team-manager' ),
-		// 			'large' => esc_html__( 'Large (1024 x 1024)', 'wp-team-manager' ),
-		// 			'full' => esc_html__( 'Full', 'wp-team-manager' ),
-		// 		],
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_img_width_separator',
-		// 	[
-		// 		'type' => \Elementor\Controls_Manager::DIVIDER,
-		// 	]
-		// );
-
-		// $this->add_control(
-		// 	'isotope_grayscale_img',
-		// 	[
-		// 		'label' => esc_html__( 'Grayscale Image', 'wp-team-manager' ),
-		// 		'type' => \Elementor\Controls_Manager::SWITCHER,
-		// 		'label_on' => esc_html__( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => esc_html__( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'no',
-		// 	],
-		// );
-
 		$this->end_controls_section();
 
 		//Title
@@ -837,17 +695,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'show_sub_title',
-		// 	[
-		// 		'label' => __( 'Show Job Title', 'wp-team-manager' ),
-		// 		'type' => Controls_Manager::SWITCHER,
-		// 		'label_on' => __( 'Show', 'wp-team-manager' ),
-		// 		'label_off' => __( 'Hide', 'wp-team-manager' ),
-		// 		'return_value' => 'yes',
-		// 		'default' => 'yes',
-		// 	]
-		// );
+
 
 		$this->add_control(
 			'posts_sub_title_color',
@@ -1062,16 +910,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'show_social_icon_hover_color',
-		// 	[
-		// 		'label' => esc_html__('Hover', 'wp-team-manager'),
-		// 		'type' => \Elementor\Controls_Manager::COLOR,
-		// 		'selectors' => [
-		// 			'{{WRAPPER}} .team-member-socials a:hover' => 'background-color: {{VALUE}}',
-		// 		],
-		// 	]
-		// );
+
 
 		$this->add_control(
 			'button_border_radius',
@@ -1113,18 +952,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
-		// $this->add_control(
-		// 	'read_more_type',
-		// 	[
-		// 		'label' => esc_html__('Link Type', 'wp-team-manager'),
-		// 		'type' => Controls_Manager::SELECT,
-		// 		'default' => 'link',
-		// 		'options' => [
-		// 			'link' => __('Link', 'wp-team-manager'),
-		// 			//'popup'  => __( 'Popup', 'wp-team-manager' ),
-		// 		],
-		// 	]
-		// );
+	
 
 		$this->add_control(
 			'wtm_read_more_color',

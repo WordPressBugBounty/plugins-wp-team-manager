@@ -70,6 +70,10 @@ class Team extends Widget_Base
 		return 'eicon-person';
 	}
 
+	public function get_keywords()
+	{
+		return ['team layout grid list table'];
+	}
 	/**
 	 * Get widget categories.
 	 *
@@ -177,6 +181,10 @@ class Team extends Widget_Base
 						'title' => esc_html__('Style 5', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS . '/icons/layout/grid-5.svg',
 					],
+					// 'style-6' => [
+					// 	'title' => esc_html__('Style 6', 'wp-team-manager'),
+					// 	'url' => TM_ADMIN_ASSETS . '/icons/layout/grid-6.svg',
+					// ],
 				],
 				'default' => 'style-1',
 				'condition' => [
@@ -521,6 +529,32 @@ class Team extends Widget_Base
 			]
 		);
 
+		// Post Tags
+		$this->add_control(
+			'team_designation',
+			[
+				'label' => __('Designation', 'wp-team-manager'),
+				'label_block' => true,
+				'type' => Controls_Manager::SELECT2,
+				'multiple' => true,
+				'options' => $this->get_all_taxonomy('team_designation'),
+
+			]
+		);
+
+			// Post Tags
+			$this->add_control(
+				'team_genders',
+				[
+					'label' => __('Genders', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => $this->get_all_taxonomy('team_genders'),
+	
+				]
+			);
+	
 		$this->add_control(
 			'advanced',
 			[
@@ -687,14 +721,10 @@ class Team extends Widget_Base
 
 		//Sub Title
 		$this->start_controls_section(
-			'posts_sub_title',
+			'team_post_sub_title',
 			[
 				'label' => esc_html__('Job Title', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_STYLE,
-				'condition' => [
-					'layout_type' => 'table',
-					'table_style_type' => 'style-1',
-				],
+				'tab' => Controls_Manager::TAB_STYLE
 			]
 		);
 
@@ -912,63 +942,6 @@ class Team extends Widget_Base
 				'size_units' => ['px', '%', 'em'],
 				'selectors' => [
 					'{{WRAPPER}} .team-member-mobile-info a' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
-				],
-			]
-		);
-
-		$this->end_controls_section();
-
-		//Job Title
-		$this->start_controls_section(
-			'team_profession',
-			[
-				'label' => esc_html__('Job Title (Profession)', 'wp-team-manager'),
-				'tab' => Controls_Manager::TAB_STYLE,
-				'condition' => [
-					'table_style_type' => 'style-2',
-				],
-			]
-		);
-
-		$this->add_control(
-			'show_job_title',
-			[
-				'label' => __('Show Job Title', 'wp-team-manager'),
-				'type' => Controls_Manager::SWITCHER,
-				'label_on' => __('Show', 'wp-team-manager'),
-				'label_off' => __('Hide', 'wp-team-manager'),
-				'return_value' => 'yes',
-				'default' => 'no',
-			]
-		);
-
-		$this->add_control(
-			'team_job_title_color',
-			[
-				'label' => esc_html__('Job Title Color', 'wp-team-manager'),
-				'type' => Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .team-member-job-title' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			[
-				'name' => 'team_job_title_typography',
-				'selector' => '{{WRAPPER}} .team-member-job-title',
-			]
-		);
-
-		$this->add_responsive_control(
-			'team_job_title_margin',
-			[
-				'label' => esc_html__('Margin', 'wp-team-manager'),
-				'type' => Controls_Manager::DIMENSIONS,
-				'size_units' => ['px', '%', 'em'],
-				'selectors' => [
-					'{{WRAPPER}} .team-member-job-title' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
 				],
 			]
 		);
@@ -1619,6 +1592,31 @@ class Team extends Widget_Base
 		$this->end_controls_section();
 	}
 
+	private function search_options() {
+			// AJAX Search Section
+			$this->start_controls_section(
+				'section_ajax_search',
+				[
+					'label' => esc_html__('AJAX Search', 'wp-team-manager') . Helper::showProFeatureLabel(),
+					'tab' => Controls_Manager::TAB_CONTENT,
+				]
+			);
+			$this->add_control(
+				'enable_ajax_search',
+				[
+					'label' => esc_html__('Enable AJAX Search', 'wp-team-manager'),
+					'type' => Controls_Manager::SWITCHER,
+					'label_on' => esc_html__('Yes', 'wp-team-manager'),
+					'label_off' => esc_html__('No', 'wp-team-manager'),
+					'return_value' => 'yes',
+					'default' => '',
+					'description' => Helper::showProFeatureLink('Pro Feature'),
+					'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+				]
+			);
+			$this->end_controls_section();
+	}
+
 	private function pro_options()
 	{
 
@@ -1665,6 +1663,7 @@ class Team extends Widget_Base
 		$this->query_options();
 		$this->pagination_options();
 		$this->image_options();
+		$this->search_options();
 		$this->skills_options();
 		$this->pro_options();
 		$this->style_options();
@@ -1682,19 +1681,18 @@ class Team extends Widget_Base
 	 */
 	protected function render()
 	{
-
 		$settings = $this->get_settings_for_display();
-
 		$paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 		$offset_posts = [];
 		$excluded_ids = [];
 		$wrapper_calss = '';
 		$per_page = isset($settings['per_page']) ? $settings['per_page'] : get_option('posts_per_page');
 
-
 		if ($settings['layout_type'] != 'slider') {
 			$wrapper_calss = 'wtm-row g-2 g-lg-3';
 		}
+
+
 
 		$query_args = array(
 			'posts_per_page' => $per_page,
@@ -1741,7 +1739,23 @@ class Team extends Widget_Base
 				'terms' => $settings['team_department'],
 			];
 		}
+		if (isset($settings['team_designation']) && !empty($settings['team_designation'])) {
 
+			$query_args['tax_query'][] = [
+				'taxonomy' => 'team_designation',
+				'field' => 'term_id',
+				'terms' => $settings['team_designation'],
+			];
+		}
+		if (isset($settings['team_genders']) && !empty($settings['team_genders'])) {
+
+			$query_args['tax_query'][] = [
+				'taxonomy' => 'team_genders',
+				'field' => 'term_id',
+				'terms' => $settings['team_genders'],
+			];
+		}
+		
 		// Date query.
 		if (isset($settings['date_range'])) {
 			if (strpos($settings['date_range'], 'to')) {
@@ -1830,6 +1844,12 @@ class Team extends Widget_Base
 		<div class="dwl-team-wrapper <?php echo esc_attr($style_type) ?>"
 			data-posts-per-page="<?php echo esc_attr($per_page) ?>" data-paged="1"
 			data-settings="<?php echo esc_attr(json_encode($ajax_settings_all)) ?>">
+			<?php
+			// Render AJAX search input if enabled
+			if (!empty($settings['enable_ajax_search']) && 'yes' === $settings['enable_ajax_search']) {
+				echo '<input type="text" class="dwl-team-search-input" placeholder="' . esc_attr__('Search team members...', 'wp-team-manager') . '" />';
+			}
+			?>
 			<div
 				class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr($settings['layout_type']) ?> <?php echo esc_attr($wrapper_calss); ?> dwl-team-layout-<?php echo esc_attr($settings['layout_type']) ?>">
 				<?php 

@@ -25,8 +25,6 @@ class Shortcodes{
 
     \add_shortcode( 'team_manager', [$this, 'shortcode_callback'] );
     \add_shortcode( 'dwl_create_team', [$this, 'create_team_callback'] );
-		//\add_action('wp_ajax_dwl_team_member_search', [$this, 'dwl_team_member_search']);
-		//\add_action('wp_ajax_nopriv_dwl_team_member_search', [$this, 'dwl_team_member_search']);
   }
 
 
@@ -319,30 +317,5 @@ public function shortcode_callback($atts) {
       return ob_get_clean();
     }
 
-
-  public function dwl_team_member_search() {
-    check_ajax_referer('dwl_team_search_nonce', 'nonce');
-
-    $search_term = sanitize_text_field($_POST['keyword']);
-    $post_id = intval($_POST['post_id']);
-
-    $args = array(
-        'post_type' => 'team_manager',
-        'post_status' => 'publish',
-        's' => $search_term,
-        'posts_per_page' => -1,
-    );
-
-    // Get settings from AJAX request for layout and style
-    $settings = isset($_POST['settings']) ? $_POST['settings'] : [];
-    $layout = isset($settings['dwl_team_layout_option'][0]) ? $settings['dwl_team_layout_option'][0] : 'grid';
-    $style = isset($settings['dwl_team_grid_style_option'][0]) ? $settings['dwl_team_grid_style_option'][0] : 'style-1';
-
-    $team_data = \DWL\Wtm\Classes\Helper::get_team_data($args);
-
-    ob_start();
-    \DWL\Wtm\Classes\Helper::renderTeamLayout($layout, $team_data, $style, $settings);
-    wp_send_json_success(ob_get_clean());
-  }
 
 }

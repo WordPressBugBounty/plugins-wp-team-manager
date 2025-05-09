@@ -958,7 +958,7 @@ class Helper {
     public static function get_team_data($args){
         $args = apply_filters('wp_team_manager_query_args', $args);
         $tmQuery = new \WP_Query( $args );
-        return ($tmQuery->posts) ? ['posts' => $tmQuery->posts,'max_num_pages' => $tmQuery->max_num_pages] : [];
+        return ($tmQuery->posts) ? ['posts' => $tmQuery->posts,'max_num_pages' => $tmQuery->max_num_pages] : ['posts'=>[],'max_num_pages'=>0];
     }
 
     /**

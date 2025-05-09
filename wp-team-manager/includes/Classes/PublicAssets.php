@@ -63,18 +63,7 @@ class PublicAssets {
 		);
 
 		
-		wp_register_script( 
-			'wp-team-search', 
-			TM_PUBLIC . '/assets/js/team-search.js', 
-			array('jquery'), 
-			'3.0.6', 
-			true 
-		);
-
-		wp_localize_script('wp-team-search', 'dwlTeamSearch', [
-			'ajax_url' => admin_url('admin-ajax.php'),
-			'nonce'    => wp_create_nonce('dwl_team_search_nonce'),
-		]);
+	
 		
 
 		wp_register_script( 'wp-team-script', TM_PUBLIC . '/assets/js/team.js', array('jquery'), TM_VERSION, true );
