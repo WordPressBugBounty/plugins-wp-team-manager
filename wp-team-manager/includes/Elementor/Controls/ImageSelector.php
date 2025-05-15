@@ -74,7 +74,7 @@ class ImageSelector extends Control {
 					<# var is_pro_style = (
 						(data.name === 'grid_style_type' && [ 'Style 5'].includes(options.title)) ||
 						(data.name === 'slider_style_type' && ['Style 3','Style 4', 'Style 5', 'Style 6'].includes(options.title)) ||
-						(data.name === 'isotope_style_type' && [ 'Style 1', 'Style 2'].includes(options.title))||
+						(data.name === 'isotope_style_type' && [ 'Style 1', 'Style 2', 'Style 3'].includes(options.title))||
 						(data.name === 'list_style_type' && [ 'Style 3'].includes(options.title))
 					); #>
 					<div class="image-selector-inner<# if ( is_pro_style && <?php echo json_encode(tmwstm_fs()-> is_not_paying()); ?> ) { #> <?php echo esc_attr($is_admin_pro); ?> <# } #>" 

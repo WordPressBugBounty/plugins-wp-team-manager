@@ -32,4 +32,9 @@
     text-decoration: none;
 }
 
+.is-pro-feature select {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
 

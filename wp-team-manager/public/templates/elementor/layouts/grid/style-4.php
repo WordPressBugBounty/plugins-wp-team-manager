@@ -61,7 +61,7 @@ if(!empty($data)):
                     <?php endif; ?>
                     
                     <?php if(isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info']) : ?>
-                        <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID ) ); ?>
+                        <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID, $settings['other_info_elements']) ); ?>
                     <?php endif; ?>
 
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>

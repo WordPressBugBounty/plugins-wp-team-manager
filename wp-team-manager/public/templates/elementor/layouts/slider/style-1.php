@@ -59,7 +59,7 @@ if ( ! empty( $data ) ) :
                     <?php endif; ?>
 
                     <?php if ( isset( $settings['show_other_info'] ) && 'yes' === $settings['show_other_info'] ) : ?>
-                        <?php echo wp_kses_post( Helper::get_team_other_infos( $team->ID ) ); ?>
+                        <?php echo wp_kses_post( Helper::get_team_other_infos( $team->ID, $settings['other_info_elements']) ); ?>
                     <?php endif; ?>
 
 

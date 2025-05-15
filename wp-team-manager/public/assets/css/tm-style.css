@@ -6873,3 +6873,17 @@ text-align: right;
   }
 }
 
+/* single team */
+.wtm-single-team-content-wrapper {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 11px;
+}
+
+.team-member-info-title{
+  font-size: 18px;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-align: left;
+  padding-bottom: 8px;
+  color: var(--wtm-color-black);
+}

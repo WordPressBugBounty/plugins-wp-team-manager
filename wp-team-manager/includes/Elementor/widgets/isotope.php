@@ -75,6 +75,10 @@ class Isotope extends \Elementor\Widget_Base
 					'style-2' => [
 						'title' => esc_html__('Style 2', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS . '/icons/layout/isotope-2.svg',
+					],
+					'style-3' => [
+						'title' => esc_html__('Style 3', 'wp-team-manager'),
+						'url' => TM_ADMIN_ASSETS . '/icons/layout/Table-1.svg',
 					]
 				],
 				'default' => 'style-1',
@@ -168,7 +172,7 @@ class Isotope extends \Elementor\Widget_Base
 			$this->add_control(
 				'include_team_genders',
 				[
-					'label' => __('Include Departments', 'wp-team-manager'),
+					'label' => __('Include Genders', 'wp-team-manager'),
 					'label_block' => true,
 					'type' => Controls_Manager::SELECT2,
 					'multiple' => true,
@@ -182,7 +186,7 @@ class Isotope extends \Elementor\Widget_Base
 			$this->add_control(
 				'include_team_designation',
 				[
-					'label' => __('Include Departments', 'wp-team-manager'),
+					'label' => __('Include Designation', 'wp-team-manager'),
 					'label_block' => true,
 					'type' => Controls_Manager::SELECT2,
 					'multiple' => true,
@@ -251,26 +255,28 @@ class Isotope extends \Elementor\Widget_Base
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'isotope_pagination',
+			'isotope_ajax_search',
 			[
-				'label' => esc_html__('Pagination', 'wp-team-manager'),
+				'label' => esc_html__('AJAX Search', 'wp-team-manager') . Helper::showProFeatureLabel(),
 				'tab' => Controls_Manager::TAB_CONTENT,
 			]
 		);
 
 		$this->add_control(
-			'pagination_type',
+			'enable_ajax_search',
 			[
-				'label' => __('Pagination Type', 'wp-team-manager'),
-				'type' => Controls_Manager::SELECT,
-				'default' => 'none',
-				'options' => [
-					'none' => esc_html__('None', 'wp-team-manager'),
-					'numbers' => esc_html__('Numbers', 'wp-team-manager'),
-					'ajax' => esc_html__('Ajax', 'wp-team-manager'),
-				],
+				'label' => esc_html__('Enable AJAX Search', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Yes', 'wp-team-manager'),
+				'label_off' => esc_html__('No', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => '',
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
 			]
 		);
+
+
 
 		$this->end_controls_section();
 
@@ -348,6 +354,19 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 		$this->add_control(
+			'isotope_name_title_text',
+			[
+				'label' => esc_html__('Name Title', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Name', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter Team Name', 'wp-team-manager'),
+				'condition' => [
+					'isotope_name_switcher' => 'yes',
+					'isotope_style_type' => 'style-3',
+				],
+			]
+		);
+		$this->add_control(
 			'isotope_name_switcher_separator',
 			[
 				'type' => \Elementor\Controls_Manager::DIVIDER,
@@ -365,6 +384,22 @@ class Isotope extends \Elementor\Widget_Base
 				'description' => __( 'Switch on to show team job title.', 'wp-team-manager' ),
 			]
 		);
+		
+		$this->add_control(
+			'isotope_sub_title_text',
+			[
+				'label' => esc_html__('Job Title Text', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Designation', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter job title', 'wp-team-manager'),
+				'condition' => [
+					'isotope_sub_title' => 'yes',
+					'isotope_style_type' => 'style-3',
+				],
+			]
+		);
+		
+		
 		$this->add_control(
 			'isotope_designation_switcher_separator',
 			[
@@ -383,6 +418,19 @@ class Isotope extends \Elementor\Widget_Base
 				'return_value' => 'yes',
 				'default' => 'yes',
 				'description' => __( 'Switch on to show team short biography.', 'wp-team-manager' ),
+			]
+		);
+		$this->add_control(
+			'isotope_bio_switcher_title_text',
+			[
+				'label' => esc_html__('Head Title', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Short Biography', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter head title', 'wp-team-manager'),
+				'condition' => [
+					'isotope_bio_switcher' => 'yes',
+					'isotope_style_type' => 'style-3',
+				],
 			]
 		);
 
@@ -408,6 +456,40 @@ class Isotope extends \Elementor\Widget_Base
 				'default' => 'yes',
 				'description' => __( 'Switch on to show team member other info(E-mail,Phone Number etc).', 'wp-team-manager' ),
 
+			]
+		);
+
+		$this->add_control(
+			'other_info_elements',
+			[
+				'label' => esc_html__( 'Show Elements', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::SELECT2,
+				'label_block' => true,
+				'multiple' => true,
+				'options' => [
+					'tm_mobile'  => esc_html__( 'Mobile', 'wp-team-manager' ),
+					'tm_telephone' => esc_html__( 'Telephone', 'wp-team-manager' ),
+					'tm_year_experience' => esc_html__( 'Year Experience', 'wp-team-manager' ),
+					'tm_location' => esc_html__( 'Location', 'wp-team-manager' ),
+					'tm_email' => esc_html__( 'Email', 'wp-team-manager' ),
+					'tm_web_url' => esc_html__( 'Web Url', 'wp-team-manager' ),
+					'tm_vcard' => esc_html__( 'Visit Card', 'wp-team-manager' ),
+				],
+
+			]
+		);
+
+		$this->add_control(
+			'isotope_show_other_info_title_text',
+			[
+				'label' => esc_html__('Head Title', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Email', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter head title', 'wp-team-manager'),
+				'condition' => [
+					'show_other_info' => 'yes',
+					'isotope_style_type' => 'style-3',
+				],
 			]
 		);
 
@@ -1029,12 +1111,46 @@ class Isotope extends \Elementor\Widget_Base
 
 	}
 
+	private function pagination_options()
+	{
 
+		$pagination_options = [
+			'none' => esc_html__('None', 'wp-team-manager'),
+			'numbers' => esc_html__('Numbers', 'wp-team-manager'),
+		];
+
+		// Conditionally add 'Ajax' option if the user is not paying
+		// if (tmwstm_fs()->is_paying_or_trial()) {
+		// 	$pagination_options['ajax'] = esc_html__('Ajax', 'wp-team-manager') . Helper::showProFeatureLabel();
+		// }
+
+		$this->start_controls_section(
+			'section_pagination',
+			[
+				'label' => esc_html__('Pagination', 'wp-team-manager'),
+			
+			]
+		);
+
+		$this->add_control(
+			'pagination_type',
+			[
+				'label' => __('Pagination Type', 'wp-team-manager'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'none',
+				'options' => $pagination_options,
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+			]
+		);
+
+		$this->end_controls_section();
+	}
 	protected function _register_controls()
 	{
 		$this->register_controls();
 		$this->settings_controls();
 		$this->style_options();
+		$this->pagination_options();
 	}
 
 

@@ -221,18 +221,17 @@ class Helper {
          *
          * @return string The HTML representation of the team member's additional information.
          */
-        public static function get_team_other_infos($post_id) {
-            // Retrieve the stored options for single fields
-            $tm_single_fields = (array) get_option('tm_single_fields', []);
-
-            //get label settings
-            $custom_labels    = get_option('tm_custom_labels', array());
+        
+        public static function get_team_other_infos($post_id, $tm_single_fields = []) {
+            
+            // Get custom label settings
+            $custom_labels = get_option('tm_custom_labels', []);
             $web_btn_text = isset($custom_labels['tm_web_url']) ? $custom_labels['tm_web_url'] : 'Bio';
             $vcard_btn_text = isset($custom_labels['tm_vcard']) ? $custom_labels['tm_vcard'] : 'Download CV';
-        
+            
             // Fetch all metadata for the post at once
             $meta = get_post_meta($post_id);
-        
+            
             // Define all required fields with safe sanitization
             $fields = [
                 'tm_mobile'          => !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
@@ -243,14 +242,14 @@ class Helper {
                 'tm_web_url'         => !empty($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
                 'tm_vcard'           => !empty($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
             ];
-        
+            
             // Return early if no fields have values
             if (empty(array_filter($fields))) {
                 return '';
             }
-        
+            
             $output = '<div class="team-member-other-info">';
-        
+            
             // Define field mappings for icons and text
             $field_mappings = [
                 'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel:', 'is_link' => true],
@@ -261,7 +260,18 @@ class Helper {
                 'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
                 'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
             ];
-            $field_mappings = apply_filters('wp_team_manager_other_info_fields', $field_mappings, $fields, $post_id);
+        
+            
+            // Intersect the selected fields with field mappings
+            if(!empty($tm_single_fields && is_array($tm_single_fields) && tmwstm_fs()->is_paying_or_trial())){
+                $tm_selected_fields = array_intersect_key($field_mappings, array_flip($tm_single_fields));
+            }else{
+                $tm_selected_fields = apply_filters('wp_team_manager_other_info_fields', $field_mappings, $fields, $post_id); 
+            }
+        
+            
+            // Allow filtering
+            $field_mappings = apply_filters('wp_team_manager_other_info_fields', $tm_selected_fields, $fields, $post_id);
         
             // Generate HTML with filtering logic
             foreach ($field_mappings as $key => $info) {
@@ -272,17 +282,17 @@ class Helper {
         
                 if (!empty($fields[$key])) {
                     $output .= '<div class="team-member-info">';
-            
+                    
                     // Ensure the icon class is safe
                     if (!empty($info['icon'])) {
                         $output .= '<i class="' . esc_attr($info['icon']) . '"></i> ';
                     }
-                
+        
                     // Properly escape and validate link
                     if (!empty($info['is_link']) && isset($info['prefix'])) {
                         $url = esc_url($info['prefix'] . sanitize_text_field($fields[$key]));
                         $text = isset($info['link_text']) ? esc_html($info['link_text']) : esc_html($fields[$key]);
-                
+        
                         // Validate URL before output
                         if (filter_var($url, FILTER_VALIDATE_URL)) {
                             $output .= '<a href="' . $url . '" target="_blank" rel="noopener noreferrer"><span>' . $text . '</span></a>';
@@ -292,20 +302,21 @@ class Helper {
                     } else {
                         $output .= '<span>' . esc_html($fields[$key]) . '</span>'; // Wrap plain text in span
                     }
-                
+        
                     $output .= '</div>';
                 }
-            
-       
             }
-            
         
             $output .= '</div>';
-        
+            
             $output = apply_filters('wp_team_manager_other_info_html', $output, $post_id);
             return $output;
         }
+        
+        
+        
 
+        
     /**
 	 * Get Post Pagination, Load more & Scroll markup
 	 *
@@ -706,11 +717,8 @@ class Helper {
      * option in the database. If no value is set, the default value is 'medium'.
      */
     public static function get_image_sizes() {
-
-        // Get the selected image size from options
         $selected = get_option('team_image_size_change', 'medium');
     
-        // Default image sizes
         $fields = array(
             'medium'       => __('Medium', 'wp-team-manager'),
             'thumbnail'    => __('Thumbnail', 'wp-team-manager'),
@@ -719,16 +727,22 @@ class Helper {
             'full'         => __('Full', 'wp-team-manager'),
         );
     
-        // Allow developers to modify the available image sizes dynamically
         $fields = apply_filters('wp_team_manager_image_sizes', $fields);
+    
+        $is_locked = tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial();
     
         foreach ($fields as $key => $value) {
             printf(
-                '<option value="%s" %s>%s</option>',
+                '<option value="%s" %s %s>%s</option>',
                 esc_attr($key),
                 selected($selected, $key, false),
+                $is_locked ? 'disabled' : '',
                 esc_html($value)
             );
+        }
+    
+        if ($is_locked) {
+            echo '<p style="color: #d63638; margin-top: 5px;">' . __('Image size change is only available in the premium version.', 'wp-team-manager') . '</p>';
         }
     }
     /**

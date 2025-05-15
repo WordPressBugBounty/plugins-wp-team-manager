@@ -145,12 +145,18 @@ $fields = array(
                     <th scope="row">
                         <label>
                             <?php esc_html_e('Change Single Image size','wp-team-manager'); ?>
+                            <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                                <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                            <?php endif; ?>
                         </label>
+                        
                     </th>
                     <td>
+
                         <select name="team_image_size_change">
                             <?php Helper::get_image_sizes(); ?>
                         </select>
+
                     </td>
                 </tr>
                 <tr valign="top">

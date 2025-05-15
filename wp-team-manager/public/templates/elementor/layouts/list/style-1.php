@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
               <?php endif; ?>
             </div>
             <?php if('yes' == $settings['show_other_info']) : ?>
-              <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID )); ?>
+              <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID, $settings['other_info_elements'])); ?>
             <?php endif; ?>
             <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                 <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>

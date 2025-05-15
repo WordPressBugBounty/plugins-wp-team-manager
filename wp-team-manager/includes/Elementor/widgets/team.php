@@ -693,6 +693,9 @@ class Team extends Widget_Base
 					'{{WRAPPER}} .team-member-head' => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .style-4 .team-member-title-info' => 'background-color: {{VALUE}};',
 				],
+				'condition' => [
+					'grid_style_type' => ['style-2', 'style-4'],
+				],
 			]
 		);
 
@@ -1023,6 +1026,28 @@ class Team extends Widget_Base
 				'return_value' => 'yes',
 				'default' => 'yes',
 				'description' => __('Switch on to show team member other info(E-mail,Phone Number etc).', 'wp-team-manager'),
+			]
+		);
+
+		$this->add_control(
+			'other_info_elements',
+			[
+				'label' => esc_html__( 'Show Elements', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::SELECT2,
+				'label_block' => true,
+				'multiple' => true,
+				'options' => [
+					'tm_mobile'  => esc_html__( 'Mobile', 'wp-team-manager' ),
+					'tm_telephone' => esc_html__( 'Telephone', 'wp-team-manager' ),
+					'tm_year_experience' => esc_html__( 'Year Experience', 'wp-team-manager' ),
+					'tm_location' => esc_html__( 'Location', 'wp-team-manager' ),
+					'tm_email' => esc_html__( 'Email', 'wp-team-manager' ),
+					'tm_web_url' => esc_html__( 'Web Url', 'wp-team-manager' ),
+					'tm_vcard' => esc_html__( 'Visit Card', 'wp-team-manager' ),
+				],
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+				
 			]
 		);
 
@@ -1686,7 +1711,7 @@ class Team extends Widget_Base
 		$offset_posts = [];
 		$excluded_ids = [];
 		$wrapper_calss = '';
-		$per_page = isset($settings['per_page']) ? $settings['per_page'] : get_option('posts_per_page');
+		$per_page = isset($settings['per_page']) && !empty($settings['per_page']) ? $settings['per_page'] : get_option('posts_per_page');
 
 		if ($settings['layout_type'] != 'slider') {
 			$wrapper_calss = 'wtm-row g-2 g-lg-3';
@@ -1845,9 +1870,12 @@ class Team extends Widget_Base
 			data-posts-per-page="<?php echo esc_attr($per_page) ?>" data-paged="1"
 			data-settings="<?php echo esc_attr(json_encode($ajax_settings_all)) ?>">
 			<?php
+
 			// Render AJAX search input if enabled
 			if (!empty($settings['enable_ajax_search']) && 'yes' === $settings['enable_ajax_search']) {
+				echo '<div class="dwl-team-search-wrapper">';
 				echo '<input type="text" class="dwl-team-search-input" placeholder="' . esc_attr__('Search team members...', 'wp-team-manager') . '" />';
+				echo '</div>';
 			}
 			?>
 			<div

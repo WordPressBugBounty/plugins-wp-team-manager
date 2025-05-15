@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.3
+Stable tag: 2.3.5
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -19,7 +19,7 @@ The plugin offers **five unique layout** presets and a variety of impressive sty
 It’s the perfect solution for displaying and managing the members of your staff, team, or workforce.
 
 
-👉 [Live Demo](https://wpteammanager.com/demos/) | [Documentation](https://wpteammanager.com/docs/team-manager/getting-started/system-requirements/) | [Support](https://dynamicweblab.com/submit-a-request/) | [Go Pro](https://wpteammanager.com/pricing/) 👈
+👉 [Live Demo](https://wpteammanager.com/demos/) | [Documentation](https://wpteammanager.com/documentation/) | [Support](https://dynamicweblab.com/submit-a-request/) | [Go Pro](https://wpteammanager.com/pricing/) 👈
 
 🏆 **How To install WordPress Team Manager:**
 
@@ -198,6 +198,17 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 11. Team generator
 
 == Changelog ==
+
+= 2.3.5 =
+* Update version
+
+= 2.3.4 =
+* Added more control for team widget
+* Update css
+* Add a new Control 
+* Isotope Table Layout Added
+* isotope Ajax search
+* Isotope Pagination 
 
 = 2.3.3 =
 * Added more control for team widget
