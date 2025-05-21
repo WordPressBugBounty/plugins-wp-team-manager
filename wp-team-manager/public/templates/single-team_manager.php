@@ -28,6 +28,8 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                 $job_title = esc_html(get_post_meta($post_id, 'tm_jtitle', true)); // Escape early
                 $short_bio = wp_kses_post(get_post_meta($post_id, 'tm_short_bio', true)); 
                 $long_bio = Helper::get_wysiwyg_output('tm_long_bio', $post_id);
+
+                do_action('wtm_before_team_member_content', $post_id);
             ?>
                 <div class="entry-content wtm-row">
                     <div class="team-bio-image wtm-col-12 wtm-col-md-6">
@@ -64,7 +66,9 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
 
                         <?php 
                         echo wp_kses_post(Helper::get_team_other_infos($post_id));
+                        do_action('wtm_before_social_profiles', $post_id);
                         echo wp_kses_post(Helper::display_social_profile_output($post_id));
+                        do_action('wtm_after_social_profiles', $post_id);
                         ?>
                     </div>
 
@@ -78,10 +82,16 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                         <?php the_content(); ?>
                     </div>
 
-                    <?php echo wp_kses_post(Helper::get_image_gallery_output($post_id)); ?>
+                    <?php 
+                    do_action('wtm_before_image_gallery', $post_id);
+                    echo wp_kses_post(Helper::get_image_gallery_output($post_id));
+                    do_action('wtm_after_image_gallery', $post_id);
+                    ?>
 
                 </div>
-            <?php endwhile; ?>
+            <?php 
+                do_action('wtm_after_team_member_content', $post_id);
+            endwhile; ?>
         </article>
     </div>
 </div>

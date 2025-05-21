@@ -1846,6 +1846,7 @@ class Team extends Widget_Base
 
 		$ajax_settings = [
 			'layout_type' => $settings['layout_type'],
+			'posts_per_page' => $per_page,
 			'image_size' => $settings['image_size'],
 			'progress_bar_show' => $settings['progress_bar_show'],
 			'team_show_short_bio' => $settings['team_show_short_bio'],
@@ -1865,8 +1866,16 @@ class Team extends Widget_Base
 
 		$team_data = Helper::get_team_data($query_args);
 
+
+        if (!empty($team_data)) {
+                $settings['pagination_data'] = [
+                    'total_pages'  => $team_data['max_num_pages'],
+                    'current_page' => $paged,
+                ];
+            }
+
 		?>
-		<div class="dwl-team-wrapper <?php echo esc_attr($style_type) ?>"
+		<div class="dwl-team-wrapper dwl-wp-team-wrapper <?php echo esc_attr($style_type) ?>"
 			data-posts-per-page="<?php echo esc_attr($per_page) ?>" data-paged="1"
 			data-settings="<?php echo esc_attr(json_encode($ajax_settings_all)) ?>">
 			<?php
@@ -1879,28 +1888,35 @@ class Team extends Widget_Base
 			}
 			?>
 			<div
-				class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr($settings['layout_type']) ?> <?php echo esc_attr($wrapper_calss); ?> dwl-team-layout-<?php echo esc_attr($settings['layout_type']) ?>">
+				class="dwl-team-wrapper--main dwl-team-elementor-layout-<?php echo esc_attr($settings['layout_type']) ?> <?php echo esc_attr($wrapper_calss); ?> dwl-team-layout-<?php echo esc_attr($settings['layout_type']) ?> dwl-content-container--<?php echo esc_attr($settings['layout_type']); ?>">
 				<?php 
 				Helper::renderElementorLayout($settings['layout_type'], $team_data['posts'], $settings); ?>
 			</div><!--.wp-team-manager-widget-->
+			<?php
+				$pagination = isset($settings['pagination_type']) ? $settings['pagination_type'] : 'none';
+				$load_more = isset($settings['load_more_button_text']) ? $settings['load_more_button_text'] : '';
+				if ('numbers' === $pagination && 'none' !== $pagination):
+					?>
+					<div class="dwl-team-ajax-pagination-wrap wtm-pagination-wrap" data-total-pages="<?php echo esc_attr($settings['pagination_data']['total_pages']); ?>"
+						data-current-page="<?php echo esc_attr($settings['pagination_data']['current_page']); ?>"
+						data-type="pagination">
+					</div>
+					<?php
+					echo wp_kses_post(Helper::get_pagination_markup(new \WP_Query($query_args), $per_page));
+				elseif ('ajax' === $pagination && 'none' !== $pagination):
+					if (tmwstm_fs()->is_paying_or_trial()) {
+						?>
+						<div class="dwl-team-load-more-wrap">
+							<button class="dwl-team-load-more-btn"><?php echo esc_html($load_more); ?></button>
+						</div>
+
+						<?php
+					}
+				endif; 
+			?>
 		</div><!--.wp-team-manager-widget-->
 
 		<?php
-		// echo $settings['pagination_type'];
-		$pagination = isset($settings['pagination_type']) ? $settings['pagination_type'] : 'none';
-		$load_more = isset($settings['load_more_button_text']) ? $settings['load_more_button_text'] : '';
-		if ('numbers' === $pagination && 'none' !== $pagination):
-			echo wp_kses_post(Helper::get_pagination_markup(new \WP_Query($query_args), $per_page));
-		elseif ('ajax' === $pagination && 'none' !== $pagination):
-			if (tmwstm_fs()->is_paying_or_trial()) {
-				?>
-				<div class="dwl-team-load-more-wrap">
-					<button class="dwl-team-load-more-btn"><?php echo esc_html($load_more); ?></button>
-				</div>
-
-				<?php
-			}
-		endif;
 	}
 
 }

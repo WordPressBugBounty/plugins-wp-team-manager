@@ -330,7 +330,7 @@ class Helper {
         $big = 999999999; // need an unlikely integer
 
 		if ( $query->max_num_pages > 0 ) {
-			$html = "<div class='wtm-pagination-wrap' data-total-pages='{$query->max_num_pages}' data-posts-per-page='{$posts_per_page}' data-type='pagination' >";   
+			$html = "<div class='wtm-pagination-wrap dwl-team-number-pagination-container' data-total-pages='{$query->max_num_pages}' data-posts-per-page='{$posts_per_page}' data-type='pagination' >";   
             $html .= paginate_links( array(
                 'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
                 'format' => '?paged=%#%',

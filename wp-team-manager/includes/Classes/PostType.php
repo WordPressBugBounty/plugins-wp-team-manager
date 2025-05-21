@@ -55,7 +55,7 @@ class PostType {
         $args = array( 
             'labels' => $labels,
             'hierarchical' => false,        
-            'supports' => array( 'title', 'thumbnail','editor','page-attributes'),
+            'supports' => array( 'title', 'thumbnail','editor','page-attributes', 'custom-fields', 'revisions', 'excerpt', 'comments' ),
             'public' => true,
             'show_ui' => true,
             'show_in_menu' => true,       

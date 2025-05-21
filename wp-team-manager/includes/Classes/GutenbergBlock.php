@@ -66,7 +66,7 @@ class GutenbergBlock {
             'show_read_more' => isset($attributes['showReadMore']) ? ($attributes['showReadMore'] ? 'yes' : 'no') : 'yes',
             'image_size'     => $attributes['imageSize'] ?? 'medium',
         ];
-        //var_dump($atts);
+   
         // Manually construct the shortcode
         $shortcode = '[team_manager';
         foreach ($atts as $key => $value) {

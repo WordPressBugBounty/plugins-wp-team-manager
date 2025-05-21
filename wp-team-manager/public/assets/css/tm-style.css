@@ -5395,7 +5395,7 @@ text-align: center;
   padding: 10px;
   line-height: 1;
 }
-.wtm-pagination-wrap span.page-numbers.current {
+.wtm-pagination-wrap .page-numbers.current {
   background-color: var(--wtm-color-light_blue);
   color: #fff;
   padding: 12px 18px;
@@ -6219,7 +6219,7 @@ margin-top: 17px;
 }
 
 .dwl-team-elementor-layout-table .team-table-style-1 .team-member-info {
-  max-width: 223px;
+  max-width: 265px;
 }
 
 .dwl-team-elementor-layout-table {

@@ -87,7 +87,7 @@
     overflow: hidden;
 }
   
-.dwl-team-isotope-container button {
+.dwl-team-isotope-filter button {
     background: var(--wtm-color-light_blue);
     border: none;
     color: var(--wtm-color-white);
@@ -101,13 +101,13 @@
     border-radius: 7px;
 }
 
-.dwl-team-isotope-container button:hover {
+.dwl-team-isotope-filter button:hover {
     background: var(--wtm-color-green);
     cursor: pointer;
     transition: 0.3s;
 }
 
-.dwl-team-isotope-container .dwl-team-filter-button.active {
+.dwl-team-isotope-filter .dwl-team-filter-button.active {
     background: var(--wtm-color-green);
 }
 .wtm-isotope-grid::after {

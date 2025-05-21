@@ -229,6 +229,7 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
+
 		$this->add_control(
 			'isotope_advanced_filters_heading',
 			[
@@ -251,7 +252,67 @@ class Isotope extends \Elementor\Widget_Base
 				],
 			]
 		);
+		$this->add_control(
+			'orderby',
+			[
+				'label' => __('Order By', 'wp-team-manager'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'date',
+				'options' => Helper::getOrderBy(),
+			]
+		);
 
+		$this->add_control(
+			'order',
+			[
+				'label' => __('Order', 'wp-team-manager'),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'desc',
+				'options' => [
+					'asc' => __('ASC', 'wp-team-manager'),
+					'desc' => __('DESC', 'wp-team-manager'),
+				],
+			]
+		);
+
+		$this->add_control(
+			'post_keyword',
+			[
+				'label' => esc_html__('By Keyword', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'label_block' => true,
+				'placeholder' => esc_html__('Search by keyword', 'wp-team-manager'),
+				'description' => esc_html__('Search by post title or content keyword', 'wp-team-manager'),
+			]
+		);
+
+		$this->add_control(
+			'date_range',
+			[
+				'label' => esc_html__('Date Range (Start to End)', 'wp-team-manager'),
+				'type' => Controls_Manager::DATE_TIME,
+				'placeholder' => 'Choose date...',
+				'description' => esc_html__('NB: Enter DEL button for delete date range', 'wp-team-manager'),
+				'picker_options' => [
+					'enableTime' => false,
+					'mode' => 'range',
+					'dateFormat' => 'M j, Y',
+				],
+			]
+		);
+
+		$this->add_control(
+			'ignore_sticky_posts',
+			[
+				'label' => esc_html__('Ignore sticky posts at the top', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Yes', 'wp-team-manager'),
+				'label_off' => esc_html__('No', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'no',
+				'disabled' => true,
+			]
+		);
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -1108,7 +1169,275 @@ class Isotope extends \Elementor\Widget_Base
 		);
 
 		$this->end_controls_section();
+	//Load More
 
+		// Load More
+		$this->start_controls_section(
+			'load_more_button',
+			[
+				'label' => esc_html__('Load More', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'pagination_type' => 'ajax',
+				],
+			]
+		);
+
+		$this->add_control(
+			'load_more_button_text',
+			[
+				'label' => esc_html__('Button Text', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Load More', 'wp-team-manager'),
+				'placeholder' => esc_html__('Type your button Text', 'wp-team-manager'),
+			]
+		);
+
+		$this->add_control(
+			'load_more_button_heading',
+			[
+				'label' => __('Button', 'wp-team-manager'),
+				'type' => Controls_Manager::HEADING,
+			]
+		);
+
+		$this->start_controls_tabs('tabs_button_style');
+
+		$this->start_controls_tab(
+			'tab_button_normal',
+			[
+				'label' => __('Normal', 'wp-team-manager'),
+			]
+		);
+
+		$this->add_control(
+			'button_text_color',
+			[
+				'label' => __('Text Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'fill: {{VALUE}}; color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'background',
+				'label' => __('Background', 'wp-team-manager'),
+				'types' => ['classic', 'gradient'],
+				'exclude' => ['image'],
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab(
+			'tab_button_hover',
+			[
+				'label' => __('Hover', 'wp-team-manager'),
+			]
+		);
+
+		$this->add_control(
+			'hover_color',
+			[
+				'label' => __('Text Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover svg, {{WRAPPER}} .dwl-team-load-more-btn:focus svg' => 'fill: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Background::get_type(),
+			[
+				'name' => 'button_background_hover',
+				'label' => __('Background', 'wp-team-manager'),
+				'types' => ['classic', 'gradient'],
+				'exclude' => ['image'],
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus',
+				'fields_options' => [
+					'background' => [
+						'default' => 'classic',
+					],
+				],
+			]
+		);
+
+		$this->add_control(
+			'button_hover_border_color',
+			[
+				'label' => __('Border Color', 'wp-team-manager'),
+				'type' => Controls_Manager::COLOR,
+				'condition' => [
+					'border_border!' => '',
+				],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn:hover, {{WRAPPER}} .dwl-team-load-more-btn:focus' => 'border-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'hover_animation',
+			[
+				'label' => __('Hover Animation', 'wp-team-manager'),
+				'type' => Controls_Manager::HOVER_ANIMATION,
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'border',
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'border_radius',
+			[
+				'label' => __('Border Radius', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'button_box_shadow',
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'button_typography',
+				'selector' => '{{WRAPPER}} .dwl-team-load-more-btn',
+			]
+		);
+
+		$this->add_responsive_control(
+			'text_padding',
+			[
+				'label' => __('Padding', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', 'em', '%'],
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-btn' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'text_align',
+			[
+				'label' => esc_html__('Button Alignment', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => esc_html__('Left', 'wp-team-manager'),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__('Center', 'wp-team-manager'),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => esc_html__('Right', 'wp-team-manager'),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'default' => 'center',
+				'toggle' => true,
+				'selectors' => [
+					'{{WRAPPER}} .dwl-team-load-more-wrap' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+
+		$this->end_controls_section();
+
+
+		// Color, Typography & Spacing
+		$this->start_controls_section(
+			'posts_article_settings',
+			[
+				'label' => esc_html__('Container Settings', 'wp-team-manager'),
+				'tab' => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'layout_type' => ['slider', 'grid', 'list'],
+				],
+			]
+		);
+
+		$this->add_control(
+			'card_background_color',
+			[
+				'label' => esc_html__('Card Background Color', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .team-member-info-content' => 'background-color: {{VALUE}}',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'posts_article_margin',
+			[
+				'label' => esc_html__('Margin', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} .team-member-info-content' => 'margin: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'posts_article_padding',
+			[
+				'label' => esc_html__('Padding', 'wp-team-manager'),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => ['px', '%', 'em'],
+				'selectors' => [
+					'{{WRAPPER}} .team-member-info-content' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'posts_article_border',
+				'selector' => '{{WRAPPER}} .team-member-info-content',
+			]
+		);
+
+	$this->end_controls_section();
 	}
 
 	private function pagination_options()
@@ -1120,9 +1449,9 @@ class Isotope extends \Elementor\Widget_Base
 		];
 
 		// Conditionally add 'Ajax' option if the user is not paying
-		// if (tmwstm_fs()->is_paying_or_trial()) {
-		// 	$pagination_options['ajax'] = esc_html__('Ajax', 'wp-team-manager') . Helper::showProFeatureLabel();
-		// }
+		if (tmwstm_fs()->is_paying_or_trial()) {
+			$pagination_options['ajax'] = esc_html__('Ajax', 'wp-team-manager') . Helper::showProFeatureLabel();
+		}
 
 		$this->start_controls_section(
 			'section_pagination',

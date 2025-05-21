@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.5
+Stable tag: 2.3.8
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -198,6 +198,16 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 11. Team generator
 
 == Changelog ==
+
+= 2.3.8 =
+* Updated pagiantion and search
+* isotope layout Query option updated Order, Orderby, date rang, keyword, avoid sticky post.
+* Add few custom actions on single team template
+
+
+= 2.3.6 =
+* Add excpert, revision and comment support
+* Update isotope layout (pro)
 
 = 2.3.5 =
 * Update version
