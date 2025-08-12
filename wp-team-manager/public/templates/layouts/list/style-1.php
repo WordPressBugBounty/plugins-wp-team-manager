@@ -10,9 +10,10 @@ $show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
 $show_social = !empty($settings['dwl_team_team_show_social'][0]);
 $show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
 $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
-$hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
+$hide_short_bio_control = !empty($settings['team_show_short_bio'][0]);
 
 $disable_single_template = get_option('single_team_member_view') === 'True';
+$selected = Helper::generate_single_fields('frontend');
 
 if (!empty($data['posts'])) {
     $tm_single_fields = (array) get_option('tm_single_fields', ['tm_jtitle']); // Set default value directly
@@ -60,7 +61,7 @@ if (!empty($data['posts'])) {
                     <?php endif; ?>
 
                     <?php if (!$show_other_info): ?>
-                        <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
+                        <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $selected)); ?>
                     <?php endif; ?>
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                         <?php if (!$show_progress_bar): ?>
@@ -78,7 +79,7 @@ if (!empty($data['posts'])) {
                         <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
                     <?php endif; ?>
 
-                    <?php if ($show_read_more): ?>
+                    <?php if ($show_read_more && !$disable_single_template): ?>
                         <div class="wtm-read-more-wrap">
                             <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
                                 <?php esc_html_e('Read More', 'wp-team-manager'); ?>

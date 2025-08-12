@@ -65,6 +65,21 @@ public function shortcode_callback($atts) {
   $settings['tablet_column']  = absint($settings['tablet_column']);
   $settings['mobile_column']  = absint($settings['mobile_column']);
 
+  // Whitelist risky attributes to prevent bad values reaching WP_Query or output
+  // Allowed values are opinionated; adjust if you add new templates/sizes
+  $allowed_orderby   = [ 'menu_order', 'title', 'date', 'modified', 'rand' ];
+  $allowed_layouts   = [ 'grid', 'list', 'slider' ];
+  $allowed_img_style = [ 'boxed', 'rounded', 'circle', 'card' ];
+ 
+  if ( ! in_array( $settings['orderby'], $allowed_orderby, true ) ) {
+      $settings['orderby'] = 'menu_order';
+  }
+  if ( ! in_array( $settings['layout'], $allowed_layouts, true ) ) {
+      $settings['layout'] = 'grid';
+  }
+  if ( ! in_array( $settings['image_style'], $allowed_img_style, true ) ) {
+      $settings['image_style'] = 'boxed';
+  }
   // Security: Sanitize Array Inputs
   if (!empty($settings['post__in'])) {
       $settings['post__in'] = array_map('absint', explode(',', $settings['post__in']));
@@ -93,7 +108,8 @@ public function shortcode_callback($atts) {
   $shortcode_id = 'dwl-team-wrapper-' . esc_attr(uniqid());
 
   // Set Order Type
-  $asc_desc = in_array($settings['orderby'], ['title', 'menu_order'], true) ? 'ASC' : 'DESC';
+  $asc_desc = in_array( $settings['orderby'], [ 'title', 'menu_order' ], true ) ? 'ASC' : 'DESC';
+  $is_random = ( 'rand' === $settings['orderby'] );
 
   // Get Current Page Number
   $_paged = is_front_page() ? 'page' : 'paged';
@@ -109,7 +125,8 @@ public function shortcode_callback($atts) {
       'posts_per_page' => $settings['posts_per_page'],
       'paged'          => $paged,
       'orderby'        => $settings['orderby'],
-      'order'          => $asc_desc,
+      // Only set order if not random to avoid unnecessary SQL
+      'order'          => $is_random ? '' : $asc_desc,
   ];
 
   if ($settings['category'] !== '0') {
@@ -201,8 +218,8 @@ public function shortcode_callback($atts) {
     $order_by           = isset( $all_settings['dwl_team_team_order_by'][0] ) ? $all_settings['dwl_team_team_order_by'][0]                          : 'name';
     $display_members    = isset( $all_settings['dwl_team_show_team_member_by_ids'][0] ) ? $all_settings['dwl_team_show_team_member_by_ids'][0]      : '';
     $remove_members     = isset( $all_settings['dwl_team_remove_team_members_by_ids'][0] ) ? $all_settings['dwl_team_remove_team_members_by_ids'][0]: '';
-    $layout = isset( $all_settings['dwl_team_layout_option'][0] ) ? $all_settings['dwl_team_layout_option'][0] : 'grid';	
-    $show_pagination = isset( $all_settings['dwl_team_show_pagination'][0] ) ? $all_settings['dwl_team_show_pagination'][0] : 'none';	
+    $layout             = isset( $all_settings['dwl_team_layout_option'][0] ) ? $all_settings['dwl_team_layout_option'][0] : 'grid';	
+    $show_pagination    = isset( $all_settings['dwl_team_show_pagination'][0] ) ? $all_settings['dwl_team_show_pagination'][0] : 'none';	
     
     $wrapper_calss = '';
     $social_size = ( false !== get_option('tm_social_size') ) ? get_option('tm_social_size') : 16;
@@ -224,10 +241,10 @@ public function shortcode_callback($atts) {
     }
 
     $posts_per_page     = isset( $all_settings['dwl_team_show_total_members'][0] ) ? $all_settings['dwl_team_show_total_members'][0]: -1;
-    $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-    $_paged   = is_front_page() ? "page" : "paged";
+    $paged              = (get_query_var('paged')) ? get_query_var('paged') : 1;
+    $_paged             = is_front_page() ? "page" : "paged";
   
-    $settings_json = esc_attr(json_encode($all_settings));
+    $settings_json      = esc_attr(json_encode($all_settings));
 
     $args = array(
       'post_type'      => 'team_manager',
@@ -290,9 +307,6 @@ public function shortcode_callback($atts) {
     $imageStyle =  isset($all_settings['dwl_team_image_style'])? $all_settings['dwl_team_image_style'] [0] : '';
 
     ?>
-  <!-- <div class="dwl-team-search-container">
-    <input type="text" id="dwl-team-search-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-search" placeholder="Search team members..." data-post-id="<?php echo esc_attr( $post_id ); ?>">
-  </div> -->
       <div id="dwl-team-wrapper-<?php echo esc_attr( $post_id ); ?>" class="dwl-team-wrapper wtm-container-fluid wtm-team-manager-shortcode-generator" data-settings="<?php echo $settings_json; ?>">
         <div class="dwl-team-wrapper--main dwl-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-wrapper-layout-<?php echo esc_attr( $layout ) ?> <?php echo esc_attr( $wrapper_calss ); ?> dwl-team-<?php echo esc_attr( $teamplate_layout ); ?>-<?php echo esc_attr( $teamplate_style ); ?> dwl-new-team-layout-<?php echo esc_attr( $layout ) ?> dwl-team-image-style-<?php echo esc_attr( $imageStyle );?> wp-team-arrow-<?php echo esc_attr($arrow_position); ?> <?php echo esc_attr($side_arrow_class);?>"
           data-arrows="<?php echo esc_attr($arrows); ?>" 

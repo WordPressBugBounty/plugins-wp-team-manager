@@ -17,6 +17,7 @@ $disable_single_template = get_option('single_team_member_view') === 'True';
 // Get team member fields with a default value
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
+$selected = Helper::generate_single_fields('frontend');
 
 // Ensure data['posts'] exists
 if (!empty($data['posts'])) {
@@ -66,7 +67,7 @@ if (!empty($data['posts'])) {
                 <?php endif; ?>
 
                 <?php if (!$show_other_info): ?>
-                    <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
+                    <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $selected)); ?>
                 <?php endif; ?>
 
                 <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
@@ -86,7 +87,7 @@ if (!empty($data['posts'])) {
                     <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
                 <?php endif; ?>
 
-                <?php if ($show_read_more): ?>
+                <?php if ($show_read_more && !$disable_single_template): ?>
                     <div class="wtm-read-more-wrap">
                         <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
                             <?php esc_html_e('Read More', 'wp-team-manager'); ?>

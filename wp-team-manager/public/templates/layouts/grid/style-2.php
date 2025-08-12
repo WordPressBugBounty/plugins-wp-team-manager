@@ -25,7 +25,6 @@ $desktop_column = absint($settings['dwl_team_desktop'][0] ?? 4);
 $tablet_column = absint($settings['dwl_team_tablet'][0] ?? 3);
 $mobile_column = absint($settings['dwl_team_mobile'][0] ?? 1);
 
-
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
 
 foreach ($data['posts'] as $teamInfo) {
@@ -35,21 +34,27 @@ foreach ($data['posts'] as $teamInfo) {
 <div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class)); ?>>
         <div class="team-member-info-content">
             <div class="team-member-grid-style-two">
-                <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="grid-team-inner">
-                    <?php echo wp_kses_post(Helper::get_team_picture($teamInfo->ID, $image_size, 'dwl-box-shadow')); ?>
-                    <div class="team-member-grid-content-overlay"></div>
-                    <div class="team-member-grid-content">
-                        <div class="team-member-grid-info">
-                            <h2 class="team-member-title"><?php echo esc_html($teamInfo->post_title); ?></h2>
-                            <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
-                                <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
-                            <?php endif; ?>
-                            <div class="team-member-grid-arrow">
-                                <i class="fas fa-arrow-right"></i>
+                <div class="grid-team-inner">
+                    <?php if (!$disable_single_template): ?>
+                        <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
+                    <?php endif; ?>
+                            <?php echo wp_kses_post(Helper::get_team_picture($teamInfo->ID, $image_size, 'dwl-box-shadow')); ?>
+                            <div class="team-member-grid-content-overlay"></div>
+                            <div class="team-member-grid-content">
+                                <div class="team-member-grid-info">
+                                    <h2 class="team-member-title"><?php echo esc_html($teamInfo->post_title); ?></h2>
+                                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
+                                        <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
+                                    <?php endif; ?>
+                                    <div class="team-member-grid-arrow">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </a>
+                    <?php if (!$disable_single_template): ?>        
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

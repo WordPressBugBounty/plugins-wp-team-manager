@@ -73,8 +73,8 @@ namespace DWL\Wtm\Classes;
                     if ($file_path && strpos($file_path, TM_PATH) === 0) {
                         include_once $file_path;
                     }
-
-                 submit_button(); ?>
+                ?>
+                <?php submit_button(); ?>
             </form>
         
             <!-- Support -->
@@ -150,6 +150,11 @@ namespace DWL\Wtm\Classes;
             'tm-settings-group', 
             'tm_custom_labels', 
             array( $this, 'tm_custom_labels_sanitize' ) // Add sanitization
+        );
+        register_setting(
+            'tm-settings-group',
+            'tm_log_path',
+            array( $this, 'tm_log_path_sanitize' )
         );
     }
 
@@ -240,5 +245,23 @@ namespace DWL\Wtm\Classes;
             }
         }
         return $sanitized;
+    }
+
+    /**
+     * Sanitize the log path input for the team manager.
+     *
+     * This function strips unwanted characters and ensures the path is a safe string.
+     *
+     * @param string $input The input string for the log path.
+     *
+     * @return string The sanitized log path.
+     */
+    public function tm_log_path_sanitize( $input ) {
+        $input = trim( $input );
+        // Remove any tags or special characters except basic path characters
+        $input = wp_strip_all_tags( $input );
+        // Allow only safe characters for file paths: alphanumeric, slashes, dots, hyphens, underscores
+        $input = preg_replace( '/[^a-zA-Z0-9\/\._\-]/', '', $input );
+        return $input;
     }
 }

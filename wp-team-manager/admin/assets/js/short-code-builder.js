@@ -98,28 +98,31 @@ $jwptm(function(){
 		});
 	}
 
+	// Debounce utility function
+	function debounce(func, wait) {
+		let timeout;
+		return function(...args) {
+			const context = this;
+			clearTimeout(timeout);
+			timeout = setTimeout(() => func.apply(context, args), wait);
+		};
+	}
+
+	const debouncedUpdate = debounce(function() {
+		const shortcodegenerated = generate_shortcode(output_box);
+		get_preview(shortcodegenerated);
+	}, 400);
+
 	$jwptm('.wtm-color-picker').wpColorPicker({
 		change: function(event, ui) {
-
-			setTimeout(() => {
-				const shortcodegenerated = generate_shortcode(output_box);
-				get_preview(shortcodegenerated);
-			  }, "1000");
-			  
-
+			debouncedUpdate();
 		}
 	});
 
 	const shortcodegenerated = generate_shortcode(output_box);
 	get_preview(shortcodegenerated);
 
-	$jwptm( '#tm_short_code :input' ).on( "keyup keydown change", function() {
-
-		const shortcodegenerated = generate_shortcode(output_box);
-
-		get_preview(shortcodegenerated);
-
-	
-	});
+	// Debounced handler for input changes to avoid excessive AJAX calls
+	$jwptm('#tm_short_code :input').on("keyup keydown change", debouncedUpdate);
 
 });

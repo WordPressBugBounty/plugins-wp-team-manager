@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.3.8';
+	const version = '2.3.10';
 
 	/**
 	 * Class init.
@@ -72,6 +72,7 @@ final class Wp_Team_Manager {
 			ControllerClass\ShortcodeGenerator::class,
 			ControllerClass\Shortcodes::class,
 			ControllerClass\PublicAssets::class,
+			DWL\Wtm\AI\Admin\AdminUI::class,
 		];
 
 		if (tmwstm_fs()->is_paying_or_trial() && class_exists(DWL\Wtm\Classes\LoadMore::class)) {
@@ -105,6 +106,7 @@ final class Wp_Team_Manager {
 	 * @access public
 	 */
 	public function plugins_loaded() {
+		new \DWL\Wtm\AI\AI_Manager();
 		require_once TM_PATH . '/lib/cmb2/init.php';
 		require_once TM_PATH . '/lib/cmb2-radio-image/cmb2-radio-image.php';
 		require_once TM_PATH . '/lib/cmb2-tabs/cmb2-tabs.php';

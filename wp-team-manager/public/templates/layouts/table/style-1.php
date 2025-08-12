@@ -57,8 +57,13 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
                                             <td class="dwl-table-data">
                                                 <div class="dwl-table-img-icon-wraper">
                                                         <div class="dwl-table-img-wraper">
+                                                        <?php if (!$disable_single_template): ?>
                                                             <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                                                        <?php endif;?>
                                                                 <?php echo wp_kses_post( Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' ) ); ?>
+                                                        <?php if (!$disable_single_template): ?>
+                                                            </a>
+                                                        <?php endif;?>
                                                             </a>
                                                         </div>
 

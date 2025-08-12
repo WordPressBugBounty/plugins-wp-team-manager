@@ -47,7 +47,7 @@ class TeamMetabox {
         $post_id = isset($_GET['post']) && is_string($_GET['post']) ? trim($_GET['post']) : "0";
 
         $title = 'Copy and Past this on page or post<br/><br/><code>[dwl_create_team id="'.$post_id.'"]</code>';
-        $documentation = '<a href="https://wpteammanager.com/docs/team-manager/">Documentations</a>';
+        $documentation = '<a href="https://wpteammanager.com/documentation/">Documentations</a>';
         $support = '<a href="https://dynamicweblab.com/submit-a-request/">Support</a>';
 
         $dwl_instructions = new_cmb2_box( 
@@ -858,6 +858,7 @@ class TeamMetabox {
             'snapchat'       => __( 'Snapchat', 'wp-team-manager' ),
             'goodreads'      => __( 'Goodreads', 'wp-team-manager' ),
             'twitch'         => __( 'Twitch', 'wp-team-manager' ),
+            'xing'         => __( 'Xing', 'wp-team-manager' ),
         );
         
         // Allow developers to add custom social media options

@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.8
+Stable tag: 2.3.10
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -115,6 +115,12 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 - Custom CSS options.
 - Cross-browser supported.
 - Compatible with any theme.
+- AJAX-powered live search and taxonomy filtering (Pro).
+- Dynamic pagination with compact layout and ellipsis.
+- Multi-widget support with scoped search/filter per instance.
+- WPML-compatible translatable labels and settings.
+- Caching support for large datasets with automatic clearing on post updates.
+- New developer action hooks for customizing output and extending templates.
 - And many more options.
 
 **👉 Carousel controls:**
@@ -133,6 +139,16 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 
 - Gutenberg
 - Elementor 
+
+
+**👉 Free AI & Automation Features:**
+* **Telegram Notifier** – Notify your group/channel when team members are added or updated.
+* **Profile Sync Agent** – Send updates to Google Sheets/Airtable via n8n automation.
+
+**👉 AI & Automation Pro Features:**
+* **Slack Agent** – Send updates directly to Slack channels.
+* **FAQ Bot** – AI assistant to answer questions about your team.
+* **Onboarding Guide** – Auto-generate an onboarding page for each new hire.
 
 
 == Installation ==
@@ -199,11 +215,32 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 
 == Changelog ==
 
+= 2.3.10 =
+* New: Telegram Notifier (Free) – Send team updates to Telegram groups/channels.
+* New: Profile Sync Agent (Free) – Push updates to Google Sheets/Airtable via n8n.
+* New: Slack Agent (Pro) – Notify Slack channels on team updates.
+* New: FAQ Bot (Pro) – AI-powered Q&A assistant for your team.
+* New: Onboarding Guide (Pro) – Personalized onboarding pages for new hires.
+* Security: Whitelisted risky shortcode attributes.
+* Performance: Added `no_found_rows` to improve query efficiency.
+* Docs: Expanded AI Agents & Automation guides.
+
+= 2.3.9 =
+* Team Details Page PHP warning Issue fix
+* Search Result Not Found Message added (Pro)
+* Update Ajax Pagination Filter (Pro)
+
 = 2.3.8 =
+* Enabled multi-widget support with isolated search and filter contexts.
+* Implemented output caching in get_team_data() for better performance.
+* Automatically clears cache on team post save/update.
+* Improved WPML compatibility with suppress_filters support.
+* Added new action hooks around layout templates for extensibility.
+* Updated Elementor widgets and shortcode builder UX.
+* Various UI/UX and frontend performance enhancements.
 * Updated pagiantion and search
 * isotope layout Query option updated Order, Orderby, date rang, keyword, avoid sticky post.
 * Add few custom actions on single team template
-
 
 = 2.3.6 =
 * Add excpert, revision and comment support

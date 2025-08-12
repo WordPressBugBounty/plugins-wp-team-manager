@@ -8,6 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
     $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';
     $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
     $disable_single_template = ( false !== get_option('single_team_member_view')  && 'True' == get_option('single_team_member_view') ) ? true : false;
+    $selected = Helper::generate_single_fields('frontend');
 
     foreach ($data as $key => $teamInfo) :
       
@@ -55,7 +56,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                     <?php endif; ?>
                 </div>
             <?php if('yes' == $settings['show_other_info']) : ?>
-              <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID )); ?>
+              <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID, $selected )); ?>
             <?php endif; ?>
             <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                         <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>

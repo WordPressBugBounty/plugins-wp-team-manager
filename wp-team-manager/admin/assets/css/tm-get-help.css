@@ -207,3 +207,126 @@
     }
 
 }
+
+/* ===== WTM scoped utilities for Get Help page ===== */
+.wtm-section{ margin-bottom:20px; }
+.wtm-list{ margin-left:20px; }
+.wtm-card{ border:1px solid #ddd; padding:15px; border-radius:6px; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+.wtm-plugins{ margin-top:15px; }
+
+/* Full-width breakout for sections that should span available space */
+.wtm-full{ width:100%; max-width:100%; display:block; }
+.wp-team-card-section.wtm-full{ display:block; }
+.wp-team-card-section.wtm-full .wp-team-document-box{ max-width:100%; width:100%; }
+
+/* Responsive grids */
+.wtm-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; }
+.wtm-grid-plugins {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+    gap: 30px;
+    margin-top: 20px;
+}
+@media (min-width: 1200px){
+  .wtm-grid-plugins{ grid-template-columns:repeat(3,minmax(320px,1fr)); }
+}
+
+/* Plugin cards minor polish */
+.wp-team-plugin-card h4{ margin-top:0; }
+
+/* Modern plugin card styles */
+.wp-team-plugin-card {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease-in-out;
+}
+.wp-team-plugin-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.wp-team-plugin-card h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #111;
+}
+.wp-team-plugin-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+.wp-team-plugin-card a {
+    align-self: flex-start;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #A259FF;
+    border: 2px solid #A259FF;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+.wp-team-plugin-card a:hover {
+    background-color: #A259FF;
+    color: #fff;
+}
+
+/* ===== Pro Features block: modern, readable layout ===== */
+.wp-team-document-wrap .wp-team-features-box{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 980px){
+  .wp-team-document-wrap .wp-team-features-box{
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+  }
+}
+
+.wp-team-document-wrap .wp-team-features-box li{
+  position: relative;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 12px 14px 12px 50px; /* room for badge, increased for better spacing */
+  line-height: 1.6;
+  box-shadow: 0 1px 10px rgba(0,0,0,.04);
+}
+
+.wp-team-document-wrap .wp-team-features-box li::before{
+  content: "✓";
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  /* Removed vertical centering for better alignment with multi-line content */
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #A259FF;        /* brand accent */
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px #fff inset;
+}
+
+.wp-team-document-wrap .wp-team-features-box li strong{
+  color: #111;                 /* improve contrast on lead-in text */
+}
+
+.wtm-upgrade-cta{ text-align:center; margin-top:16px; }
+.wtm-upgrade-cta .wtm-cta-button{ padding:8px 16px; font-weight:600; }
+.wtm-upgrade-cta .dashicons{ color:#46b450; margin-right:6px; vertical-align:middle; }

@@ -117,6 +117,7 @@ $fields = array(
                 <div class="tm-label">
                     <label for="">
                     <?php esc_html_e('Show/Hide Fields','wp-team-manager'); ?>
+
                     </label>
                 </div>
                 <div class="tm-field">
@@ -134,12 +135,11 @@ $fields = array(
                         </label>
                     </th>
                     <td class="wtm-toggle-switch">
-                        <input type="checkbox" name="tm_single_team_lightbox" id="tm_single_team_lightbox" value="True" 
-                            <?php checked( $tm_single_team_lightbox, 'True' ); ?> 
-                            <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) { echo 'disabled'; } ?>>
-
+                        <input type="checkbox" name="tm_single_team_lightbox" id="tm_single_team_lightbox" value="True" <?php checked( $tm_single_team_lightbox, 'True' ); ?>
+                            <?php if ( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) echo 'disabled'; ?>>
                             <label for="tm_single_team_lightbox"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
                     </td>
+                    
                 </tr>
                 <tr valign="top">
                     <th scope="row">
@@ -199,6 +199,38 @@ $fields = array(
                     <?php Helper::get_taxonomy_settings(); ?>
                 </div>
             </div><!-- .tm-field-wrapper -->
+
+            <div class="tm-field-wrapper">
+                <div class="tm-label">
+                    <label for="wtm_debug_log">
+                        <?php esc_html_e('Enable Debug Log', 'wp-team-manager'); ?>
+                    </label>
+                </div>
+                <div class="tm-field wtm-toggle-switch">
+                    <?php $wtm_debug_log = get_option('wtm_debug_log', false); ?>
+                    <input type="checkbox" name="wtm_debug_log" id="wtm_debug_log" value="1" <?php checked( (bool) $wtm_debug_log, true ); ?> />
+                    <label for="wtm_debug_log"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
+                    <p class="description">
+                        <?php esc_html_e('When enabled, the plugin writes debug information to a log file. Default location is uploads/wp-team-manager/logs/wtm.log unless a custom path is set below.', 'wp-team-manager'); ?>
+                    </p>
+                </div>
+            </div><!-- .tm-field-wrapper -->
+
+            <div class="tm-field-wrapper">
+                <div class="tm-label">
+                    <label for="wtm_debug_log_path">
+                        <?php esc_html_e('Log File Path', 'wp-team-manager'); ?>
+                    </label>
+                </div>
+                <div class="tm-field">
+                    <?php $wtm_debug_log_path = get_option('wtm_debug_log_path', ''); ?>
+                    <input type="text" placeholder="/absolute/path/to/wtm.log" class="form-control regular-text" name="wtm_debug_log_path" id="wtm_debug_log_path" value="<?php echo esc_attr($wtm_debug_log_path); ?>">
+                    <p class="description">
+                        <?php esc_html_e('Optional absolute path. Leave empty to use the default path in the uploads directory.', 'wp-team-manager'); ?>
+                    </p>
+                </div>
+            </div><!-- .tm-field-wrapper -->
+
             <div class="tm-field-wrapper">
                 <div class="tm-label">
                     <label for="tm_custom_css">

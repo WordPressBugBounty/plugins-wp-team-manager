@@ -25,7 +25,7 @@ class Isotope extends \Elementor\Widget_Base
 
 	public function get_title()
 	{
-		return __('Isotope Layout', 'wp-team-manager');
+		return __('Team Isotope Layout', 'wp-team-manager');
 	}
 
 	public function get_icon()
@@ -123,6 +123,20 @@ class Isotope extends \Elementor\Widget_Base
 			]
 		);
 
+		$this->add_control(
+			'show_all',
+			[
+				'label' => esc_html__('Show All', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('Yes', 'wp-team-manager'),
+				'label_off' => esc_html__('No', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+			]
+		);
+
 
 		$this->add_control(
 			'isotope_taxonomy',
@@ -141,6 +155,7 @@ class Isotope extends \Elementor\Widget_Base
 
 		if (class_exists('DWL_Wtm_Pro_Helper')) {
 
+			// INCLUDE CONTROLS
 			$this->add_control(
 				'include_team_groups',
 				[
@@ -154,7 +169,21 @@ class Isotope extends \Elementor\Widget_Base
 					],
 				]
 			);
-
+		
+			$this->add_control(
+				'exclude_team_groups',
+				[
+					'label' => __('Exclude Groups', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_groups'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_groups',
+					],
+				]
+			);
+		
 			$this->add_control(
 				'include_team_department',
 				[
@@ -168,7 +197,21 @@ class Isotope extends \Elementor\Widget_Base
 					],
 				]
 			);
-	
+		
+			$this->add_control(
+				'exclude_team_department',
+				[
+					'label' => __('Exclude Departments', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_department'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_department',
+					],
+				]
+			);
+		
 			$this->add_control(
 				'include_team_genders',
 				[
@@ -182,7 +225,21 @@ class Isotope extends \Elementor\Widget_Base
 					],
 				]
 			);
-	
+		
+			$this->add_control(
+				'exclude_team_genders',
+				[
+					'label' => __('Exclude Genders', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_genders'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_genders',
+					],
+				]
+			);
+		
 			$this->add_control(
 				'include_team_designation',
 				[
@@ -196,8 +253,22 @@ class Isotope extends \Elementor\Widget_Base
 					],
 				]
 			);
-
+		
+			$this->add_control(
+				'exclude_team_designation',
+				[
+					'label' => __('Exclude Designation', 'wp-team-manager'),
+					'label_block' => true,
+					'type' => Controls_Manager::SELECT2,
+					'multiple' => true,
+					'options' => \DWL_Wtm_Pro_Helper::get_all_taxonomy('team_designation'),
+					'condition' => [
+						'isotope_taxonomy' => 'team_designation',
+					],
+				]
+			);
 		}
+		
 
 
 		$this->add_control(
@@ -336,7 +407,18 @@ class Isotope extends \Elementor\Widget_Base
 				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
 			]
 		);
-
+		$this->add_control(
+			'isotope_ajax_search_text',
+			[
+				'label' => esc_html__('Title', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Search Team member ', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter Search Field title', 'wp-team-manager'),
+				'condition' => [
+					'enable_ajax_search' => 'yes',
+				],
+			]
+		);
 
 
 		$this->end_controls_section();
@@ -494,8 +576,36 @@ class Isotope extends \Elementor\Widget_Base
 				],
 			]
 		);
-
-
+		$this->add_control(
+			'isotope_year_experience_switcher',
+			[
+				'label' => esc_html__('Year Of Experience', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => esc_html__('On', 'wp-team-manager'),
+				'label_off' => esc_html__('Off', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'no',
+				'description' => __( 'Switch on to show team year experience.', 'wp-team-manager' ),
+				'condition' => [
+				
+					'isotope_style_type' => 'style-3',
+				],
+			]
+		);
+		
+		$this->add_control(
+			'isotope_year_experience_switcher_title_text',
+			[
+				'label' => esc_html__('Head Title', 'wp-team-manager'),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'default' => esc_html__('Year Of Experience', 'wp-team-manager'),
+				'placeholder' => esc_html__('Enter head title', 'wp-team-manager'),
+				'condition' => [
+					'isotope_year_experience_switcher' => 'yes',
+					'isotope_style_type' => 'style-3',
+				],
+			]
+		);
 
 		$this->end_controls_tab();
 
@@ -527,7 +637,7 @@ class Isotope extends \Elementor\Widget_Base
 				'type' => \Elementor\Controls_Manager::SELECT2,
 				'label_block' => true,
 				'multiple' => true,
-				'options' => [
+				'options' =>  tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? '': [
 					'tm_mobile'  => esc_html__( 'Mobile', 'wp-team-manager' ),
 					'tm_telephone' => esc_html__( 'Telephone', 'wp-team-manager' ),
 					'tm_year_experience' => esc_html__( 'Year Experience', 'wp-team-manager' ),
@@ -564,6 +674,38 @@ class Isotope extends \Elementor\Widget_Base
 				'return_value' => 'yes',
 				'default' => 'yes',
 				'description' => __( 'Switch on to show team member read more.', 'wp-team-manager' ),
+
+			]
+		);
+
+		$this->add_control(
+			'disable_single_member',
+			[
+				'label' => __('Single member view', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Yes', 'wp-team-manager'),
+				'label_off' => __('No', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => __('Disable single team member view.', 'wp-team-manager') . Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+			]
+		);
+
+		$this->add_control(
+			'popup_bar_show',
+			[
+				'label' => __('Popup Show/Hide', 'wp-team-manager'),
+				'type' => Controls_Manager::SWITCHER,
+				'label_on' => __('Show', 'wp-team-manager'),
+				'label_off' => __('Hide', 'wp-team-manager'),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+				'condition' => [
+					'disable_single_member!' => 'yes', 
+				],
 
 			]
 		);

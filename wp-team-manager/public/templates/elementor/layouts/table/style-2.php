@@ -8,6 +8,10 @@ if(!empty($data)):
     $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';  // Sanitize image size value
     $show_shortBio = isset( $settings['team_show_short_bio'] ) && !empty( $settings['team_show_short_bio'] ) ? sanitize_textarea_field( $settings['team_show_short_bio'] ) : '';  // Sanitize the short bio
 
+    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
+    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
+    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+
         ?>
             <div class="dwl-team-table-responsive team-table-<?php echo esc_attr( $style_type )?>">
             <table class="table">
@@ -25,7 +29,7 @@ if(!empty($data)):
                                 <th><?php esc_html_e( "Designation", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
-                            <?php if( 'yes'== $settings['show_job_title'] ): ?>
+                            <?php if( 'yes'== $settings['show_sub_title'] ): ?>
                                 <th><?php esc_html_e( "Profession", " wp-team-manager " )?></th>
                             <?php endif; ?>
 
@@ -58,6 +62,8 @@ if(!empty($data)):
                                 $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                                 $tm_mobile = !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '';
                                 $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
+                                $full_biograph = !empty( $settings['full_biograph_text'] ) ? sanitize_text_field( $settings['full_biograph_text'] ) : 'Full Biography';
+
                                 ?>
                                 
                                 
@@ -67,9 +73,19 @@ if(!empty($data)):
                                             <div class="dwl-table-img-wraper">
 
                                                 <?php if("yes" == $settings['show_image']): ?>
-                                                    <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                                                    <?php if($disable_single_member) : ?>
+                                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                                                    <?php endif; ?>
+                                                    <?php if($show_popup): ?>
+                                                        <div class="team-popup" data-popup="<?php echo esc_attr($popup_settings); ?>" data-id="<?php echo esc_attr($teamInfo->ID); ?>">
+                                                    <?php endif; ?>
                                                         <?php echo wp_kses_post( Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' ) ); ?>
-                                                    </a>
+                                                    <?php if($show_popup): ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <?php if($disable_single_member) : ?>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 <?php endif;?>
                                                 
                                                 <?php if('yes'== $settings['show_title']  ): ?>
@@ -92,9 +108,11 @@ if(!empty($data)):
                                         </td>
                                     <?php endif;?>
 
-                                    <?php if( 'yes'== $settings['show_job_title'] ): ?>
+                                    <?php if( 'yes'== $settings['show_sub_title'] ): ?>
                                         <td class="dwl-table-data">
-                                            <span class="team-member-job-title"><?php echo esc_html($job_title) ?></span>
+                                            <div class="team-member-job-title">
+                                                <span class="team-position"><?php echo esc_html($job_title) ?></span>
+                                            </div>
                                         </td>
                                     <?php endif;?>
 
@@ -126,16 +144,16 @@ if(!empty($data)):
                                                 <?php endif; ?>
                                                 <?php if(isset($settings['show_full_biograph']) && 'yes' == $settings['show_full_biograph']) : ?>
                                                     <div class="dwl-table-full-biograph">
-                                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="dwl-table-button"><?php echo esc_attr_e( 'Full Biograph', 'wp-team-manager' )?></a>
+                                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="dwl-table-button"><?php echo esc_html( $full_biograph ); ?></a>
                                                     </div>
                                                 <?php endif; ?>
 
-                                                <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
-                                                <div class="wtm-read-more-wrap">
-                                                    <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="wtm-read-more">
-                                                    <?php echo esc_html( $team_read_more ); ?>
-                                                    </a>
-                                                </div>
+                                                <?php if (isset($settings['show_read_more']) && 'yes' === $settings['show_read_more'] && 'yes' === $settings['disable_single_member']) : ?>
+                                                    <div class="wtm-read-more-wrap">
+                                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>" class="wtm-read-more">
+                                                            <?php echo esc_html( $team_read_more ); ?>
+                                                        </a>
+                                                    </div>
                                             <?php endif; ?>
                                             </div>
                                         </td>

@@ -8,6 +8,20 @@ if(!empty($data)):
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? sanitize_text_field( $settings['team_show_short_bio'] ) : '';
     $team_arrow_position = isset( $settings['team_arrow_position'] ) && ( $settings['team_arrow_position'] === 'side' ) ? 'team-arrow-postion-side' : '';
     
+    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
+    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
+    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+
+    $allowed_tags = array_merge(
+        wp_kses_allowed_html( 'post' ), // All default post tags
+        array(
+            'progress' => array(
+                'value' => true,
+                'max'   => true,
+                'style' => true,
+            ),
+        )
+    );
     ?>
     <div class="team-member-slider-wrap <?php echo esc_attr( $team_arrow_position ); ?>" data-slider_settings="<?php echo esc_attr( json_encode( $settings['slider_settings'] ) ); ?>">
     <?php
@@ -20,16 +34,36 @@ if(!empty($data)):
 <div class="team-member-info-content"> 
     <?php if("yes" == $settings['show_image']): ?>
         <div class="team-member-thumbnail">
-            <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+            <?php if ( $disable_single_member ) : ?>
+                <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>">
+            <?php endif; ?>
+            <?php if($show_popup): ?>
+                <div class="team-popup" data-popup="<?php echo esc_attr($popup_settings); ?>" data-id="<?php echo esc_attr($teamInfo->ID); ?>">
+            <?php endif; ?>
                 <?php echo wp_kses_post( Helper::get_team_picture( $teamInfo->ID, $image_size, 'dwl-box-shadow' ) ); ?>
-            </a>
+            <?php if($show_popup): ?>
+                </div>
+            <?php endif; ?>
+            <?php if ( $disable_single_member ) : ?>
+                </a>
+            <?php endif; ?>
         </div>
     <?php endif;?>
     <div class="team-member-head">
         <?php if('yes'== $settings['show_title']  ): ?>
-            <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
-                <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
-            </a>
+            <?php if ( $disable_single_member ) : ?>
+                <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>">
+            <?php endif; ?>
+            <?php if($show_popup): ?>
+                <div class="team-popup" data-popup="<?php echo esc_attr($popup_settings); ?>" data-id="<?php echo esc_attr($teamInfo->ID); ?>">
+            <?php endif; ?>
+                    <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
+            <?php if($show_popup): ?>
+                </div>
+            <?php endif; ?>
+            <?php if ( $disable_single_member ) : ?>
+                </a>
+            <?php endif; ?>
         <?php endif;?>
         <?php if(!empty( $job_title ) && 'yes'== $settings['show_sub_title']  ): ?>
             <p class="team-position"><?php echo esc_html( $job_title ); ?></p>
@@ -60,7 +94,7 @@ if(!empty($data)):
                             <?php
                                 if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                    echo DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID);
+                                    echo wp_kses(DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID), $allowed_tags);
 
                                 } ?>
                             </div>
@@ -70,7 +104,7 @@ if(!empty($data)):
         <?php if(isset($settings['show_social']) && 'yes' == $settings['show_social']) : ?>
             <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
         <?php endif; ?>
-        <?php if ( isset( $settings['show_read_more'] ) && 'yes' === $settings['show_read_more'] ) : ?>
+        <?php if (isset($settings['show_read_more']) && 'yes' === $settings['show_read_more'] && 'yes' === $settings['disable_single_member']) : ?>
             <div class="wtm-read-more-wrap">
                 <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>" class="wtm-read-more">
                     <?php echo esc_html( $team_read_more ); ?>

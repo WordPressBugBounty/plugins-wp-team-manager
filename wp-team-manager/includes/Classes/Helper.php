@@ -1,10 +1,96 @@
 <?php
 namespace DWL\Wtm\Classes;
 
+use DWL\Wtm\Classes\Log;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 class Helper {
+
+    /**
+     * ===== Freemius helpers (centralized) =====
+     * These wrappers avoid directly calling tmwstm_fs() all over the codebase
+     * and give Admin UI a stable API to query Pro status / upgrade URL.
+     */
+
+    /** Get the Freemius SDK instance or null if unavailable */
+    public static function fs() {
+        return function_exists( 'tmwstm_fs' ) ? tmwstm_fs() : null;
+    }
+
+    /** Can current site use premium code (Freemius) */
+    public static function freemius_can_use_premium() {
+        $fs = self::fs();
+        return $fs ? (bool) $fs->can_use_premium_code() : false;
+    }
+
+    /** Is user paying or on trial */
+    public static function freemius_is_paying_or_trial() {
+        $fs = self::fs();
+        return $fs ? (bool) $fs->is_paying_or_trial() : false;
+    }
+
+    /** Is user NOT paying and NOT on trial */
+    public static function freemius_is_not_paying() {
+        $fs = self::fs();
+        return $fs ? (bool) $fs->is_not_paying() && ! $fs->is_trial() : true;
+    }
+
+    /** Public upgrade URL for CTA buttons/links */
+    public static function freemius_upgrade_url() {
+        $fs = self::fs();
+        return $fs ? esc_url( $fs->get_upgrade_url() ) : '#';
+    }
+
+    /** Convenience: Is Pro effectively active for gating premium modules */
+    public static function is_pro_active() {
+        // Prefer can_use_premium_code which accounts for dev-mode scenarios too
+        return self::freemius_can_use_premium() || self::freemius_is_paying_or_trial();
+    }
+
+    /**
+     * Safely instantiate a controller class. Uses get_instance() if available,
+     * otherwise falls back to `new $class()`.
+     *
+     * @param string $class
+     * @return void
+     */
+    private static function boot_class( $class ) {
+        try {
+            if ( ! class_exists( $class ) ) {
+                return; // Silently skip missing classes
+            }
+
+            if ( method_exists( $class, 'get_instance' ) ) {
+                $class::get_instance();
+                return;
+            }
+
+            // Fallback for non-singleton controllers
+            new $class();
+        } catch ( \Throwable $e ) {
+            // Optional logging if Log class is available
+            if ( class_exists( __NAMESPACE__ . '\\Log' ) ) {
+                Log::error( 'Helper boot_class exception', [ 'class' => $class, 'error' => $e->getMessage() ] );
+            }
+        }
+    }
+
+    /**
+     * Instantiate a list of classes only in wp-admin. Accepts both singleton and non-singleton classes.
+     *
+     * @param array $classes
+     * @return void
+     */
+    public static function admin_instances( array $classes ) {
+        if ( empty( $classes ) || ! is_admin() ) {
+            return;
+        }
+        foreach ( $classes as $class ) {
+            self::boot_class( $class );
+        }
+    }
 
     /**
      * Classes instatiation.
@@ -17,11 +103,14 @@ class Helper {
         if ( empty( $classes ) ) {
             return;
         }
-
         foreach ( $classes as $class ) {
-            $class::get_instance();
+            // Back-compat: prefer singleton if present; otherwise allow direct instantiation
+            if ( method_exists( $class, 'get_instance' ) ) {
+                $class::get_instance();
+            } else {
+                self::boot_class( $class );
+            }
         }
-
     }
 
     /**
@@ -33,21 +122,29 @@ class Helper {
      *
      * @return string|null The HTML image element or null if no thumbnail ID is found.
      */
-    public static function get_team_picture($post_id, $thumb_image_size = 'thumbnail', $class = '') {
-        // Ensure a valid post ID
-        $post_id = intval($post_id);
-        
-        // Get the thumbnail ID once
-        $thumbnail_id = get_post_thumbnail_id($post_id);
+ public static function get_team_picture($post_id, $thumb_image_size = 'thumbnail', $class = '') {
+    // Ensure a valid post ID
+    $post_id = intval($post_id);
     
-        // Return default image if no thumbnail is found
-        if (!$thumbnail_id) {
-            return ''; // Or return a default placeholder image
-        }
-    
-        // Return the formatted image with proper escaping for class attributes
-        return apply_filters('wp_team_manager_team_picture_html', wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]), $post_id, $thumb_image_size, $class);
+    // Get the thumbnail ID once
+    $thumbnail_id = get_post_thumbnail_id($post_id);
+
+    // Return default image if no thumbnail is found
+    if (!has_post_thumbnail($post_id)) {
+        $placeholder_url = plugin_dir_url(__FILE__) . 'assets/images/placeholder.png'; // ✅ Replace with actual path
+        return '<img src="' . esc_url($placeholder_url) . '" alt="' . esc_attr__('No Image', 'wp-team-manager') . '" class="' . esc_attr($class) . '" />';
     }
+
+    // Return the formatted image with proper escaping for class attributes
+    return apply_filters(
+        'wp_team_manager_team_picture_html',
+        wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]),
+        $post_id,
+        $thumb_image_size,
+        $class
+    );
+}
+
 
 
     /**
@@ -179,6 +276,7 @@ class Helper {
             'snapchat'       => ['icon' => 'fab fa-snapchat', 'title' => __('Snapchat', 'wp-team-manager')],
             'goodreads'      => ['icon' => 'fab fa-goodreads', 'title' => __('Goodreads', 'wp-team-manager')],
             'twitch'         => ['icon' => 'fab fa-twitch', 'title' => __('Twitch', 'wp-team-manager')],
+            'xing'         => ['icon' => 'fab fa-xing', 'title' => __('Xing', 'wp-team-manager')],
         ];
     
         // Start output buffering for better performance
@@ -223,7 +321,7 @@ class Helper {
          */
         
         public static function get_team_other_infos($post_id, $tm_single_fields = []) {
-            
+
             // Get custom label settings
             $custom_labels = get_option('tm_custom_labels', []);
             $web_btn_text = isset($custom_labels['tm_web_url']) ? $custom_labels['tm_web_url'] : 'Bio';
@@ -262,6 +360,8 @@ class Helper {
             ];
         
             
+
+
             // Intersect the selected fields with field mappings
             if(!empty($tm_single_fields && is_array($tm_single_fields) && tmwstm_fs()->is_paying_or_trial())){
                 $tm_selected_fields = array_intersect_key($field_mappings, array_flip($tm_single_fields));
@@ -272,13 +372,14 @@ class Helper {
             
             // Allow filtering
             $field_mappings = apply_filters('wp_team_manager_other_info_fields', $tm_selected_fields, $fields, $post_id);
-        
+
+
             // Generate HTML with filtering logic
             foreach ($field_mappings as $key => $info) {
                 // Apply filter only on singular team pages
-                if (is_singular('team_manager') && in_array($key, $tm_single_fields)) {
-                    continue; // Skip hidden fields on team single pages
-                }
+                // if (is_singular('team_manager') && in_array($key, $tm_single_fields)) {
+                //     continue; // Skip hidden fields on team single pages
+                // }
         
                 if (!empty($fields[$key])) {
                     $output .= '<div class="team-member-info">';
@@ -637,7 +738,7 @@ class Helper {
         $post_id              = $post_id ? $post_id : get_the_ID();
         $team_gallery_data    = get_post_meta( $post_id, 'wptm_cm2_gallery_image' );
         $light_box_selector   = '';
-        $is_lightbox_selected = get_option( 'tm_single_team_lightbox' );
+        $is_lightbox_selected = get_option('tm_single_team_lightbox');
         $team_image_column    = get_option( 'tm_single_gallery_column' );
 
         if ( 'True' === $is_lightbox_selected && tmwstm_fs()->is_paying_or_trial()) {
@@ -648,15 +749,15 @@ class Helper {
             return false;
         }
         ?>
-        <div class="wtm-image-gallery-wrapper <?php echo esc_attr($team_image_column) ?? '' ?> <?php echo esc_attr($light_box_selector) ?? ''; ?>">
-            <?php foreach( $team_gallery_data[0] as $attachment_id => $attachment_url ): ?>
-                <div class="wtm-single-image">
-                    <a href="<?php echo esc_url( wp_get_attachment_url( $attachment_id ) ); ?>" title="">
-                        <?php echo wp_get_attachment_image( $attachment_id , 'medium'); ?>
-                    </a>
-                </div>
-            <?php endforeach;?>
-        </div>
+            <div class="wtm-image-gallery-wrapper <?php echo esc_attr($team_image_column) ?? '' ?> <?php echo esc_attr($light_box_selector) ?? ''; ?>" data="<?php echo esc_attr($is_lightbox_selected); ?>">
+                <?php foreach( $team_gallery_data[0] as $attachment_id => $attachment_url ): ?>
+                    <div class="wtm-single-image">
+                        <a href="<?php echo esc_url( wp_get_attachment_url( $attachment_id ) ); ?>" title="">
+                            <?php echo wp_get_attachment_image( $attachment_id , 'medium'); ?>
+                        </a>
+                    </div>
+                <?php endforeach;?>
+            </div>
        <?php
     }
 
@@ -671,14 +772,13 @@ class Helper {
      * The generated HTML includes a wrapper, input checkbox, label, and display
      * name for each field option.
      */
-    public static function generate_single_fields(){
+    public static function generate_single_fields( $backend = 'backend') {
 
-        $tm_single_fields =  get_option('tm_single_fields')
-        ? get_option('tm_single_fields') : 
-        [];
+        $tm_single_fields =  get_option('tm_single_fields') ? get_option('tm_single_fields') : [];
+
         $fields = array(
             'tm_email'           => 'Email',
-            'tm_jtitle'          => 'Job Title',
+            // 'tm_jtitle'          => 'Job Title',
             'tm_telephone'       => 'Telephone (Office)',
             'tm_mobile'          => 'Mobile (Personal)',
             'tm_location'        => 'Location',
@@ -687,22 +787,29 @@ class Helper {
             'tm_vcard'           => 'vCard',
         );
         
-        foreach ($fields as $key => $value) {
+        if( $backend === 'backend' ){
 
-            printf(
-                '<div class="tm-nice-checkbox-wrapper">
-                <input type="checkbox" class="tm-checkbox" id="tm_%s" name="tm_single_fields[]" value="%s" %s/>
-                <label for="tm_%s" class="toggle"><span></span></label>
-                <span>%s</span>  
-                </div><!--.tm-nice-checkbox-wrapper-->',
-                esc_attr( $key ) ,
-                esc_attr( $key ),
-                in_array($key,$tm_single_fields) ? 'checked' : '',
-                esc_attr( $key ),
-                esc_html( $value ) ,
-                
-            );
+            foreach ($fields as $key => $value) {
 
+                printf(
+                    '<div class="tm-nice-checkbox-wrapper">
+                    <input type="checkbox" class="tm-checkbox" id="tm_%s" name="tm_single_fields[]" value="%s" %s/>
+                    <label for="tm_%s" class="toggle"><span></span></label>
+                    <span>%s</span>  
+                    </div><!--.tm-nice-checkbox-wrapper-->',
+                    esc_attr( $key ) ,
+                    esc_attr( $key ),
+                    in_array($key,$tm_single_fields) ? 'checked' : '',
+                    esc_attr( $key ),
+                    esc_html( $value ) ,
+                    
+                );
+
+            }
+        }
+        
+        if ( $backend === 'frontend' ) {
+            return $tm_single_fields;
         }
 
     }
@@ -970,9 +1077,70 @@ class Helper {
      */
 
     public static function get_team_data($args){
+
+          $default_args = [
+            'post_type'           => 'team_manager',
+            'posts_per_page'      => -1,
+            'orderby'             => 'date',
+            'order'               => 'desc',
+            'suppress_filters'    => false,
+            'no_found_rows'       => false,
+        ];
+        
+        $args = wp_parse_args( $args, $default_args );
+
+        // if ( ! empty( $args['doing_ajax_call'] ) || ! empty( $args['enable_pagination'] ) ) {
+        //     $args['no_found_rows'] = false;
+        // }
+
+        if (empty($args['post_type'])) {
+            $args['post_type'] = 'team_manager';
+        }
+        // Ensure WPML compatibility by allowing filters to run on queries
+        if ( ! isset( $args['suppress_filters'] ) ) {
+            $args['suppress_filters'] = false;
+        }
+
         $args = apply_filters('wp_team_manager_query_args', $args);
+
+        /**
+         * Fires before the team query is executed.
+         *
+         * @since x.x.x
+         * @param array $args The query arguments.
+         */
+        do_action('wp_team_manager_before_team_query', $args);
+
+
+        ksort($args); // Optional: to ensure consistent ordering
+
+        // Add caching for performance with large datasets
+        $cache_hash = md5( maybe_serialize( $args ) );
+        $cache_key = 'wtm_team_data_' . substr( $cache_hash, 0, 32 );
+        $cached = get_transient( $cache_key );
+
+        if ( false !== $cached ) {
+            return $cached;
+        }
+
         $tmQuery = new \WP_Query( $args );
-        return ($tmQuery->posts) ? ['posts' => $tmQuery->posts,'max_num_pages' => $tmQuery->max_num_pages] : ['posts'=>[],'max_num_pages'=>0];
+
+        /**
+         * Fires after the team query is executed and before caching.
+         *
+         * @since x.x.x
+         * @param \WP_Query $tmQuery The WP_Query object.
+         * @param array $args The query arguments.
+         */
+        do_action('wp_team_manager_after_team_query', $tmQuery, $args);
+
+        $result = ($tmQuery->posts)
+            ? ['posts' => $tmQuery->posts, 'max_num_pages' => $tmQuery->max_num_pages]
+            : ['posts' => [], 'max_num_pages' => 0];
+
+        set_transient( $cache_key, $result, HOUR_IN_SECONDS );
+
+        return $result;
     }
 
     /**
@@ -984,59 +1152,59 @@ class Helper {
      * @throws None
      * @return void
      */
-    public static function renderElementorLayout(string $layout, array $data, array $settings): void
-{
-    $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Allowed layouts
+    public static function renderElementorLayout(string $layout, array $data, array $settings, $callBack = 'init'): void{
+        $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Allowed layouts
 
-    if (!in_array($layout, $allowedLayouts, true)) {
-        wp_die(__('Invalid layout.', 'wp-team-manager'));
+        if (!in_array($layout, $allowedLayouts, true)) {
+            wp_die(__('Invalid layout.', 'wp-team-manager'));
+        }
+
+        $styleTypeKey = "{$layout}_style_type";
+        $styleType = $settings[$styleTypeKey] ?? '';
+
+        // Ensure only safe characters (alphanumeric + underscores)
+        if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
+            var_dump($styleType);
+            wp_die(__('Invalid style type.', 'wp-team-manager'));
+        }
+
+        // Ensure constants exist before using them
+        if (!defined('TM_PATH')) {
+            wp_die(__('TM_PATH is not defined.', 'wp-team-manager'));
+        }
+
+        // Define Free path (always available)
+        $basePath = realpath(TM_PATH . '/public/templates/elementor/layouts/');
+
+        // Define Pro path if available
+        $proPath = defined('TM_PRO_PATH') ? realpath(TM_PRO_PATH . '/public/templates/elementor/layouts/') : null;
+
+        // Ensure the free path is valid
+        if (!$basePath) {
+            wp_die(__('Invalid base template path.', 'wp-team-manager'));
+        }
+
+        $templateName = sanitize_file_name($styleType . '.php');
+
+        // Define possible template paths (Pro first, then Free)
+        $proFullPath = $proPath ? $proPath . '/' . $layout . '/' . $templateName : null;
+        $freeFullPath = $basePath . '/' . $layout . '/' . $templateName;
+
+        // Check if Pro template exists and is readable
+        if ($proFullPath && is_readable($proFullPath) && strpos(realpath($proFullPath), $proPath) === 0) {
+            include $proFullPath;
+            return;
+        }
+
+        // Check if Free template exists and is readable
+        if (is_readable($freeFullPath) && strpos(realpath($freeFullPath), $basePath) === 0) {
+            include $freeFullPath;
+            return;
+        }
+
+        // If neither file is found, show an error
+        wp_die(__('Template not found or invalid file.', 'wp-team-manager'));
     }
-
-    $styleTypeKey = "{$layout}_style_type";
-    $styleType = $settings[$styleTypeKey] ?? '';
-
-    // Ensure only safe characters (alphanumeric + underscores)
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
-        wp_die(__('Invalid style type.', 'wp-team-manager'));
-    }
-
-    // Ensure constants exist before using them
-    if (!defined('TM_PATH')) {
-        wp_die(__('TM_PATH is not defined.', 'wp-team-manager'));
-    }
-
-    // Define Free path (always available)
-    $basePath = realpath(TM_PATH . '/public/templates/elementor/layouts/');
-
-    // Define Pro path if available
-    $proPath = defined('TM_PRO_PATH') ? realpath(TM_PRO_PATH . '/public/templates/elementor/layouts/') : null;
-
-    // Ensure the free path is valid
-    if (!$basePath) {
-        wp_die(__('Invalid base template path.', 'wp-team-manager'));
-    }
-
-    $templateName = sanitize_file_name($styleType . '.php');
-
-    // Define possible template paths (Pro first, then Free)
-    $proFullPath = $proPath ? $proPath . '/' . $layout . '/' . $templateName : null;
-    $freeFullPath = $basePath . '/' . $layout . '/' . $templateName;
-
-    // Check if Pro template exists and is readable
-    if ($proFullPath && is_readable($proFullPath) && strpos(realpath($proFullPath), $proPath) === 0) {
-        include $proFullPath;
-        return;
-    }
-
-    // Check if Free template exists and is readable
-    if (is_readable($freeFullPath) && strpos(realpath($freeFullPath), $basePath) === 0) {
-        include $freeFullPath;
-        return;
-    }
-
-    // If neither file is found, show an error
-    wp_die(__('Template not found or invalid file.', 'wp-team-manager'));
-}
     
            /**
          * Renders the Elementor layout based on the given layout, data, and settings.
@@ -1057,7 +1225,7 @@ class Helper {
         
           // Allow only alphanumeric + underscores to prevent directory traversal
         if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
-            die('Invalid style type.');
+            die($styleType.'Invalid style type.');
         }
         
         
@@ -1222,7 +1390,7 @@ class Helper {
     
         // Check if the user is not paying and is not on a trial
         if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) {
-            return '<a href="' . $upgrade_url . '" target="_blank" rel="noopener noreferrer">' . esc_html($link_text) . '</a>';
+            return '<a href="' . $upgrade_url . '" target="_blank" rel="noopener noreferrer" class="pro-feature-link">' . esc_html($link_text) . '</a>';
         }
     
         return '';

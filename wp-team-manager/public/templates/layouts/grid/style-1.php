@@ -31,8 +31,9 @@ $disable_single_template = get_option('single_team_member_view') === 'True';
 $desktop_column = isset($settings['dwl_team_desktop'][0]) ? absint($settings['dwl_team_desktop'][0]) : 4;
 $tablet_column = isset($settings['dwl_team_tablet'][0]) ? absint($settings['dwl_team_tablet'][0]) : 3;
 $mobile_column = isset($settings['dwl_team_mobile'][0]) ? absint($settings['dwl_team_mobile'][0]) : 1;
-
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
+$selected = Helper::generate_single_fields('frontend');
+
 
 foreach ($data['posts'] as $teamInfo) {
  
@@ -82,7 +83,7 @@ foreach ($data['posts'] as $teamInfo) {
                 <?php endif; ?>
 
                 <?php if (!$show_other_info): ?>
-                    <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID)); ?>
+                    <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $selected)); ?>
                 <?php endif; ?>
 
                 <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
@@ -102,7 +103,7 @@ foreach ($data['posts'] as $teamInfo) {
                     <?php echo wp_kses_post(Helper::display_social_profile_output($teamInfo->ID)); ?>
                 <?php endif; ?>
 
-                <?php if ($show_read_more): ?>
+                <?php if ($show_read_more && !$disable_single_template): ?>
                     <div class="wtm-read-more-wrap">
                         <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>" class="wtm-read-more">
                             <?php esc_html_e('Read More', 'wp-team-manager'); ?>

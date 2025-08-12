@@ -14,10 +14,13 @@ if (get_option('tm_single_team_lightbox') === 'True' && function_exists('tmwstm_
     wp_enqueue_script('wp-team-magnific-popup');
     wp_enqueue_script('wp-team-pro');
     wp_enqueue_style('wp-team-magnific-popup');
+   
 }
 
-$tm_single_fields = (array) get_option('tm_single_fields', []); // Use default value directly
+do_action('wtm_single_team_after_header');
 
+$tm_single_fields = (array) get_option('tm_single_fields', []); // Use default value directly
+$selected = Helper::generate_single_fields('frontend');
 ?>
 
 <div id="primary" class="content-area dwl-team-wrapper dwl-team-single wtm-container single-style">
@@ -58,17 +61,17 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                                 <?php
                                         if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                            echo DWL_Wtm_Pro_Helper::display_skills_output($team_member->ID);
+                                            echo DWL_Wtm_Pro_Helper::display_skills_output($post_id);
 
                                         } ?>
                                 </div>
                         <?php endif; ?>
 
                         <?php 
-                        echo wp_kses_post(Helper::get_team_other_infos($post_id));
-                        do_action('wtm_before_social_profiles', $post_id);
-                        echo wp_kses_post(Helper::display_social_profile_output($post_id));
-                        do_action('wtm_after_social_profiles', $post_id);
+                            echo wp_kses_post(Helper::get_team_other_infos($post_id, $selected));
+                            do_action('wtm_before_social_profiles', $post_id);
+                            echo wp_kses_post(Helper::display_social_profile_output($post_id));
+                            do_action('wtm_after_social_profiles', $post_id);
                         ?>
                     </div>
 
@@ -82,10 +85,10 @@ $tm_single_fields = (array) get_option('tm_single_fields', []); // Use default v
                         <?php the_content(); ?>
                     </div>
 
-                    <?php 
-                    do_action('wtm_before_image_gallery', $post_id);
-                    echo wp_kses_post(Helper::get_image_gallery_output($post_id));
-                    do_action('wtm_after_image_gallery', $post_id);
+                    <?php
+                        do_action('wtm_before_image_gallery', $post_id);
+                        echo wp_kses_post(Helper::get_image_gallery_output($post_id));
+                        do_action('wtm_after_image_gallery', $post_id);
                     ?>
 
                 </div>

@@ -9,7 +9,7 @@
  * Plugin Name:       WordPress Team Manager
  * Plugin URI:        https://wpteammanager.com/
  * Description:       Showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
- * Version:           2.3.8
+ * Version:           2.3.10
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -40,24 +40,25 @@ if ( function_exists( 'tmwstm_fs' ) ) {
                 // Include Freemius SDK.
                 require_once dirname( __FILE__ ) . '/includes/freemius/start.php';
                 $tmwstm_fs = fs_dynamic_init( array(
-                    'id'             => '14958',
-                    'slug'           => 'wp-team-manager',
-                    'type'           => 'plugin',
-                    'public_key'     => 'pk_51d4e036fdcfa3c1272210e3a0733',
-                    'is_premium'     => false,
-                    'premium_suffix' => 'Pro',
-                    'has_addons'     => false,
-                    'has_paid_plans' => true,
-                    'is_live'        => true,
-                    'trial'          => array(
+                    'id'              => '14958',
+                    'slug'            => 'wp-team-manager',
+                    'type'            => 'plugin',
+                    'public_key'      => 'pk_51d4e036fdcfa3c1272210e3a0733',
+                    'is_premium'      => false,
+                    'premium_suffix'  => 'Pro',
+                    'has_addons'      => false,
+                    'has_paid_plans'  => true,
+                    'is_live'         => true,
+                    'trial'           => array(
                         'days'               => 7,
                         'is_require_payment' => true,
                     ),
-                    'menu'           => array(
+                    'has_affiliation' => 'customers',
+                    'menu'            => array(
                         'slug'       => 'edit.php?post_type=team_manager',
                         'first-path' => 'edit.php?post_type=team_manager&page=wtm_get_help',
-                        'contact'    => false,
-                        'support'    => false,
+                        'contact'    => true,
+                        'support'    => true,
                     ),
                 ) );
             }
@@ -70,8 +71,20 @@ if ( function_exists( 'tmwstm_fs' ) ) {
         do_action( 'tmwstm_fs_loaded' );
     }
     // ... Your plugin's main file logic ...
-    require_once dirname( __FILE__ ) . '/vendor/autoload.php';
-    define( 'TM_VERSION', '2.3.6' );
+    $wptm_autoload_path = dirname( __FILE__ ) . '/vendor/autoload.php';
+    if ( file_exists( $wptm_autoload_path ) ) {
+        require_once $wptm_autoload_path;
+    } else {
+        add_action( 'admin_notices', function () {
+            echo '<div class="notice notice-error"><p>';
+            echo esc_html__( 'The WordPress Team Manager plugin is missing its Composer dependencies. Please run composer install.', 'wp-team-manager' );
+            echo '</p></div>';
+        } );
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( '[WordPress Team Manager] Missing Composer dependencies: vendor/autoload.php not found. Please run composer install.' );
+        }
+    }
+    define( 'TM_VERSION', '2.3.10' );
     define( 'TM_FILE', __FILE__ );
     define( 'TM_PATH', __DIR__ );
     define( 'TM_URL', plugins_url( '', TM_FILE ) );
@@ -80,7 +93,16 @@ if ( function_exists( 'tmwstm_fs' ) ) {
     define( 'TM_PRO_PATH', __DIR__ . '/pro' );
     define( 'TM_PRO_URL', plugins_url( '/pro', TM_FILE ) );
     define( 'TM_PRO_PUBLIC', TM_PRO_URL . '/public' );
-    require_once dirname( __FILE__ ) . '/Core.php';
+    $core_path = __DIR__ . '/Core.php';
+    if ( file_exists( $core_path ) ) {
+        require_once $core_path;
+    } else {
+        add_action( 'admin_notices', function () {
+            echo '<div class="notice notice-error"><p>';
+            esc_html_e( 'Missing Core.php file. Please reinstall the plugin.', 'wp-team-manager' );
+            echo '</p></div>';
+        } );
+    }
     register_activation_hook( __FILE__, 'wptm_activate_wp_team' );
     /**
      * Plugin activation action.
