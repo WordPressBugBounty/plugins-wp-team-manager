@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.10
+Stable tag: 2.3.11
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -195,6 +195,45 @@ Yes you can use this plugin with any theme it will work. If face any issue mail 
 
 Yes! WP Team Manager works perfectly with the Elementor Team Member Widget, allowing you to easily design and customize your team showcase using Elementor’s drag-and-drop interface.
 
+= How do I enable the Telegram Notifier? =
+
+Go to **Team Manager → AI Agents → Telegram Notifier**.  
+Enter your **Telegram Bot Token** and **Chat ID**. You can create a bot using [@BotFather](https://core.telegram.org/bots#botfather) and get the chat ID from [@userinfobot](https://t.me/userinfobot). Once saved, new or updated team members will trigger a message to your Telegram group or channel.
+
+= How do I sync team member data to Google Sheets or Airtable? =
+
+Use the **Profile Sync Agent** (free).  
+1. Sign up for a free [n8n](https://n8n.io/) account or install it on your server.  
+2. Create a webhook workflow in n8n that sends data to Google Sheets or Airtable.  
+3. Paste the webhook URL into the Profile Sync Agent settings.  
+Every time a team member is added or updated, the data will be sent to your automation workflow.
+
+= Do I need OpenAI API keys for all AI Agents? =
+
+No. Only AI-powered modules like the **FAQ Bot** require an OpenAI (or compatible) API key.  
+Modules such as the **Telegram Notifier** or **Profile Sync Agent** don’t require AI credits.
+
+= How do I upgrade to Pro? =
+
+Pro unlocks:
+- Slack Agent (send updates to Slack channels)
+- AI FAQ Bot
+- Onboarding Guide
+- Advanced layouts and customization
+Visit [WP Team Manager Pro](https://wpteammanager.com/pricing/) to upgrade.
+
+= How can I troubleshoot if AI Agents are not working? =
+
+- Enable debug logging in **Team Manager → Settings → Advanced → Enable Debug Log**.  
+- Check the generated log file for errors (path shown in settings).  
+- Make sure your API keys and webhook URLs are correct.
+
+= Is WP Team Manager compatible with page builders? =
+Yes. WP Team Manager works with Gutenberg, Elementor, Beaver Builder, and other major page builders. You can use the shortcode generator to insert layouts anywhere.
+
+= Can I disable AI features if I don’t need them? =
+Yes. AI Agents are modular. Simply leave their settings blank and they won’t run.
+
 = Need Any Help? =
 
 Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamicweblab.com/submit-a-request/)
@@ -212,8 +251,12 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 9. Short Code Generator
 10. Elementor Widget
 11. Team generator
+12. AI Agent
 
 == Changelog ==
+
+= 2.3.11 =
+* New: Added "Team Generator" Grid Layout Style 3 — a fresh and modern design option for displaying team members.
 
 = 2.3.10 =
 * New: Telegram Notifier (Free) – Send team updates to Telegram groups/channels.

@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.3.10';
+	const version = '2.3.11';
 
 	/**
 	 * Class init.

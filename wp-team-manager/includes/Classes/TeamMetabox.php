@@ -139,11 +139,13 @@ class TeamMetabox {
 				'options'        => array(
 					'style-1'        => __('Style One', 'wp-team-manager'),
 					'style-2'        => __('Style Two', 'wp-team-manager'),
+                    'style-3'        => __('Style Three', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/Grid-1.svg',
 					'style-2'     => 'icons/short-code-layout/Grid-2.svg',
+					'style-3'     => 'icons/short-code-layout/grid-3.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => 'col-12',

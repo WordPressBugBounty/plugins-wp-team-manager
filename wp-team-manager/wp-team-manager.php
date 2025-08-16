@@ -9,7 +9,7 @@
  * Plugin Name:       WordPress Team Manager
  * Plugin URI:        https://wpteammanager.com/
  * Description:       Showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
- * Version:           2.3.10
+ * Version:           2.3.11
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -84,7 +84,7 @@ if ( function_exists( 'tmwstm_fs' ) ) {
             error_log( '[WordPress Team Manager] Missing Composer dependencies: vendor/autoload.php not found. Please run composer install.' );
         }
     }
-    define( 'TM_VERSION', '2.3.10' );
+    define( 'TM_VERSION', '2.3.11' );
     define( 'TM_FILE', __FILE__ );
     define( 'TM_PATH', __DIR__ );
     define( 'TM_URL', plugins_url( '', TM_FILE ) );
@@ -99,7 +99,7 @@ if ( function_exists( 'tmwstm_fs' ) ) {
     } else {
         add_action( 'admin_notices', function () {
             echo '<div class="notice notice-error"><p>';
-            esc_html_e( 'Missing Core.php file. Please reinstall the plugin.', 'wp-team-manager' );
+            esc_html_e( 'WordPress Team Manager could not load correctly. Please reinstall the plugin.', 'wp-team-manager' );
             echo '</p></div>';
         } );
     }
