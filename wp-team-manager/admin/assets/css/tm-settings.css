@@ -56,11 +56,14 @@
 .tab-pane h2 {
     font-size: 24px;
     margin-bottom: 8px;
+    line-height: 32px;
+    width: 100%;
 }
 .tm-tab-content-wrapper .tm-field-wrapper {
     border-bottom: 1px solid #e7e7e7;
     padding: 15px 0;
     display: flex;
+    flex-wrap: wrap;
 }
 .tm-field-wrapper .tm-label {
     font-weight: 700;
@@ -150,15 +153,18 @@
 }
 #wpbody-content .wrap form .tm-tab-content-wrapper .tab-pane .tm-field-wrapper .tm-field textarea {
     width: 90%}
-#wpbody-content .wrap form {
-    width: 62%;
-    display: inline-block;
-}
-#wpbody-content .wrap #wptm_support {
-    margin-top: 68px;
-    width: 37%;
-    float: right;
-}
+/* @media (min-width: 1024px) { */
+    /* #wpbody-content .wrap form {
+        width: 57%;
+        display: inline-block;
+    } */
+    #wpbody-content .wrap #wptm_support {
+        margin-top: 0;
+        width: 43%;
+        align-items: start;
+        justify-content: start;
+    }
+/* } */
 .wp-team-box-content a {
     text-align: center;
     font-size: 15px;
@@ -173,15 +179,29 @@
     height: auto;
     border: 2px solid #A259FF;
 }
+.wptm-settings-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.wptm-settings-form{
+    width: 57%;
+    display: inline-block;
+}
 @media only screen and (max-width:1312px) {
-    #wpbody-content .wrap form {
-    width: 100%}
-#wpbody-content .wrap #wptm_support {
-    margin-top: 0;
-    width: 97%;
-    float: left;
+    /* #wpbody-content .wrap form {
+    width: 100%} */
+    .wptm-settings-form{
+        width: 100%;
+        display: inline-block;
+    }
+    #wpbody-content .wrap #wptm_support {
+        margin-top: 0;
+        width: 100%;
+        float: left;
+    }
 }
-}
+
 /* toggle switch */
 .wtm-toggle-switch input[type=checkbox]{
 	height: 0;
@@ -230,7 +250,7 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    width: 65%;
+    width: 67%;
     margin-bottom: 25px;
 }
 

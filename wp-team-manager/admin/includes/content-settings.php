@@ -25,15 +25,19 @@ $fields = array(
     <!-- Tab items -->
     <div class="tm-tabs">
         <div class="tab-item active">
-            <i class="tab-icon fas fa-code"></i>
+            <i class="dashicons dashicons-admin-generic tab-icon"></i>
             <?php esc_html_e('General Settings','wp-team-manager'); ?>
         </div>
         <div class="tab-item">
-            <i class="tab-icon fas fa-cog"></i>
+            <i class="dashicons dashicons-admin-page tab-icon"></i>
             <?php esc_html_e('Details Page Settings','wp-team-manager'); ?>
         </div>
         <div class="tab-item">
-            <i class="tab-icon fas fa-plus-circle"></i>
+            <i class="dashicons dashicons-universal-access-alt tab-icon"></i>
+            <?php esc_html_e('Accessibility & SEO','wp-team-manager'); ?>
+        </div>
+        <div class="tab-item">
+            <i class="dashicons dashicons-admin-tools tab-icon"></i>
             <?php esc_html_e('Advance','wp-team-manager'); ?>
         </div>
         <div class="line"></div>
@@ -91,10 +95,13 @@ $fields = array(
                     <th scope="row">
                         <label>
                             <?php esc_html_e('Disable single team member view','wp-team-manager'); ?>
+                             <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                                <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                            <?php endif; ?>
                         </label>
                     </th>
                     <td class="wtm-toggle-switch">
-                        <input type="checkbox" name="single_team_member_view" id="single_team_member_view" value="True" <?php checked( $single_team_member_view, 'True' ); ?>>
+                        <input type="checkbox" name="single_team_member_view" id="single_team_member_view" value="True" <?php checked( $single_team_member_view, 'True' ); ?> <?php if ( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) echo 'disabled'; ?>>
                         <label for="single_team_member_view"><?php esc_html_e('Yes', 'wp-team-manager'); ?></label>
                     </td>
                 </tr>
@@ -117,7 +124,9 @@ $fields = array(
                 <div class="tm-label">
                     <label for="">
                     <?php esc_html_e('Show/Hide Fields','wp-team-manager'); ?>
-
+                 <?php if (tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()) : ?>
+                                <span class="wptm-pro-text"> <?php esc_html_e( ' Pro ', 'wp-team-manager' ) ?> </span> <a class="wptm-pro-link" href="<?php echo esc_url(tmwstm_fs()->get_upgrade_url()) ?>"> <?php esc_html_e('Upgrade Now!', 'wp-team-manager') ?> </a>
+                            <?php endif; ?>
                     </label>
                 </div>
                 <div class="tm-field">
@@ -174,6 +183,14 @@ $fields = array(
                     </td>
                 </tr>
             </table> 
+        </div>
+        <div class="tab-pane">
+            <div class="tm-field-wrapper">
+                <h2 class="title"><?php esc_html_e('Accessibility & SEO','wp-team-manager'); ?></h2>
+                <table class="form-table">
+                    <?php do_settings_fields('tm-advanced-settings','tm_a11y_seo_section'); ?>
+                </table>
+            </div>
         </div>
         <div class="tab-pane">
             <div class="tm-field-wrapper">
@@ -244,6 +261,6 @@ $fields = array(
                     </p>
                 </div>
             </div><!-- .tm-field-wrapper -->
-        </div>
+        </div>        
     </div>
 </div>

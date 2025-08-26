@@ -569,61 +569,140 @@ class Helper {
          *
          * @return void
          */
-        public static function generatorShortcodeCss($scID)
+    public static function generatorShortcodeCss($scID, $cssOverride = '')
     {
         global $wp_filesystem;
 
-        // Validate `$scID` to prevent injection
-        if (!is_numeric($scID)) {
-            die('Invalid shortcode ID.');
+        // Sanitize & validate `$scID`
+        $scID = absint($scID);
+        if ( ! $scID ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss invalid $scID');
+            }
+            return false;
         }
 
-        // Ensure the user has the capability to modify files
-        if (!current_user_can('manage_options')) {
-            die('Unauthorized access.');
+        // In admin we enforce caps; on front-end we skip hard-fail to avoid white screens
+        if ( is_admin() && ! current_user_can('manage_options') ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss unauthorized');
+            }
+            return false;
         }
 
-        // Initialize WP filesystem securely
-        if (empty($wp_filesystem)) {
-            require_once ABSPATH . '/wp-admin/includes/file.php';
+        // Init Filesystem API
+        if ( empty( $wp_filesystem ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
             WP_Filesystem();
         }
+        if ( empty( $wp_filesystem ) ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss could not initialize WP_Filesystem');
+            }
+            return false;
+        }
 
-        $upload_dir = wp_upload_dir();
-        $upload_basedir = $upload_dir['basedir'];
+        $upload_dir    = wp_upload_dir();
+        $upload_basedir = isset($upload_dir['basedir']) ? $upload_dir['basedir'] : '';
+        $upload_baseurl = isset($upload_dir['baseurl']) ? $upload_dir['baseurl'] : '';
+        $allowedPath    = $upload_basedir ? realpath( $upload_basedir ) : false;
 
-        // Validate and securely construct the CSS file path
-        $allowedPath = realpath($upload_basedir);
-        $cssFile = $allowedPath . '/wp-team-manager/team.css';
+        if ( ! $allowedPath ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss uploads base invalid');
+            }
+            return false;
+        }
 
-        if (!$allowedPath || strpos(realpath($cssFile), $allowedPath) !== 0) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Team: Error Invalid file path team.css');
+        // Ensure plugin subdirectory exists
+        $target_dir = trailingslashit( $allowedPath ) . 'wp-team-manager';
+        if ( ! file_exists( $target_dir ) ) {
+            if ( ! wp_mkdir_p( $target_dir ) ) {
+                if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                    error_log('WPTM: generatorShortcodeCss failed to create directory');
+                }
+                return false;
             }
         }
 
-        // Generate CSS content
-        if ($css = self::render('style', compact('scID'), true)) {
-            $css = sprintf('/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, (int)$scID);
+        // Build & validate final file path
+        $cssFile = $target_dir . '/team.css';
+        $cssReal = realpath( file_exists($cssFile) ? $cssFile : $target_dir );
+        if ( ! $cssReal || strpos( $cssReal, $allowedPath ) !== 0 ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss invalid css path');
+            }
+            return false;
+        }
 
-            if (file_exists($cssFile)) {
-                $oldCss = $wp_filesystem->get_contents($cssFile);
-                if ($oldCss && strpos($oldCss, '/*wp_team-' . $scID . '-start') !== false) {
-                    $oldCss = preg_replace('/\/\*wp_team-' . $scID . '-start[\s\S]+?wp_team-' . $scID . '-end\*\//', '', $oldCss);
-                    $oldCss = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", '', $oldCss);
-                }
-                $css = $oldCss . $css;
+        // Render CSS chunk for this shortcode (prefer override when provided)
+        $css = '';
+        if ( is_string( $cssOverride ) && '' !== trim( $cssOverride ) ) {
+            $css = (string) $cssOverride;
+        } else {
+            $css = self::render( 'style', compact('scID'), true );
+        }
+
+        if ( ! $css || '' === trim( $css ) ) {
+            // Nothing to write
+            return false;
+        }
+
+        $chunk = sprintf('/*wp_team-%2$d-start*/%1$s/*wp_team-%2$d-end*/', $css, (int) $scID);
+
+        // Merge/replace existing chunk if file exists
+        $final_css = '';
+        if ( file_exists( $cssFile ) ) {
+            $oldCss = $wp_filesystem->get_contents( $cssFile );
+            if ( $oldCss ) {
+                $oldCss = preg_replace( '/\/\*wp_team\-' . $scID . '\-start[\s\S]+?wp_team\-' . $scID . '\-end\*\//', '', $oldCss );
+                // Trim extra blank lines
+                $oldCss = preg_replace( "/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $oldCss );
+                $final_css = trim( $oldCss ) . "\n" . $chunk;
             } else {
-                $wp_filesystem->mkdir($allowedPath . '/wp-team-manager');
+                $final_css = $chunk;
             }
-
-            // Use secure file writing with WP Filesystem API
-            if (!$wp_filesystem->put_contents($cssFile, $css, FS_CHMOD_FILE)) {
-                if (defined('WP_DEBUG') && WP_DEBUG) {
-                    error_log('Team: Error generating CSS file');
-                }
-            }
+        } else {
+            $final_css = $chunk;
         }
+
+        // Write file
+        $write_ok = $wp_filesystem->put_contents( $cssFile, $final_css, FS_CHMOD_FILE );
+        if ( ! $write_ok ) {
+            if ( defined('WP_DEBUG') && WP_DEBUG ) {
+                error_log('WPTM: generatorShortcodeCss failed to write file');
+            }
+            return false;
+        }
+
+        // Return public URL so caller can enqueue
+        $public_url = trailingslashit( $upload_baseurl ) . 'wp-team-manager/team.css';
+        return esc_url( $public_url );
+    }
+
+    /**
+     * Enqueue the generated CSS file for a given shortcode instance.
+     * Returns the handle on success or false on failure.
+     */
+    public static function enqueueGeneratedCss( $scID, $cssOverride = '' ) {
+        $url = self::generatorShortcodeCss( $scID, $cssOverride );
+        if ( ! $url ) {
+            return false;
+        }
+        $handle = 'wptm-generated-styles';
+        // Use filemtime for cache-busting when possible
+        $upload_dir = wp_upload_dir();
+        $path = trailingslashit( $upload_dir['basedir'] ) . 'wp-team-manager/team.css';
+        $ver  = file_exists( $path ) ? (string) filemtime( $path ) : null;
+
+        // Only enqueue once per request
+        static $enqueued = false;
+        if ( ! $enqueued ) {
+            wp_register_style( $handle, $url, array(), $ver );
+            wp_enqueue_style( $handle );
+            $enqueued = true;
+        }
+        return $handle;
     }
 
     /**
@@ -774,45 +853,52 @@ class Helper {
      */
     public static function generate_single_fields( $backend = 'backend') {
 
-        $tm_single_fields =  get_option('tm_single_fields') ? get_option('tm_single_fields') : [];
+    $tm_single_fields = get_option('tm_single_fields') ? get_option('tm_single_fields') : [];
 
-        $fields = array(
-            'tm_email'           => 'Email',
-            // 'tm_jtitle'          => 'Job Title',
-            'tm_telephone'       => 'Telephone (Office)',
-            'tm_mobile'          => 'Mobile (Personal)',
-            'tm_location'        => 'Location',
-            'tm_year_experience' => 'Years of Experience',
-            'tm_web_url'         => 'Web URL',
-            'tm_vcard'           => 'vCard',
-        );
-        
-        if( $backend === 'backend' ){
+    $fields = array(
+        'tm_email'           => 'Email',
+        // 'tm_jtitle'       => 'Job Title',
+        'tm_telephone'       => 'Telephone (Office)',
+        'tm_mobile'          => 'Mobile (Personal)',
+        'tm_location'        => 'Location',
+        'tm_year_experience' => 'Years of Experience',
+        'tm_web_url'         => 'Web URL',
+        'tm_vcard'           => 'vCard',
+    );
 
-            foreach ($fields as $key => $value) {
+    // premium check (same as your first function)
+    $is_locked = tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial();
 
-                printf(
-                    '<div class="tm-nice-checkbox-wrapper">
-                    <input type="checkbox" class="tm-checkbox" id="tm_%s" name="tm_single_fields[]" value="%s" %s/>
+    if ( $backend === 'backend' ) {
+        foreach ($fields as $key => $value) {
+            printf(
+                '<div class="tm-nice-checkbox-wrapper">
+                    <input type="checkbox" class="tm-checkbox" id="tm_%s" name="tm_single_fields[]" value="%s" %s %s />
                     <label for="tm_%s" class="toggle"><span></span></label>
                     <span>%s</span>  
-                    </div><!--.tm-nice-checkbox-wrapper-->',
-                    esc_attr( $key ) ,
-                    esc_attr( $key ),
-                    in_array($key,$tm_single_fields) ? 'checked' : '',
-                    esc_attr( $key ),
-                    esc_html( $value ) ,
-                    
-                );
-
-            }
-        }
-        
-        if ( $backend === 'frontend' ) {
-            return $tm_single_fields;
+                </div><!--.tm-nice-checkbox-wrapper-->',
+                esc_attr( $key ),
+                esc_attr( $key ),
+                in_array($key, $tm_single_fields) ? 'checked' : '',
+                $is_locked ? 'disabled' : '',
+                esc_attr( $key ),
+                esc_html( $value )
+            );
         }
 
+        if ( $is_locked ) {
+            echo '<p style="color: #d63638; margin-top: 5px;">' . 
+                __('Field switching is only available in the premium version.', 'wp-team-manager') . 
+                '</p>';
+        }
     }
+
+    if ( $backend === 'frontend' ) {
+        return $tm_single_fields;
+    }
+
+}
+
 
     /**
      * Outputs a select dropdown list of image sizes to use for the team member pictures.
@@ -1156,7 +1242,8 @@ class Helper {
         $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Allowed layouts
 
         if (!in_array($layout, $allowedLayouts, true)) {
-            wp_die(__('Invalid layout.', 'wp-team-manager'));
+             return;
+           // wp_die(__('Invalid layout.', 'wp-team-manager'));
         }
 
         $styleTypeKey = "{$layout}_style_type";
@@ -1164,8 +1251,8 @@ class Helper {
 
         // Ensure only safe characters (alphanumeric + underscores)
         if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
-            var_dump($styleType);
-            wp_die(__('Invalid style type.', 'wp-team-manager'));
+             return;
+           // wp_die(__('Invalid style type.', 'wp-team-manager'));
         }
 
         // Ensure constants exist before using them
@@ -1181,7 +1268,8 @@ class Helper {
 
         // Ensure the free path is valid
         if (!$basePath) {
-            wp_die(__('Invalid base template path.', 'wp-team-manager'));
+             return;
+            //wp_die(__('Invalid base template path.', 'wp-team-manager'));
         }
 
         $templateName = sanitize_file_name($styleType . '.php');
@@ -1217,32 +1305,62 @@ class Helper {
          */
         public static function renderTeamLayout(string $layout, array $data, string $styleType, array $settings = []): void
         {
-            $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Define valid layouts
-        
-            if (!in_array($layout, $allowedLayouts, true)) {
-                die('Invalid layout.');
+            $allowedLayouts = ['grid', 'list', 'slider', 'table', 'isotope']; // Allowed layouts
+
+            // Validate layout
+            if ( ! in_array( $layout, $allowedLayouts, true ) ) {
+                return;
             }
-        
-          // Allow only alphanumeric + underscores to prevent directory traversal
-        if (!preg_match('/^[a-zA-Z0-9_-]+$/', $styleType)) {
-            die($styleType.'Invalid style type.');
-        }
-        
-        
-            $path = realpath(TM_PATH . '/public/templates/layouts/' . $layout . '/');
-            if (!$path || strpos($path, realpath(TM_PATH . '/public/templates/layouts/')) !== 0) {
-                die('Invalid path.');
+
+            // Validate style type (alphanumeric, dash, underscore only)
+            if ( ! preg_match( '/^[a-zA-Z0-9_-]+$/', (string) $styleType ) ) {
+                return;
             }
-        
-            $templateName = sanitize_file_name($styleType . '.php');
-            $fullPath = $path . '/' . $templateName;
-        
-            // Validate that the file exists and is within the intended directory
-            if (file_exists($fullPath) && pathinfo($fullPath, PATHINFO_EXTENSION) === 'php') {
-                include $fullPath;
-            } else {
-                die('Template not found or invalid file.');
+
+            // Ensure required constants exist
+            if ( ! defined( 'TM_PATH' ) ) {
+                return;
             }
+
+            // Resolve Free and (optionally) Pro template roots
+            $freeBase = realpath( TM_PATH . '/public/templates/layouts/' );
+            $proBase  = defined( 'TM_PRO_PATH' ) ? realpath( TM_PRO_PATH . '/public/templates/layouts/' ) : null;
+
+            if ( ! $freeBase ) {
+                return;
+            }
+
+            // Build safe template name
+            $templateName = sanitize_file_name( $styleType . '.php' );
+
+            // Candidate full paths (Pro preferred)
+            $proFull  = $proBase ? $proBase . '/' . $layout . '/' . $templateName : null;
+            $freeFull = $freeBase . '/' . $layout . '/' . $templateName;
+
+            // Make data/settings available to templates
+            // (Most templates expect $data and $settings; keep names as-is.)
+            $team_data = $data; // optional alias if some templates expect $team_data
+
+            // Include Pro template if it exists and is inside the Pro base
+            if ( $proFull && is_readable( $proFull ) ) {
+                $resolvedPro = realpath( $proFull );
+                if ( $resolvedPro && strpos( $resolvedPro, $proBase ) === 0 ) {
+                    include $resolvedPro;
+                    return;
+                }
+            }
+
+            // Fallback to Free template (ensure path is inside Free base)
+            if ( is_readable( $freeFull ) ) {
+                $resolvedFree = realpath( $freeFull );
+                if ( $resolvedFree && strpos( $resolvedFree, $freeBase ) === 0 ) {
+                    include $resolvedFree;
+                    return;
+                }
+            }
+
+            // Nothing to render if neither exists
+            return;
         }
         
     
@@ -1396,5 +1514,41 @@ class Helper {
         return '';
     }
     
+    /**
+     * Get a sanitized team setting from post meta.
+     *
+     * @param int    $post_id   Team Builder post ID.
+     * @param string $key       Meta key.
+     * @param mixed  $default   Default if not found.
+     * @param string $type      Type: string|int|bool|array|csv_ints.
+     * @return mixed
+     */
+    public static function get_team_setting( $post_id, $key, $default = '', $type = 'string' ) {
+        $raw = get_post_meta( $post_id, $key, true );
 
+        if ( $raw === '' || $raw === null ) {
+            return $default;
+        }
+
+        switch ( $type ) {
+            case 'bool':
+                return ( $raw === 'yes' || $raw === '1' || $raw === 1 || $raw === true );
+
+            case 'int':
+                return absint( $raw );
+
+            case 'array':
+                return is_array( $raw ) ? $raw : maybe_unserialize( $raw );
+
+            case 'csv_ints':
+                $parts = array_map( 'trim', explode( ',', (string) $raw ) );
+                return array_filter( array_map( 'absint', $parts ) );
+
+            case 'string':
+            default:
+                return sanitize_text_field( $raw );
+        }
+    }
+
+    
 }

@@ -44,6 +44,7 @@
 }
 .dwl-metabox-grid .cmb2-metabox .dwl-meta-item {
   display: flex;
+  flex-direction: column;
 }
 .dwl-metabox-grid .cmb2-metabox .dwl-meta-item.col-md-3 {
   display: block;
@@ -58,9 +59,21 @@
 }
 .dwl-metabox-grid .cmb2-metabox .dwl-meta-item .cmb-td {
   float: none;
+  width: 90%;
+}
+.cmb2-wrap.form-table select {
+    width: 100%;
+}
+input#dwl_team_date_from,
+input#dwl_team_date_to{
   width: 100%;
 }
-
+#side-sortables .cmb2-metabox-description{
+  padding-bottom: 0 !important;
+}
+#side-sortables .wtm-help .dashicons{
+  line-height: 20px;
+}
 /* Single team */
 
 #cmb2-metabox-wptm_cm2_metabox_general,
@@ -124,11 +137,19 @@
   color: #ffffff;
 }
 #cmb2-metabox-dwl_team_metabox .cmb-row {
-  width: 25%;
+    width: 23%;
+    margin: 0 1%;
 }
-.cmb-row.cmb-type-text.cmb2-id-dwl-team-show-team-member-by-ids.table-layout.cmb-tab-active-item,
-.cmb-row.cmb-type-text.cmb2-id-dwl-team-remove-team-members-by-ids.table-layout.cmb-tab-active-item {
-  width: 50% !important;
+#cmb2-metabox-dwl_team_metabox span.cmb2-metabox-description {
+    color: #666;
+    letter-spacing: .01em;
+    display: inline-block;
+    width: 100%;
+    margin-top: 10px;
+}
+#cmb2-metabox-dwl_team_metabox .cmb2-id-dwl-team-theme-custom-css.cmb-row{
+width: 100%;
+margin: 0;
 }
 
 /* Tab style*/

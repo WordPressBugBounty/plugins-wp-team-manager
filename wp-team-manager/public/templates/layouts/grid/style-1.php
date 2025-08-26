@@ -35,6 +35,8 @@ $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tab
 $selected = Helper::generate_single_fields('frontend');
 
 
+
+
 foreach ($data['posts'] as $teamInfo) {
  
     // Retrieve all post meta for the current team member in one call (if necessary)

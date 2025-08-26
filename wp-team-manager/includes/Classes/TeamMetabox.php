@@ -42,14 +42,150 @@ class TeamMetabox {
 
     }
 
+private function pagination_options( $box ) {
+
+    $field_id = $this->prefix . 'pagination_type';
+
+
+    $all_options = array(
+        'none'     => esc_html__( 'None', 'wp-team-manager' ),
+        'numbers'  => esc_html__( 'Numbers', 'wp-team-manager' ),
+        'ajax'     => esc_html__( 'Ajax (Load More)', 'wp-team-manager' ),
+        'infinite' => esc_html__( 'Infinite Scroll', 'wp-team-manager' ),
+    );
+
+    $is_locked   = function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial();
+    $locked_keys = array( 'ajax', 'infinite' ); 
+
+    $box->add_field( array(
+        'name'        => __( 'Pagination Type', 'wp-team-manager' ),
+        'id'          => $field_id,
+        'type'        => 'select',
+        'default'     => 'none',
+        'options'     => $all_options,
+
+       
+        'escape_cb'   => function( $val ) use ( $is_locked, $locked_keys ) {
+            if ( $is_locked && in_array( $val, $locked_keys, true ) ) {
+                return 'none';
+            }
+            return $val;
+        },
+
+      
+        'sanitization_cb' => function( $val ) use ( $is_locked, $locked_keys ) {
+            if ( $is_locked && in_array( $val, $locked_keys, true ) ) {
+                return 'none';
+            }
+            return $val;
+        },
+
+      
+        'after_row'   => $is_locked ? sprintf(
+            '<script>
+                (function(){
+                    var sel = document.getElementById(%s);
+                    if (!sel) return;
+                    var locked = %s;
+                    for (var i=0; i<sel.options.length; i++) {
+                        if (locked.indexOf(sel.options[i].value) !== -1) {
+                            sel.options[i].disabled = true;
+                            // Add a visual hint
+                            sel.options[i].text = sel.options[i].text + " (Premium)";
+                            sel.options[i].title = %s;
+                        }
+                    }
+                 
+                    if (locked.indexOf(sel.value) !== -1) {
+                        sel.value = "none";
+                    }
+                })();
+            </script>
+            <p style="color:#d63638;margin-top:6px;">%s</p>',
+            wp_json_encode( $field_id ),
+            wp_json_encode( $locked_keys ),
+            wp_json_encode( esc_js( __( 'Available in Premium', 'wp-team-manager' ) ) ),
+            esc_html__( '', 'wp-team-manager' )
+        ) : '',
+
+        'desc' => $is_locked ? wp_kses_post( $this->proLink ) : '',
+    ) );
+    }
+
+
     function create_meta_for_dwl_team_generator_post_type(){
 
         $post_id = isset($_GET['post']) && is_string($_GET['post']) ? trim($_GET['post']) : "0";
 
-        $title = 'Copy and Past this on page or post<br/><br/><code>[dwl_create_team id="'.$post_id.'"]</code>';
-        $documentation = '<a href="https://wpteammanager.com/documentation/">Documentations</a>';
-        $support = '<a href="https://dynamicweblab.com/submit-a-request/">Support</a>';
+        $shortcode = '[dwl_create_team id="' . esc_attr( $post_id ) . '"]';
+        $title = sprintf(
+            '<style>
+                .wtm-sc-wrap{margin-top:6px}
+                .wtm-sc-help{margin:2px 0 8px;color:#555}
+                .wtm-sc-row{display:flex;gap:6px}
+                .wtm-sc-input{flex:1}
+                .wtm-sc-input input{width:100%%;font-family:monospace;background:#f7f7f7}
+                .wtm-sc-note{margin-top:6px;color:#777;font-size:12px}
+            </style>
+            <div class="wtm-sc-wrap">
+                <p class="wtm-sc-help">%s</p>
+                <div class="wtm-sc-row">
+                    <span class="wtm-sc-input">
+                        <input type="text" readonly value="%s" onclick="this.select();" />
+                    </span>
+                    <button type="button" class="button button-secondary" id="wtm-copy-shortcode">%s</button>
+                </div>
+                <div class="wtm-sc-note">%s</div>
+            </div>
+            <script>
+                (function(){
+                    var btn = document.getElementById("wtm-copy-shortcode");
+                    if(!btn) return;
+                    btn.addEventListener("click", function(){
+                        var inp = btn.parentNode.querySelector("input");
+                        if(!inp) return;
+                        inp.select();
+                        function done(){
+                            btn.classList.add("button-primary");
+                            btn.textContent = "%s";
+                            setTimeout(function(){
+                                btn.classList.remove("button-primary");
+                                btn.textContent = "%s";
+                            }, 1400);
+                        }
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(inp.value).then(done).catch(function(){
+                                try { document.execCommand("copy"); done(); } catch(e) {}
+                            });
+                        } else {
+                            try { document.execCommand("copy"); done(); } catch(e) {}
+                        }
+                    });
+                })();
+            </script>',
+            esc_html__( 'Copy and paste this shortcode into any page or post.', 'wp-team-manager' ),
+            esc_attr( $shortcode ),
+            esc_html__( 'Copy', 'wp-team-manager' ),
+            esc_html__( 'Tip: You can also use this in a Shortcode block.', 'wp-team-manager' ),
+            esc_html__( 'Copied!', 'wp-team-manager' ),
+            esc_html__( 'Copy', 'wp-team-manager' )
+        );
+        $documentation = '<style>
+        .wtm-help{margin-top:4px}
+        .wtm-help .wtm-help-desc{color:#666;margin:0 0 8px;font-size:12px}
+        .wtm-help .wtm-btn{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:6px 12px;border-radius:4px;border:2px solid #A259FF;background:#fff;color:#A259FF;text-decoration:none;font-weight:600}
+        .wtm-help .wtm-btn:hover{background:#A259FF;color:#fff}
+        .wtm-help .dashicons{font-size:16px;line-height:1}
+        </style>'
+        . '<div class="wtm-help">'
+        . '<p class="wtm-help-desc">' . esc_html__( 'Browse step‑by‑step guides and videos.', 'wp-team-manager' ) . '</p>'
+        . '<a class="wtm-btn" href="https://wpteammanager.com/documentation/?utm_source=wp-admin&utm_medium=metabox&utm_campaign=wtm" target="_blank" rel="noopener"><span class="dashicons dashicons-book-alt"></span> ' . esc_html__( 'Open Documentation', 'wp-team-manager' ) . '</a>'
+        . '</div>';
 
+        $support = '<div class="wtm-help">'
+        . '<p class="wtm-help-desc">' . esc_html__( 'Need help from our team? Create a support ticket.', 'wp-team-manager' ) . '</p>'
+        . '<a class="wtm-btn" href="https://dynamicweblab.com/submit-a-request/?utm_source=wp-admin&utm_medium=metabox&utm_campaign=wtm" target="_blank" rel="noopener"><span class="dashicons dashicons-sos"></span> ' . esc_html__( 'Get Support', 'wp-team-manager' ) . '</a>'
+        . '</div>';
         $dwl_instructions = new_cmb2_box( 
             array(
                 'id'            => 'dwl_team_help',
@@ -80,14 +216,14 @@ class TeamMetabox {
         );
 
         $dwl_instructions->add_field( array(
-            'name' => __( 'Read Our Documentations', 'wp-team-manager' ),
+            'name' => __( 'Documentation', 'wp-team-manager' ),
             'desc' => $documentation,
             'type' => 'title',
             'id'   => $this->prefix.'dwl_team_settings_docomentation'
         ) );
 
         $dwl_instructions->add_field( array(
-            'name' => __( 'Reach us for Support ', 'wp-team-manager' ),
+            'name' => __( 'Support ', 'wp-team-manager' ),
             'desc' => $support,
             'type' => 'title',
             'id'   => $this->prefix.'dwl_team_settings_support'
@@ -115,7 +251,7 @@ class TeamMetabox {
 					'grid'        => __('Grid', 'wp-team-manager'),
 					'list'        => __('List', 'wp-team-manager'),
 					'slider'      => __('Slider', 'wp-team-manager'),
-                    'table'      => __('table', 'wp-team-manager'),
+                    'table'      => __('Table', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
@@ -140,12 +276,16 @@ class TeamMetabox {
 					'style-1'        => __('Style One', 'wp-team-manager'),
 					'style-2'        => __('Style Two', 'wp-team-manager'),
                     'style-3'        => __('Style Three', 'wp-team-manager'),
+                    'style-4'        => __('Style Three', 'wp-team-manager'),
+                     //'style-5'        => __('Style Five', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/Grid-1.svg',
 					'style-2'     => 'icons/short-code-layout/Grid-2.svg',
 					'style-3'     => 'icons/short-code-layout/grid-3.svg',
+                    'style-4'     => 'icons/short-code-layout/grid-4.svg',
+                     //'style-5'     => 'icons/short-code-layout/grid-5.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => 'col-12',
@@ -164,10 +304,14 @@ class TeamMetabox {
 				'type'           => 'radio_image',
 				'options'        => array(
 					'style-1'        => __('Style One', 'wp-team-manager'),
+                    'style-2'        => __('Style Two', 'wp-team-manager'),
+                    // 'style-3'        => __('Style Three', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/List-1.svg',
+                    'style-2'     => 'icons/short-code-layout/List-2.svg',
+                    // 'style-3'     => 'icons/short-code-layout/List-3.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => 'col-12',
@@ -186,10 +330,20 @@ class TeamMetabox {
 				'type'           => 'radio_image',
 				'options'        => array(
 					'style-1'        => __('Style One', 'wp-team-manager'),
+                    'style-2'        => __('Style Two', 'wp-team-manager'),
+                    // 'style-3'        => __('Style Three', 'wp-team-manager'),
+                    // 'style-4'        => __('Style Four', 'wp-team-manager'),
+                    // 'style-5'        => __('Style Five', 'wp-team-manager'),
+                    // 'style-6'        => __('Style Six', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/Slider-1.svg',
+                    'style-2'     => 'icons/short-code-layout/Slider-2.svg',
+                    // 'style-3'     => 'icons/short-code-layout/Slider-3.svg',
+                    // 'style-4'     => 'icons/short-code-layout/Slider-4.svg',
+                    // 'style-5'     => 'icons/short-code-layout/Slider-5.svg',
+                    // 'style-6'     => 'icons/short-code-layout/Slider-6.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => 'col-12',
@@ -249,6 +403,7 @@ class TeamMetabox {
         $dwl_layout->add_field( array(
             'name'    => __( 'Mobile', 'wp-team-manager' ),
             'id'      =>  $this->prefix . 'mobile',
+            'desc' => __( 'Columns per row on phones.', 'wp-team-manager' ),
             'type'    => 'select',
             'default' => '1',
             'options' => array(
@@ -267,6 +422,7 @@ class TeamMetabox {
         $dwl_layout->add_field( array(
             'name'    => __( 'Tablet', 'wp-team-manager' ),
             'id'      =>  $this->prefix . 'tablet',
+            'desc' => __( 'Columns per row on tablets.', 'wp-team-manager' ),
             'default' => '2',
             'type'    => 'select',
             'options' => array(
@@ -285,6 +441,7 @@ class TeamMetabox {
         $dwl_layout->add_field( array(
             'name'    => __( 'Desktop', 'wp-team-manager' ),
             'id'      =>  $this->prefix . 'desktop',
+            'desc' => __( 'Columns per row on desktop screens.', 'wp-team-manager' ),
             'type'    => 'select',
             'default' => '3',
             'options' => array(
@@ -354,7 +511,7 @@ class TeamMetabox {
 				'show_option_none'           => false,
 				'default'                    => 'side',
 				'options'                    => array(
-					'top-right'              => __( 'Top Right', 'wp-team-manager' ),
+                    'top-right'              => __( 'Top Right', 'wp-team-manager' ),
 					'side'                   => __( 'Side', 'wp-team-manager' ),
 				),
 				'attributes'                 => array(
@@ -406,6 +563,13 @@ class TeamMetabox {
                             $this->prefix. 'team_order',
                             $this->prefix . 'team_order_by',
                             $this->prefix . 'group_featured_cats',
+                             // NEW: Query & Filtering
+                            $this->prefix.'tax_relation',
+                            $this->prefix.'tax_include',
+                            $this->prefix.'tax_exclude',
+                            $this->prefix.'keyword',
+                            $this->prefix.'date_from',
+                            $this->prefix.'date_to',
                             $this->prefix . 'layout_option',
                             $this->prefix.'show_team_member_by_ids',
                             $this->prefix.'remove_team_members_by_ids',
@@ -420,12 +584,14 @@ class TeamMetabox {
                         'icon' => 'dashicons-align-left',
                         'title' => __( 'Display Options', 'wp-team-manager' ),
                         'fields' => array(
-                            $this->prefix . 'team_background_color',
+                         
                             $this->prefix . 'team_show_other_info',
                             $this->prefix . 'team_show_social',
                             $this->prefix . 'show_progress_bar',
                             $this->prefix . 'hide_short_bio',
                             $this->prefix . 'show_pagination',
+                            $this->prefix . 'pagination_type',
+                            $this->prefix . 'filter_enable',
                             $this->prefix . 'team_show_read_more',
                         ),
                     ),
@@ -437,10 +603,27 @@ class TeamMetabox {
                         'fields' => array(
                             $this->prefix . 'select_image_size',
                             $this->prefix . 'image_style',
-                            $this->prefix . 'social_icon_color',
                         ),
                     ),
-                    
+                    array(
+                        'id'    => 'dwl_styling_theming',
+                        'icon'  => 'dashicons-art',
+                        'title' => __( 'Styling & Theming', 'wp-team-manager' ),
+                        'fields' => array(
+                            $this->prefix . 'social_icon_color',
+                            $this->prefix . 'team_background_color',
+                            $this->prefix . 'theme_preset',
+                            $this->prefix . 'theme_primary_color',
+                            $this->prefix . 'theme_card_bg',
+                            $this->prefix . 'theme_title_color',
+                            $this->prefix . 'theme_text_color',
+                            $this->prefix . 'theme_border_radius',
+                            $this->prefix . 'theme_gap',
+                            $this->prefix . 'theme_shadow',
+                            $this->prefix . 'theme_dark_mode',
+                            $this->prefix . 'theme_custom_css',
+                        ),
+                    ),                    
                     
                 ),
                 
@@ -450,12 +633,79 @@ class TeamMetabox {
         // General Setting
         $dwl_team_metabox->add_field( 
             array(
-				'name'       =>  esc_html__(  'Select Team Group:', 'wp-team-manager' ),
+				'name'       =>  esc_html__( 'Select Team Group(s)', 'wp-team-manager' ),
 				'id'         =>  $this->prefix . 'group_featured_cats',
 				'type'       => 'multicheck',
 				'options_cb' => 'wptm_get_taxonomy_terms'
             )
         );
+
+        // === Query & Filtering ===
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Taxonomy Relation', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'tax_relation',
+            'type'    => 'select',
+            'desc'    => __( 'Match all selected terms (AND) or any (OR).', 'wp-team-manager' ),
+            'default' => 'OR',
+            'options' => array(
+                'AND' => __( 'AND (all terms must match)', 'wp-team-manager' ),
+                'OR'  => __( 'OR (any term can match)', 'wp-team-manager' ),
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Include Terms (IDs)', 'wp-team-manager' ),
+            'desc'       => __( 'Comma-separated term IDs to include (e.g., 12, 15, 18).', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'tax_include',
+            'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '12, 15, 18',
+                'pattern'     => '^[0-9,\\s]*$',
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Exclude Terms (IDs)', 'wp-team-manager' ),
+            'desc'       => __( 'Comma-separated term IDs to exclude (e.g., 7, 9).', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'tax_exclude',
+            'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '7, 9',
+                'pattern'     => '^[0-9,\\s]*$',
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Keyword', 'wp-team-manager' ),
+            'desc'       => __( 'Search by title or content.', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'keyword',
+            'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => __( 'Search term…', 'wp-team-manager' ),
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'        => __( 'Date From', 'wp-team-manager' ),
+            'desc'        => __( 'Start date (YYYY-MM-DD).', 'wp-team-manager' ),
+            'id'          => $this->prefix . 'date_from',
+            'type'        => 'text_date',
+            'date_format' => 'Y-m-d',
+            'attributes'  => array(
+                'placeholder' => '2025-01-01',
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'        => __( 'Date To', 'wp-team-manager' ),
+            'desc'        => __( 'End date (YYYY-MM-DD).', 'wp-team-manager' ),
+            'id'          => $this->prefix . 'date_to',
+            'type'        => 'text_date',
+            'date_format' => 'Y-m-d',
+            'attributes'  => array(
+                'placeholder' => '2025-12-31',
+            ),
+        ) );
 
         $dwl_team_metabox->add_field( 
             array(
@@ -466,7 +716,6 @@ class TeamMetabox {
 				'default' => 'title',
 				'options' => array(
 					'title'    => __( 'Name ', 'wp-team-manager' ),
-					'ID'       => __( 'ID', 'wp-team-manager' ),
 					'date'     => __( 'Date', 'wp-team-manager' ),
 					'modified' => __( 'Modified', 'wp-team-manager' ),
 					'rand'     => __( 'Random', 'wp-team-manager' ), 
@@ -494,7 +743,13 @@ class TeamMetabox {
             'id'         => $this->prefix.'show_total_members',
             'type'       => 'text',
             'attributes' => array(
-                'type'   => 'number',
+                'type'   => 'text',
+            ),
+                'attributes' => array(
+                'type'        => 'number',
+                'min'         => '-1',
+                'step'        => '1',
+                'placeholder' => '-1',
             ),
         ) );
 
@@ -503,6 +758,10 @@ class TeamMetabox {
             'desc'       => __( 'Only show specific team members.', 'wp-team-manager' ),
             'id'         => $this->prefix.'show_team_member_by_ids',
             'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '1, 2, 3',
+                'pattern'     => '^[0-9,\\s]*$'
+            ),
         ) );
 
         $dwl_team_metabox->add_field( array(
@@ -510,18 +769,14 @@ class TeamMetabox {
             'desc'       => __( 'Hide specific team members.', 'wp-team-manager' ),
             'id'         => $this->prefix.'remove_team_members_by_ids',
             'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '4, 5, 6',
+                'pattern'     => '^[0-9,\\s]*$'
+            ),
         ) );
 
         
-        // Display Option
-        $dwl_team_metabox->add_field( 
-			array(
-				'name'    => __( 'Background Color', 'wp-team-manager' ),
-				'id'      => $this->prefix . 'team_background_color',
-				'type'    => 'colorpicker',
-                'default' => '',
-			)
-		);
+
 
         $dwl_team_metabox->add_field( 
 			array(
@@ -601,19 +856,12 @@ class TeamMetabox {
         $dwl_team_metabox->add_field( $show_progress_bar );
 
         $hide_short_bio =  array(
-            'name'    => __( 'Hide Short Bio', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
+            'name'    => __( 'Hide Short Bio', 'wp-team-manager' ),
             'desc' => 'Show/hide',
             'id'      => $this->prefix . 'hide_short_bio',
             'type'    => 'checkbox',
         );
 
-        if( !tmwstm_fs()->is_paying_or_trial() ){
-
-            $hide_short_bio['attributes'] =   array(
-                'disabled' => true
-            );
-
-        }
 
         $dwl_team_metabox->add_field( $hide_short_bio );
 
@@ -627,7 +875,40 @@ class TeamMetabox {
 			)
 		);
         
-        // Image Setting
+        // NEW: add Pagination & Loading (CMB2) fields
+        $this->pagination_options( $dwl_team_metabox );
+
+        $dwl_team_metabox->add_field(
+        array(
+            'name'  => __( 'Enable Filter', 'wp-team-manager' ).  wp_kses_post( $this->proLink ),
+            'desc'  => __( 'Show/hide', 'wp-team-manager' ),
+            'id'    => $this->prefix . 'filter_enable',
+            'type'  => 'checkbox',
+
+            'sanitization_cb' => function( $val ) {
+                if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+                    return ''; // force unchecked (CMB2 checkbox খালি রাখলে false ধরা হয়)
+                }
+                return $val;
+            },
+
+            'after_row' => ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() )
+                ? '<script>
+                    (function(){
+                        var id = ' . wp_json_encode( $this->prefix . 'filter_enable' ) . ';
+                        var cb = document.getElementById(id);
+                        if (cb) {
+                            cb.disabled = true;
+                            cb.title = "' . esc_js( __( 'Available in Premium', 'wp-team-manager' ) ) . '";
+                        }
+                    })();
+                </script>
+                '
+                : '',
+        )
+    );
+
+  // Image Setting
         $dwl_team_metabox->add_field( 
             array(
                 'name'       =>  __( 'Select image size:', 'wp-team-manager' ),
@@ -658,6 +939,92 @@ class TeamMetabox {
             )
         );
 
+        // === Styling & Theming ===
+        $preset_options = array(
+            'default'     => __( 'Default', 'wp-team-manager' ),
+            'minimal'     => __( 'Minimal', 'wp-team-manager' ),
+            'soft-card'   => __( 'Soft Card', 'wp-team-manager' ),
+            'glass'       => __( 'Glassmorphism', 'wp-team-manager' ),
+        );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Theme Preset', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_preset',
+            'type'    => 'select',
+            'default' => 'default',
+            'options' => $preset_options,
+            'desc'    => __( 'Quickly apply a preset style to cards.', 'wp-team-manager' ),
+        ) );
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Card Shadow', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_shadow',
+            'type'    => 'select',
+            'default' => 'sm',
+            'options' => array(
+                'none' => __( 'None', 'wp-team-manager' ),
+                'sm'   => __( 'Small', 'wp-team-manager' ),
+                'md'   => __( 'Medium', 'wp-team-manager' ),
+                'lg'   => __( 'Large', 'wp-team-manager' ),
+            ),
+        ) );
+        // Display Option
+        $dwl_team_metabox->add_field( 
+			array(
+				'name'    => __( 'Background Color', 'wp-team-manager' ),
+				'id'      => $this->prefix . 'team_background_color',
+				'type'    => 'colorpicker',
+                'default' => '',
+			)
+		);
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Primary Color', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_primary_color',
+            'type'    => 'colorpicker',
+            'default' => '',
+            'desc'    => __( 'Links, buttons and accents.', 'wp-team-manager' ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Card Background', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_card_bg',
+            'type'    => 'colorpicker',
+            'default' => '',
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Title Color', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_title_color',
+            'type'    => 'colorpicker',
+            'default' => '',
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Body Text Color', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'theme_text_color',
+            'type'    => 'colorpicker',
+            'default' => '',
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Card Border Radius', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'theme_border_radius',
+            'type'       => 'text_small',
+            'attributes' => array(
+                'placeholder' => '12px',
+            ),
+            'desc'       => __( 'Accepts CSS units (e.g., 8px, 0.5rem).', 'wp-team-manager' ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Grid Gap', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'theme_gap',
+            'type'       => 'text_small',
+            'attributes' => array(
+                'placeholder' => '16px',
+            ),
+            'desc'       => __( 'Space between team cards.', 'wp-team-manager' ),
+        ) );
+
         $dwl_team_metabox->add_field( 
             array(
                 'name'    => __( 'Social Icon Color', 'wp-team-manager' ),
@@ -667,6 +1034,25 @@ class TeamMetabox {
                 'default' => '',
             )
         );
+
+        // $dwl_team_metabox->add_field( array(
+        //     'name'    => __( 'Dark Mode', 'wp-team-manager' ),
+        //     'id'      => $this->prefix . 'theme_dark_mode',
+        //     'type'    => 'checkbox',
+        //     'desc'    => __( 'Invert colors for dark backgrounds.', 'wp-team-manager' ),
+        // ) );
+
+        $custom_css_field = array(
+            'name' => __( 'Custom CSS (scoped)', 'wp-team-manager' ),
+            'id'   => $this->prefix . 'theme_custom_css',
+            'type' => 'textarea_code',
+            'desc' => __( 'CSS will be scoped to this team block wrapper on the front‑end.', 'wp-team-manager' ),
+        );
+
+        $custom_css_field['desc'] .= ' ' . wp_kses_post( $this->proLink );
+        $custom_css_field['attributes'] = array( 'disabled' => true );
+
+        $dwl_team_metabox->add_field( $custom_css_field );
 
     }
 

@@ -17,7 +17,7 @@ $disable_single_template = get_option('single_team_member_view') === 'True';
 // Get team member fields with a default value
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
-
+$context = isset($settings['context']) ? $settings['context'] : '';
 // Ensure data['posts'] exists
 
 
@@ -30,7 +30,8 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
         <div class="dwl-team-elementor-layout-table">
             <div class="dwl-team-table-responsive team-table-style-2 team-table-short-code">
                 <table class="table">
-                    <thead>
+                <?php if(!$context == 'ajax'): ?>    
+                <thead>
                         <tr>
                             <th><?php esc_html_e( "Picture", " wp-team-manager " )?></th>
 
@@ -45,7 +46,7 @@ $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitl
 
                         </tr>
                     </thead>
-
+                    <?php endif;?>
                     <tbody>
                         <?php
                         

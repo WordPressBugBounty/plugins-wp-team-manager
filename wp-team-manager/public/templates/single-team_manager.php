@@ -37,7 +37,7 @@ $selected = Helper::generate_single_fields('frontend');
                 <div class="entry-content wtm-row">
                     <div class="team-bio-image wtm-col-12 wtm-col-md-6">
                         <?php 
-                        if (has_post_thumbnail()) {
+                         if (has_post_thumbnail()) {
                             the_post_thumbnail(get_option('team_image_size_change', 'medium')); 
                         }
                         ?>
@@ -93,6 +93,9 @@ $selected = Helper::generate_single_fields('frontend');
 
                 </div>
             <?php 
+                if ( class_exists( '\DWL_Wtm_Pro_Helper' ) ) {
+                    \DWL_Wtm_Pro_Helper::output_jsonld_for_single( get_the_ID() );
+                }
                 do_action('wtm_after_team_member_content', $post_id);
             endwhile; ?>
         </article>

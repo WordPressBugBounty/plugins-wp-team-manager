@@ -29,24 +29,23 @@ namespace DWL\Wtm\Classes;
      */
     public function tm_create_menu() {
 
-        $tm_settings_menu = add_submenu_page( 
-            'edit.php?post_type=team_manager', 
-            'Team Manager Settings', 
-            'Settings', 
-            'manage_options', 
-            'team_manager', 
-            [ $this, 'team_manager_setting_function'] 
+        $hook_suffix = \add_submenu_page(
+            'edit.php?post_type=team_manager',
+            esc_html__( 'Team Manager Settings', 'wp-team-manager' ),
+            esc_html__( 'Settings', 'wp-team-manager' ),
+            'manage_options',
+            'tm-settings', // unique, avoids clashing with CPT slug
+            [ $this, 'team_manager_setting_function' ]
         );
 
-        add_action( $tm_settings_menu, array($this, 'add_admin_script' ) );
+        // Enqueue assets only on this settings screen per WP standards
+        \add_action( 'load-' . $hook_suffix, [ $this, 'add_admin_script' ] );
 
     }
 
     public function add_admin_script() {
-        
-        wp_enqueue_style( 'wp-team-setting-admin' ); 
-        wp_enqueue_script( 'wp-team-settings-admin' ); 
-
+        \wp_enqueue_style( 'wp-team-setting-admin' );
+        \wp_enqueue_script( 'wp-team-settings-admin' );
     }
 
     /**
@@ -56,57 +55,127 @@ namespace DWL\Wtm\Classes;
      */
     public function team_manager_setting_function() {
 
-        wp_enqueue_style( 'wp-team-get-help-admin' );
+        if ( ! \current_user_can( 'manage_options' ) ) {
+            \wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-team-manager' ) );
+        }
+
+        \wp_enqueue_style( 'wp-team-get-help-admin' );
 
         ?>
         <div class="wrap">
             <h2><?php esc_html_e('Team Manager Settings', 'wp-team-manager'); ?></h2>
             
-            <?php settings_errors(); ?>
-            
-            <form method="post" action="options.php">
-                <?php 
-                    settings_fields( 'tm-settings-group' );
-                    do_settings_sections( 'tm-settings-group' );
-                    
-                    $file_path = realpath(TM_PATH . '/admin/includes/content-settings.php');
-                    if ($file_path && strpos($file_path, TM_PATH) === 0) {
-                        include_once $file_path;
-                    }
-                ?>
-                <?php submit_button(); ?>
-            </form>
-        
-            <!-- Support -->
-            <div id="wptm_support" class="wp-team-box-content">      
-                <div class="wp-team-card-section">
-                    <div class="wp-team-document-box wp-team-document-box-card">
-                        <div class="wp-team-box-icon">
-                            <i class="dashicons dashicons-media-document"></i>
-                            <h3 class="wp-team-box-title"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></h3>
+            <?php \settings_errors(); ?>
+            <div class="wptm-settings-wrap">
+                <div class="wptm-settings-form">
+                    <form method="post" action="options.php">
+                        <?php 
+                            \settings_fields( 'tm-settings-group' );
+                            \do_settings_sections( 'tm-settings-group' );
+                            
+                            $file_path = realpath(TM_PATH . '/admin/includes/content-settings.php');
+                            if ($file_path && strpos($file_path, TM_PATH) === 0) {
+                                include_once $file_path;
+                            }
+                        ?>
+                        <?php \submit_button(); ?>
+                    </form>
+                
+                   
+                </div>            
+                <!-- Support / Documentation Hub -->
+                <div id="wptm_support" class="wp-team-box-content">
+                    <div class="wp-team-card-section wp-team-card-grid">
+
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-media-document"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Documentation', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content">
+                                <p><?php esc_html_e( 'Step‑by‑step guides to install, configure, and customize WP Team Manager.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Open Docs', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
                         </div>
 
-                        <div class="wp-team-box-content">
-                            <p><?php esc_html_e( 'Get started by spending some time with the documentation we included step by step process with screenshots with video.', 'wp-team-manager' )?></p>
-                            <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Documentation', 'wp-team-manager' )?></a>
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-video-alt3"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Video Tutorials', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content">
+                                <p><?php esc_html_e( 'Quick videos covering layouts, Elementor widgets, and shortcode builder.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://wpteammanager.com/videos/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Watch Videos', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
                         </div>
+
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-list-view"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Changelog', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content">
+                                <p><?php esc_html_e( 'See what’s new, improved, and fixed in each release.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://wordpress.org/plugins/wp-team-manager/#developers' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'View Changelog', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-editor-help"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'FAQ', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content">
+                                <p><?php esc_html_e( 'Answers for common questions about setup, templates, and performance.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://wpteammanager.com/faq/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Read FAQ', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-editor-code"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Developer Hooks', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content">
+                                <p><?php esc_html_e( 'Actions & filters for extending layouts, queries, and templates.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/developers/hooks/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Browse Hooks', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="wp-team-document-box wp-team-document-box-card">
+                            <div class="wp-team-box-icon">
+                                <i class="dashicons dashicons-sos"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Need Help?', 'wp-team-manager' ); ?></h3>
+                            </div>
+                            <div class="wp-team-box-content wp-team-need-help">
+                                <p><?php esc_html_e( 'Stuck with something? Create a support ticket and we’ll help you out.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://dynamicweblab.com/submit-a-request/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Get Support', 'wp-team-manager' ); ?>
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
-                    
-                    <div class="wp-team-document-box wp-team-document-box-card">
-                        <div class="wp-team-box-icon">
-                            <i class="dashicons dashicons-sos"></i>
-                            <h3 class="wp-team-box-title"><?php esc_html_e( 'Need Help?', 'wp-team-manager' )?></h3>
-                        </div>
-
-                        <div class="wp-team-box-content wp-team-need-help">
-                            <p><?php esc_html_e( 'Stuck with something? Please create a ticket here', 'wp-team-manager' )?></p>
-                            <a href="<?php echo esc_url( 'https://dynamicweblab.com/submit-a-request/?utm_source=wordrpess&utm_medium=settings-card' )?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'Get Support', 'wp-team-manager' )?></a>
-                        </div>
-                    </div>
-
                 </div>
-
             </div>
+            <style>
+                .wp-team-card-grid{
+                    display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:8px
+                }
+                .wp-team-document-box-card .wp-team-box-icon{display:flex;align-items:center;gap:8px}
+                .wp-team-document-box-card .wp-team-box-icon .dashicons{font-size:20px;width:20px;height:20px;line-height:20px}
+                .wp-team-admin-btn{margin-top:8px;display:inline-block}
+            </style>
         </div>
 
     <?php 
@@ -155,6 +224,55 @@ namespace DWL\Wtm\Classes;
             'tm-settings-group',
             'tm_log_path',
             array( $this, 'tm_log_path_sanitize' )
+        );
+
+        register_setting( 'tm-settings-group', 'tm_a11y_enable', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_a11y_region_label', array( $this, 'sanitize_text' ) );
+        register_setting( 'tm-settings-group', 'tm_a11y_focus_ring', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_a11y_list_roles', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_seo_jsonld_enable', array( $this, 'sanitize_checkbox' ) );
+
+        // Accessibility & SEO section and fields
+        add_settings_section(
+            'tm_a11y_seo_section',
+            __( 'Accessibility & SEO', 'wp-team-manager' ),
+            null,
+            'tm-advanced-settings'
+        );
+        add_settings_field(
+            'tm_a11y_enable',
+            __( 'Enable Accessibility Features', 'wp-team-manager' ),
+            array( $this, 'field_tm_a11y_enable' ),
+            'tm-advanced-settings',
+            'tm_a11y_seo_section'
+        );
+        add_settings_field(
+            'tm_a11y_region_label',
+            __( 'Region Label', 'wp-team-manager' ),
+            array( $this, 'field_tm_a11y_region_label' ),
+            'tm-advanced-settings',
+            'tm_a11y_seo_section'
+        );
+        add_settings_field(
+            'tm_a11y_focus_ring',
+            __( 'Focus Ring', 'wp-team-manager' ),
+            array( $this, 'field_tm_a11y_focus_ring' ),
+            'tm-advanced-settings',
+            'tm_a11y_seo_section'
+        );
+        add_settings_field(
+            'tm_a11y_list_roles',
+            __( 'List Semantics (role=list/listitem)', 'wp-team-manager' ),
+            array( $this, 'field_tm_a11y_list_roles' ),
+            'tm-advanced-settings',
+            'tm_a11y_seo_section'
+        );
+        add_settings_field(
+            'tm_seo_jsonld_enable',
+            __( 'Enable SEO JSON-LD', 'wp-team-manager' ),
+            array( $this, 'field_tm_seo_jsonld_enable' ),
+            'tm-advanced-settings',
+            'tm_a11y_seo_section'
         );
     }
 
@@ -263,5 +381,52 @@ namespace DWL\Wtm\Classes;
         // Allow only safe characters for file paths: alphanumeric, slashes, dots, hyphens, underscores
         $input = preg_replace( '/[^a-zA-Z0-9\/\._\-]/', '', $input );
         return $input;
+    }
+
+    /** Generic checkbox sanitizer (0/1) */
+    public function sanitize_checkbox( $val ) {
+        return $val ? 1 : 0;
+    }
+
+    /** Generic text sanitizer */
+    public function sanitize_text( $val ) {
+        return sanitize_text_field( $val );
+    }
+
+    /** Field: Enable Accessibility Features */
+    public function field_tm_a11y_enable() {
+        $val = (int) get_option( 'tm_a11y_enable', 1 );
+        echo '<label><input type="checkbox" name="tm_a11y_enable" value="1" ' . checked( 1, $val, false ) . '> ' . esc_html__( 'Add ARIA roles/labels and sensible fallbacks for images.', 'wp-team-manager' ) . '</label>';
+    }
+
+    /** Field: Region Label */
+    public function field_tm_a11y_region_label() {
+        $val = (string) get_option( 'tm_a11y_region_label', __( 'Team members', 'wp-team-manager' ) );
+        echo '<input type="text" class="regular-text" name="tm_a11y_region_label" value="' . esc_attr( $val ) . '" placeholder="' . esc_attr__( 'Team members', 'wp-team-manager' ) . '">';
+        echo '<p class="description">' . esc_html__( 'Used for aria-label on the team block landmark region.', 'wp-team-manager' ) . '</p>';
+    }
+
+    /** Field: Focus Ring */
+    public function field_tm_a11y_focus_ring() {
+        $val = (int) get_option( 'tm_a11y_focus_ring', 1 );
+        echo '<label><input type="checkbox" name="tm_a11y_focus_ring" value="1" ' . checked( 1, $val, false ) . '> ' . esc_html__( 'Add a visible focus outline for keyboard users.', 'wp-team-manager' ) . '</label>';
+    }
+
+    /** Field: List Semantics (role=list/listitem) */
+    public function field_tm_a11y_list_roles() {
+        $val = (int) get_option( 'tm_a11y_list_roles', 1 );
+        echo '<label><input type="checkbox" name="tm_a11y_list_roles" value="1" ' . checked( 1, $val, false ) . '> ' . esc_html__( 'Add role="list" on the grid and role="listitem" on each card for better screen reader navigation.', 'wp-team-manager' ) . '</label>';
+    }
+
+    /** Field: Enable SEO JSON-LD (Pro) */
+    public function field_tm_seo_jsonld_enable() {
+        $val = (int) get_option( 'tm_seo_jsonld_enable', 0 );
+        $disabled = '';
+        $note = '';
+        if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+            $disabled = ' disabled';
+            $note = ' <a href="' . esc_url( tmwstm_fs()->get_upgrade_url() ) . '" target="_blank" rel="noopener">' . esc_html__( 'Unlock in Pro', 'wp-team-manager' ) . '</a>';
+        }
+        echo '<label><input type="checkbox" name="tm_seo_jsonld_enable" value="1" ' . checked( 1, $val, false ) . $disabled . '> ' . esc_html__( 'Output Schema.org Person JSON-LD for each visible team member.', 'wp-team-manager' ) . $note . '</label>';
     }
 }

@@ -2105,8 +2105,16 @@ private function pagination_options() {
 
 						<?php
 					}
-				endif; 
+				endif;
 			?>
+            <?php
+            // Pro JSON-LD (global): output Person graph for single team pages, or ItemList for listings
+            if ( class_exists( '\\DWL_Wtm_Pro_Helper' ) ) {
+                if ( ! empty( $team_data['posts'] ) ) {
+                    \DWL_Wtm_Pro_Helper::output_jsonld_for_listing( $team_data['posts'] );
+                }
+            }
+            ?>
 		</div><!--.wp-team-manager-widget-->
 
 		<?php
