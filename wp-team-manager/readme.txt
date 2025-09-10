@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.12
+Stable tag: 2.3.13
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -255,42 +255,15 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 
 == Changelog ==
 
+= 2.3.13 =
+* Added 4 new Pro layouts for the Slider.
+* Added 2 new Pro layouts for the Grid.
+* Added 1 new Pro layout for the List style.
+* Improved Team Generator settings by hiding/showing certain layout-based options.
+* Updated Table Layout 2 design for the Free version.
+
 = 2.3.12 =
-**New**
-- Accessibility & SEO (Global):  
-  • Free – ARIA landmarks, focus ring, alt-text fallbacks  
-  • Pro – schema.org Person JSON-LD output (listings & singles, toggleable)  
-- AJAX Pagination (Shortcode): Secure “Load More” with nonce verification  
-- Elementor: A11y/SEO controls + Pro JSON-LD output in widget render  
-- Telegram Notifier (Free): Auto-notify channel/group on new or updated team members  
-- Profile Sync Agent (Free, n8n): Send team data to Google Sheets/Airtable  
-- Admin Dashboard: redesigned cards, Pro features grid, Upgrade CTA  
-- Documentation & Support Hub: new tabs for Docs, Videos, Changelog, Roadmap, FAQ, Hooks, and Support  
-- “More Plugins” shelf: improved responsive layout with better spacing/buttons  
-- Shortcode Theming: generatorShortcodeCss generates instance-scoped CSS (title, card BG, primary, shadows, socials, icons)  
-- Advanced Debug toggle: enable/disable file logging  
-
-**Improvements**
-- Template resolution (Free/Pro): secure Pro-aware fallback for layouts (realpath checks)  
-- Security & performance: sanitized shortcode params, `no_found_rows` for non-paginated queries, stricter nonce handling  
-- Shortcode Builder UI: clearer layout/style icons, improved group & ordering controls  
-- Settings IA: “Accessibility & SEO” tab added under Advanced  
-- Composer guard: wrapped autoloader include to avoid fatals  
-- Unified lightweight logger class integrated across AI/Agents and core actions  
-
-**Fixes**
-- LoadMore 403/`-1` nonce validation issue fixed  
-- Team Generator grid gap and spacing corrected  
-- Single team image blur + dark-mode artifacts fixed  
-- Elementor control condition logic and icon alignment adjusted  
-
-**Developer Notes**
-- New Pro helpers:  
-  • `DWL_Wtm_Pro_Helper::output_jsonld_for_listing( $posts )`  
-  • `DWL_Wtm_Pro_Helper::output_jsonld_for_single( $post_id )`  
-  • `DWL_Wtm_Pro_Helper::build_person_graph( $post_id )`  
-- Updated helper: `Helper::renderTeamLayout()` – Pro-aware secure template include  
-- AJAX: use localized `wtm_ajax_params` object (`ajax_url`, `nonce`) with `check_ajax_referer( 'wtm_ajax_paginate', 'security' )`
+* New: Added "Team Generator" List Layout Style 3 — a fresh and modern design option for displaying team members.
 
 = 2.3.11 =
 * New: Added "Team Generator" Grid Layout Style 3 — a fresh and modern design option for displaying team members.

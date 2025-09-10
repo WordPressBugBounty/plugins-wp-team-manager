@@ -9,6 +9,7 @@ $show_other_info        = !empty($settings['dwl_team_team_show_other_info'][0]);
 $show_social            = !empty($settings['dwl_team_team_show_social'][0]);
 $show_read_more         = empty($settings['dwl_team_team_show_read_more'][0]); 
 $show_progress_bar      = !empty($settings['dwl_team_show_progress_bar'][0]);
+$hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
 $hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
 
 // Determine if the single template should be disabled
@@ -44,7 +45,7 @@ if(!empty($data['posts'])): ?>
                 <!-- Head -->
                 <div class="team-member-head">
                     <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
-                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
+                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
                         <p class="team-position"><?php echo esc_html($job_title); ?></p>
                     <?php endif; ?>
                 </div>

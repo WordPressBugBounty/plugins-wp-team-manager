@@ -34,7 +34,6 @@ class TeamMetabox {
         \add_action( 'cmb2_init', [$this, 'create_member_information_metabox'] );
 
         $this->proLink = '';
-
         if ( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) {
            
             $this->proLink = '<span class="wptm-pro-text">' . __( ' Pro', 'wp-team-manager' ) . '</span> <a class="wptm-pro-link" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">'  . __('Upgrade Now!', 'wp-team-manager') . '</a>';
@@ -109,6 +108,8 @@ private function pagination_options( $box ) {
         ) : '',
 
         'desc' => $is_locked ? wp_kses_post( $this->proLink ) : '',
+         // Hide when layout is slider
+    'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
     ) );
     }
 
@@ -277,7 +278,7 @@ private function pagination_options( $box ) {
 					'style-2'        => __('Style Two', 'wp-team-manager'),
                     'style-3'        => __('Style Three', 'wp-team-manager'),
                     'style-4'        => __('Style Three', 'wp-team-manager'),
-                     //'style-5'        => __('Style Five', 'wp-team-manager'),
+                    'style-5'        => __('Style Five', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
@@ -285,16 +286,25 @@ private function pagination_options( $box ) {
 					'style-2'     => 'icons/short-code-layout/Grid-2.svg',
 					'style-3'     => 'icons/short-code-layout/grid-3.svg',
                     'style-4'     => 'icons/short-code-layout/grid-4.svg',
-                     //'style-5'     => 'icons/short-code-layout/grid-5.svg',
+                    'style-5'     => 'icons/short-code-layout/grid-5.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => 'col-12',
+                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'grid') ),
                 ),
+          'sanitization_cb' => function( $val ) {
+            
+            if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+                $blocked_styles = array( 'style-4');
+                return in_array( $val, $blocked_styles, true ) ? 'style-1' : $val;
+            }
+            return $val;
+        },
         	) 
 		);
+
 
         $dwl_layout->add_field( 
 			array(
@@ -305,20 +315,27 @@ private function pagination_options( $box ) {
 				'options'        => array(
 					'style-1'        => __('Style One', 'wp-team-manager'),
                     'style-2'        => __('Style Two', 'wp-team-manager'),
-                    // 'style-3'        => __('Style Three', 'wp-team-manager'),
+                    'style-3'        => __('Style Three', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/List-1.svg',
                     'style-2'     => 'icons/short-code-layout/List-2.svg',
-                    // 'style-3'     => 'icons/short-code-layout/List-3.svg',
+                    'style-3'     => 'icons/short-code-layout/List-3.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => 'col-12',
+                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'list' ) ),
                 ),
+                       'sanitization_cb' => function( $val ) {
+              
+                if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+                    return $val === 'style-3' ? 'style-1' : $val; 
+                }
+                return $val;
+        },
         	) 
 		);
 
@@ -331,26 +348,34 @@ private function pagination_options( $box ) {
 				'options'        => array(
 					'style-1'        => __('Style One', 'wp-team-manager'),
                     'style-2'        => __('Style Two', 'wp-team-manager'),
-                    // 'style-3'        => __('Style Three', 'wp-team-manager'),
-                    // 'style-4'        => __('Style Four', 'wp-team-manager'),
-                    // 'style-5'        => __('Style Five', 'wp-team-manager'),
-                    // 'style-6'        => __('Style Six', 'wp-team-manager'),
+                    'style-3'        => __('Style Three', 'wp-team-manager'),
+                    'style-4'        => __('Style Four', 'wp-team-manager'),
+                    'style-5'        => __('Style Five', 'wp-team-manager'),
+                    'style-6'        => __('Style Six', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
 					'style-1'     => 'icons/short-code-layout/Slider-1.svg',
                     'style-2'     => 'icons/short-code-layout/Slider-2.svg',
-                    // 'style-3'     => 'icons/short-code-layout/Slider-3.svg',
-                    // 'style-4'     => 'icons/short-code-layout/Slider-4.svg',
-                    // 'style-5'     => 'icons/short-code-layout/Slider-5.svg',
-                    // 'style-6'     => 'icons/short-code-layout/Slider-6.svg',
+                    'style-3'     => 'icons/short-code-layout/Slider-3.svg',
+                    'style-4'     => 'icons/short-code-layout/Slider-4.svg',
+                    'style-5'     => 'icons/short-code-layout/Slider-5.svg',
+                    'style-6'     => 'icons/short-code-layout/Slider-6.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => 'col-12',
+                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'slider' ) ),
                 ),
+          'sanitization_cb' => function( $val ) {
+            
+            if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+                $blocked_styles = array( 'style-3', 'style-4', 'style-5', 'style-6' );
+                return in_array( $val, $blocked_styles, true ) ? 'style-1' : $val;
+            }
+            return $val;
+        },
         	) 
 		);
 
@@ -592,6 +617,7 @@ private function pagination_options( $box ) {
                             $this->prefix . 'show_pagination',
                             $this->prefix . 'pagination_type',
                             $this->prefix . 'filter_enable',
+                            $this->prefix . 'team_show_position',
                             $this->prefix . 'team_show_read_more',
                         ),
                     ),
@@ -812,6 +838,15 @@ private function pagination_options( $box ) {
 		);
 
         $dwl_team_metabox->add_field( 
+            array(
+                'name'    => __( 'Hide Job Title', 'wp-team-manager' ),
+                'desc' => 'Show/hide',
+                'id'      => $this->prefix . 'team_show_position',
+                'type'    => 'checkbox',
+            )
+        );
+
+        $dwl_team_metabox->add_field( 
 			array(
 				'name'    => __( 'Hide Other Info', 'wp-team-manager' ),
                 'desc' => 'Show/hide',
@@ -872,6 +907,7 @@ private function pagination_options( $box ) {
                 'desc' => 'Show/hide',
 				'id'      => $this->prefix . 'show_pagination',
 				'type'    => 'checkbox',
+                'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
 			)
 		);
         
@@ -884,7 +920,7 @@ private function pagination_options( $box ) {
             'desc'  => __( 'Show/hide', 'wp-team-manager' ),
             'id'    => $this->prefix . 'filter_enable',
             'type'  => 'checkbox',
-
+    
             'sanitization_cb' => function( $val ) {
                 if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
                     return ''; // force unchecked (CMB2 checkbox খালি রাখলে false ধরা হয়)
@@ -905,8 +941,8 @@ private function pagination_options( $box ) {
                 </script>
                 '
                 : '',
-        )
-    );
+        'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
+        ) );
 
   // Image Setting
         $dwl_team_metabox->add_field( 
@@ -936,6 +972,7 @@ private function pagination_options( $box ) {
                     'circle'    => __( 'Circle', 'wp-team-manager' ),
                     'boxed'     => __( 'Boxed', 'wp-team-manager' ),
                 ),
+                'show_on_cb' => array( $this, 'hide_on_slider_layout' ), // hide when layout is slider
             )
         );
 
@@ -955,17 +992,18 @@ private function pagination_options( $box ) {
             'options' => $preset_options,
             'desc'    => __( 'Quickly apply a preset style to cards.', 'wp-team-manager' ),
         ) );
-        $dwl_team_metabox->add_field( array(
-            'name'    => __( 'Card Shadow', 'wp-team-manager' ),
-            'id'      => $this->prefix . 'theme_shadow',
-            'type'    => 'select',
-            'default' => 'sm',
-            'options' => array(
+    $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Card Shadow', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'theme_shadow',
+            'type'       => 'select',
+            'default'    => 'sm',
+            'options'    => array(
                 'none' => __( 'None', 'wp-team-manager' ),
                 'sm'   => __( 'Small', 'wp-team-manager' ),
                 'md'   => __( 'Medium', 'wp-team-manager' ),
                 'lg'   => __( 'Large', 'wp-team-manager' ),
             ),
+            'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
         ) );
         // Display Option
         $dwl_team_metabox->add_field( 
@@ -1055,6 +1093,13 @@ private function pagination_options( $box ) {
         $dwl_team_metabox->add_field( $custom_css_field );
 
     }
+    // The conditional callback function
+        public function hide_on_slider_layout( $field ) {
+            $layout = get_post_meta( get_the_ID(), $this->prefix . 'layout_option', true );
+            return ( $layout !== 'slider' ); // show only if NOT slider
+        }
+
+
 
     function create_wp_team_manager_metaboxes() {
 

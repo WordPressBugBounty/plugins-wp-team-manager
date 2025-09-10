@@ -19,6 +19,8 @@ $show_social = !empty($settings['dwl_team_team_show_social'][0]);
 $show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
 $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
 $hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
+$hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
+
 
 // Validate and retrieve single fields with proper defaults
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -65,7 +67,7 @@ foreach ($data['posts'] as $teamInfo) {
             <div class="team-member-desc">
                 <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
 
-                <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
+                <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
                     <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                 <?php endif; ?>
                 <?php if (!$hide_short_bio_control): ?>

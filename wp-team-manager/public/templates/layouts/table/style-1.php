@@ -4,12 +4,14 @@ use DWL\Wtm\Classes\Helper;
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 // Retrieve settings with default values
-$image_size = $settings['dwl_team_select_image_size'][0] ?? 'thumbnail';
-$show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
-$show_social = !empty($settings['dwl_team_team_show_social'][0]);
-$show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
-$show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
-$hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
+    $image_size = $settings['dwl_team_select_image_size'][0] ?? 'thumbnail';
+    $show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
+    $show_social = !empty($settings['dwl_team_team_show_social'][0]);
+    $show_read_more = empty($settings['dwl_team_team_show_read_more'][0]); 
+    $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
+    $hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
+    $hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
+    $disable_single_template = get_option('single_team_member_view') === 'True';
 
 // Determine if the single template should be disabled
 $disable_single_template = get_option('single_team_member_view') === 'True';
@@ -68,8 +70,9 @@ $context = isset($settings['context']) ? $settings['context'] : '';
                                                         <?php endif;?>
                                                             </a>
                                                         </div>
-
-                                                        <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
+                                                        <?php if (!$show_social): ?>
+                                                            <?php echo wp_kses_post( Helper::display_social_profile_output($teamInfo->ID) ); ?>
+                                                        <?php endif; ?>
                                                 </div>
                                                 
                                             </td>
@@ -82,32 +85,38 @@ $context = isset($settings['context']) ? $settings['context'] : '';
 
                                             <td class="dwl-table-data">
                                                 <div class="team-position-wraper">
-                                                    <p class="team-position"><?php echo esc_html( $job_title ); ?></p>
+                                                    <?php if (!$hide_team_show_position): ?>
+                                                        <p class="team-position"><?php echo esc_html( $job_title ); ?></p>
+                                                    <?php endif; ?>
                                                 </div>
                                             </td>
 
                                             <td class="dwl-table-data-short-bio">
-                                                <div class="team-short-bio">
+                                                <?php if (!$hide_short_bio_control): ?>
+                                                    <div class="team-short-bio">
 
-                                                        <?php echo esc_html( wp_trim_words( $short_bio, 20, '...' ) ); ?>
+                                                            <?php echo esc_html( wp_trim_words( $short_bio, 20, '...' ) ); ?>
 
-                                                        <?php 
-                                                        $post_content = !empty($teamInfo->post_excerpt) 
-                                                            ? $teamInfo->post_excerpt 
-                                                            : wp_trim_words(strip_tags($teamInfo->post_content), 20, '...');
+                                                            <?php 
+                                                            $post_content = !empty($teamInfo->post_excerpt) 
+                                                                ? $teamInfo->post_excerpt 
+                                                                : wp_trim_words(strip_tags($teamInfo->post_content), 20, '...');
 
-                                                        echo esc_html($post_content);
-                                                        ?>
+                                                            echo esc_html($post_content);
+                                                            ?>
 
-                                                </div>
+                                                    </div>
+                                                <?php endif; ?>
                                             </td>
 
                                             <td class="dwl-table-data">
                                                 <div class="team-member-info">
-                                                    <a href="mailto:<?php echo esc_html($tm_email) ?>" target="_blank">
-                                                        <i class="fas fa-envelope"></i>
-                                                        <?php echo esc_html($tm_email) ?>
-                                                    </a>
+                                                    <?php if (!$show_other_info): ?>
+                                                        <a href="mailto:<?php echo esc_html($tm_email) ?>" target="_blank">
+                                                            <i class="fas fa-envelope"></i>
+                                                            <?php echo esc_html($tm_email) ?>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </td>
                                     </tr>

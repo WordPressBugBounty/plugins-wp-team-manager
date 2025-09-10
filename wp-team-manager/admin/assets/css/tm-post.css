@@ -225,3 +225,53 @@ margin: 0;
 .cmb-type-checkbox .cmb-td label:active:after {
 	width: 130px;
 }
+
+
+
+
+/* Team Generator grid pro text style */
+.cmb2-id-dwl-team-grid-style-option.pro-locked input[value="style-4"][name*="grid_style_option"],
+.cmb2-id-dwl-team-grid-style-option.pro-locked input[value="style-5"][name*="grid_style_option"] {
+  pointer-events: none !important;
+  opacity: 0.5;
+}
+
+.cmb2-id-dwl-team-grid-style-option.pro-locked input[value="style-4"][name*="grid_style_option"] + label:after,
+.cmb2-id-dwl-team-grid-style-option.pro-locked input[value="style-5"][name*="grid_style_option"] + label:after {
+  content: " (Pro)";
+  color: #d63638;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* Team Generator list pro text style */
+.cmb2-id-dwl-team-list-style-option.pro-locked input[value="style-3"][name*="list_style_option"] {
+  pointer-events: none !important;
+  opacity: 0.5;
+}
+.cmb2-id-dwl-team-list-style-option.pro-locked input[value="style-3"][name*="list_style_option"] + label:after {
+  content: " (Pro)";
+  color: #d63638;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* Team Generator slider pro text style */
+
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-3"][name*="slider_style_option"],
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-4"][name*="slider_style_option"],
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-5"][name*="slider_style_option"],
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-6"][name*="slider_style_option"] {
+  pointer-events: none !important;
+  opacity: 0.5;
+}
+
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-3"][name*="slider_style_option"] + label:after,
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-4"][name*="slider_style_option"] + label:after,
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-5"][name*="slider_style_option"] + label:after,
+.cmb2-id-dwl-team-slider-style-option.pro-locked input[value="style-6"][name*="slider_style_option"] + label:after {
+  content: " (Pro)";
+  color: #d63638;
+  font-weight: 600;
+  margin-left: 6px;
+}

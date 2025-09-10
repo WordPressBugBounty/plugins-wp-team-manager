@@ -12,6 +12,8 @@ $image_size = sanitize_text_field($settings['dwl_team_select_image_size'][0] ?? 
 $show_other_info = !empty($settings['dwl_team_team_show_other_info']); // Ensure this returns a boolean
 $show_social = !empty($settings['dwl_team_team_show_social']); // Ensure this returns a boolean
 $show_read_more = empty($settings['dwl_team_team_show_read_more']); // Make sure it's correctly handled as boolean
+$hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
+
 
 // Retrieve single fields with default value and ensure it’s an array
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -43,7 +45,7 @@ foreach ($data['posts'] as $teamInfo) {
                             <div class="team-member-grid-content">
                                 <div class="team-member-grid-info">
                                     <h2 class="team-member-title"><?php echo esc_html($teamInfo->post_title); ?></h2>
-                                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields)): ?>
+                                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
                                         <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                                     <?php endif; ?>
                                     <div class="team-member-grid-arrow">
