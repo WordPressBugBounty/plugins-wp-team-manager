@@ -66,7 +66,7 @@ if( !class_exists( 'CMB2_Radio_Image' ) ) {
 
                 .cmb-type-radio-image .cmb2-radio-list input[type="radio"] + label:hover,
                 .cmb-type-radio-image .cmb2-radio-list input[type="radio"]:checked + label {
-                    border-color: #A259FF;
+                    border-color: #5a0bc0;
                 }
 
                 .cmb-type-radio-image .cmb2-radio-list li label img {

@@ -43,6 +43,21 @@ class Helper {
         return $fs ? esc_url( $fs->get_upgrade_url() ) : '#';
     }
 
+    /**
+     * Checks if the current user is a free user (not paying and not on trial) via Freemius.
+     *
+     * Returns true if Freemius is available, the user is not paying, and not on a trial.
+     * Returns false otherwise (including if Freemius is unavailable).
+     *
+     * @return bool True if user is free (not paying, not trial), false otherwise.
+     */
+    public static function freemius_is_free_user() {
+        return true;
+        return function_exists('tmwstm_fs')
+            && tmwstm_fs()->is_not_paying()
+            && ! tmwstm_fs()->is_trial();
+    }
+
     /** Convenience: Is Pro effectively active for gating premium modules */
     public static function is_pro_active() {
         // Prefer can_use_premium_code which accounts for dev-mode scenarios too
@@ -320,100 +335,96 @@ class Helper {
          * @return string The HTML representation of the team member's additional information.
          */
         
-        public static function get_team_other_infos($post_id, $tm_single_fields = []) {
+ public static function get_team_other_infos($post_id, $tm_single_fields = [], $enable_links = null) {
 
-            // Get custom label settings
-            $custom_labels = get_option('tm_custom_labels', []);
-            $web_btn_text = isset($custom_labels['tm_web_url']) ? $custom_labels['tm_web_url'] : 'Bio';
-            $vcard_btn_text = isset($custom_labels['tm_vcard']) ? $custom_labels['tm_vcard'] : 'Download CV';
-            
-            // Fetch all metadata for the post at once
-            $meta = get_post_meta($post_id);
-            
-            // Define all required fields with safe sanitization
-            $fields = [
-                'tm_mobile'          => !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
-                'tm_year_experience' => !empty($meta['tm_year_experience'][0]) ? sanitize_text_field($meta['tm_year_experience'][0]) : '',
-                'tm_email'           => !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '',
-                'tm_telephone'       => !empty($meta['tm_telephone'][0]) ? sanitize_text_field($meta['tm_telephone'][0]) : '',
-                'tm_location'        => !empty($meta['tm_location'][0]) ? sanitize_text_field($meta['tm_location'][0]) : '',
-                'tm_web_url'         => !empty($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
-                'tm_vcard'           => !empty($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
-            ];
-            
-            // Return early if no fields have values
-            if (empty(array_filter($fields))) {
-                return '';
-            }
-            
-            $output = '<div class="team-member-other-info">';
-            
-            // Define field mappings for icons and text
-            $field_mappings = [
-                'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel:', 'is_link' => true],
-                'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel:', 'is_link' => true],
-                'tm_year_experience' => ['icon' => 'fas fa-history', 'is_link' => false],
-                'tm_location'        => ['icon' => 'fas fa-map-marker', 'is_link' => false],
-                'tm_email'           => ['icon' => 'fas fa-envelope', 'prefix' => 'mailto:', 'is_link' => true],
-                'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
-                'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
-            ];
-        
-            
+    $is_pro = ! Helper::freemius_is_free_user();
 
+    $custom_labels = get_option('tm_custom_labels', []);
+    $web_btn_text = $custom_labels['tm_web_url'] ?? __('Bio', 'wp-team-manager');
+    $vcard_btn_text = $custom_labels['tm_vcard'] ?? __('Download CV', 'wp-team-manager');
+    $meta = get_post_meta($post_id);
 
-            // Intersect the selected fields with field mappings
-            if(!empty($tm_single_fields && is_array($tm_single_fields) && tmwstm_fs()->is_paying_or_trial())){
-                $tm_selected_fields = array_intersect_key($field_mappings, array_flip($tm_single_fields));
-            }else{
-                $tm_selected_fields = apply_filters('wp_team_manager_other_info_fields', $field_mappings, $fields, $post_id); 
-            }
-        
-            
-            // Allow filtering
-            $field_mappings = apply_filters('wp_team_manager_other_info_fields', $tm_selected_fields, $fields, $post_id);
+    $fields = [
+        'tm_mobile'          => !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
+        'tm_year_experience' => !empty($meta['tm_year_experience'][0]) ? sanitize_text_field($meta['tm_year_experience'][0]) : '',
+        'tm_email'           => !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '',
+        'tm_telephone'       => !empty($meta['tm_telephone'][0]) ? sanitize_text_field($meta['tm_telephone'][0]) : '',
+        'tm_location'        => !empty($meta['tm_location'][0]) ? sanitize_text_field($meta['tm_location'][0]) : '',
+        'tm_web_url'         => !empty($meta['tm_web_url'][0]) ? esc_url($meta['tm_web_url'][0]) : '',
+        'tm_vcard'           => !empty($meta['tm_vcard'][0]) ? esc_url($meta['tm_vcard'][0]) : '',
+        // New custom detail url field (Pro)
+        'tm_custom_detail_url' => !empty($meta['tm_custom_detail_url'][0]) ? esc_url($meta['tm_custom_detail_url'][0]) : '',
+        // New fields: tm_resume_url and tm_hire_me_url
+        'tm_resume_url'      => !empty($meta['tm_resume_url'][0]) ? esc_url($meta['tm_resume_url'][0]) : '',
+        'tm_hire_me_url'     => !empty($meta['tm_hire_me_url'][0]) ? esc_url($meta['tm_hire_me_url'][0]) : '',
+    ];
 
+    if (empty(array_filter($fields))) return '';
 
-            // Generate HTML with filtering logic
-            foreach ($field_mappings as $key => $info) {
-                // Apply filter only on singular team pages
-                // if (is_singular('team_manager') && in_array($key, $tm_single_fields)) {
-                //     continue; // Skip hidden fields on team single pages
-                // }
-        
-                if (!empty($fields[$key])) {
-                    $output .= '<div class="team-member-info">';
-                    
-                    // Ensure the icon class is safe
-                    if (!empty($info['icon'])) {
-                        $output .= '<i class="' . esc_attr($info['icon']) . '"></i> ';
-                    }
-        
-                    // Properly escape and validate link
-                    if (!empty($info['is_link']) && isset($info['prefix'])) {
-                        $url = esc_url($info['prefix'] . sanitize_text_field($fields[$key]));
-                        $text = isset($info['link_text']) ? esc_html($info['link_text']) : esc_html($fields[$key]);
-        
-                        // Validate URL before output
-                        if (filter_var($url, FILTER_VALIDATE_URL)) {
-                            $output .= '<a href="' . $url . '" target="_blank" rel="noopener noreferrer"><span>' . $text . '</span></a>';
-                        } else {
-                            $output .= '<span>' . $text . '</span>'; // If URL is invalid, display text only
-                        }
-                    } else {
-                        $output .= '<span>' . esc_html($fields[$key]) . '</span>'; // Wrap plain text in span
-                    }
-        
-                    $output .= '</div>';
+    $output = '<div class="team-member-other-info">';
+
+    $field_mappings = [
+        'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel:', 'is_link' => true],
+        'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel:', 'is_link' => true],
+        'tm_year_experience' => ['icon' => 'fas fa-history', 'is_link' => false],
+        'tm_location'        => ['icon' => 'fas fa-map-marker', 'is_link' => false],
+        'tm_email'           => ['icon' => 'fas fa-envelope', 'prefix' => 'mailto:', 'is_link' => true],
+        'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
+        'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
+    ];
+
+    if ( $is_pro ) {
+        $field_mappings['tm_custom_detail_url'] = ['icon' => 'fas fa-external-link-alt', 'prefix' => '', 'is_link' => true, 'link_text' => __('Details', 'wp-team-manager')];
+        $field_mappings['tm_resume_url']        = ['icon' => 'fas fa-file-alt', 'prefix' => '', 'is_link' => true, 'link_text' => __('Resume', 'wp-team-manager')];
+        $field_mappings['tm_hire_me_url']       = ['icon' => 'fas fa-user-tie', 'prefix' => '', 'is_link' => true, 'link_text' => __('Hire Me', 'wp-team-manager')];
+    }
+    if (!empty($tm_single_fields) && is_array($tm_single_fields) && $is_pro) {
+        $tm_selected_fields = array_intersect_key($field_mappings, array_flip($tm_single_fields));
+    } else {
+        $tm_selected_fields = $field_mappings;
+    }
+
+    $toggleable_fields = ['tm_mobile', 'tm_telephone'];
+
+    foreach ($tm_selected_fields as $key => $info) {
+        if (empty($fields[$key])) continue;
+
+        $output .= '<div class="team-member-info">';
+        if (!empty($info['icon'])) $output .= '<i class="' . esc_attr($info['icon']) . '"></i> ';
+
+        $text = esc_html($fields[$key]);
+        $url = '';
+
+ 
+            if (in_array($key, $toggleable_fields, true)) {
+                if ($enable_links === 'yes') {
+                    $url = 'tel:' . preg_replace('/[^0-9+]/', '', $fields[$key]);
+                }
+            } else {
+                if ($key === 'tm_email') {
+                    $url = 'mailto:' . sanitize_email($fields[$key]);
+                } elseif (in_array($key, ['tm_web_url','tm_vcard','tm_custom_detail_url', 'tm_resume_url', 'tm_hire_me_url'])) {
+                    $url = $info['prefix'] . $fields[$key];
+                    $text = $info['link_text'] ?? $text;
                 }
             }
-        
-            $output .= '</div>';
-            
-            $output = apply_filters('wp_team_manager_other_info_html', $output, $post_id);
-            return $output;
+   
+
+        if (!empty($url)) {
+            $output .= '<a href="' . esc_url($url) . '" target="_blank" rel="noopener noreferrer"><span>' . $text . '</span></a>';
+        } else {
+            $output .= '<span>' . $text . '</span>';
         }
-        
+
+        $output .= '</div>';
+    }
+
+    $output .= '</div>';
+
+    return apply_filters('wp_team_manager_other_info_html', $output, $post_id);
+}
+
+
         
         
 
@@ -864,6 +875,7 @@ class Helper {
         'tm_year_experience' => 'Years of Experience',
         'tm_web_url'         => 'Web URL',
         'tm_vcard'           => 'vCard',
+        'tm_custom_detail_url' => 'Custom Detail URL (Pro)',
     );
 
     // premium check (same as your first function)

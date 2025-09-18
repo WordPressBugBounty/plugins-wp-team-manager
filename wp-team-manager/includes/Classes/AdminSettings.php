@@ -62,28 +62,35 @@ namespace DWL\Wtm\Classes;
         \wp_enqueue_style( 'wp-team-get-help-admin' );
 
         ?>
+        <?php if ( Helper::freemius_is_free_user() ) : ?>
+            <div class="wtm-upgrade-banner">
+                <p>
+                    <?php esc_html_e( 'You’re using WP Team Manager Free Version. Upgrade to Pro to unlock advanced team layouts, filtering, Elementor widgets, and more.', 'wp-team-manager' ); ?>
+                    <a href="<?php echo esc_url( tmwstm_fs()->get_upgrade_url() ); ?>" class="wtm-upgrade-link" target="_blank">
+                         🚀 <?php esc_html_e( 'Upgrade to Pro!', 'wp-team-manager' ); ?>
+                    </a>
+                </p>
+            </div>
+        <?php endif; ?>
+
         <div class="wrap">
             <h2><?php esc_html_e('Team Manager Settings', 'wp-team-manager'); ?></h2>
-            
             <?php \settings_errors(); ?>
-            <div class="wptm-settings-wrap">
+            <div class="wptm-settings-wrap" style="display: grid; grid-template-columns: 2fr 1.3fr; gap: 32px;">
                 <div class="wptm-settings-form">
                     <form method="post" action="options.php">
                         <?php 
-                            \settings_fields( 'tm-settings-group' );
-                            \do_settings_sections( 'tm-settings-group' );
-                            
+                            settings_fields( 'tm-settings-group' );
+                            do_settings_sections( 'tm-settings-group' );
+
                             $file_path = realpath(TM_PATH . '/admin/includes/content-settings.php');
                             if ($file_path && strpos($file_path, TM_PATH) === 0) {
                                 include_once $file_path;
                             }
                         ?>
-                        <?php \submit_button(); ?>
+                        <?php submit_button(); ?>
                     </form>
-                
-                   
                 </div>            
-                <!-- Support / Documentation Hub -->
                 <div id="wptm_support" class="wp-team-box-content">
                     <div class="wp-team-card-section wp-team-card-grid">
 
@@ -102,13 +109,13 @@ namespace DWL\Wtm\Classes;
 
                         <div class="wp-team-document-box wp-team-document-box-card">
                             <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-video-alt3"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Video Tutorials', 'wp-team-manager' ); ?></h3>
+                                <i class="dashicons dashicons-groups"></i>
+                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Join the Community', 'wp-team-manager' ); ?></h3>
                             </div>
                             <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Quick videos covering layouts, Elementor widgets, and shortcode builder.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/videos/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Watch Videos', 'wp-team-manager' ); ?>
+                                <p><?php esc_html_e( 'Ask questions, get updates, and connect with other users and the team.', 'wp-team-manager' ); ?></p>
+                                <a href="<?php echo esc_url( 'https://www.facebook.com/groups/1652621408980514' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
+                                    <?php esc_html_e( 'Join Facebook Group', 'wp-team-manager' ); ?>
                                 </a>
                             </div>
                         </div>
@@ -168,16 +175,7 @@ namespace DWL\Wtm\Classes;
                     </div>
                 </div>
             </div>
-            <style>
-                .wp-team-card-grid{
-                    display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:8px
-                }
-                .wp-team-document-box-card .wp-team-box-icon{display:flex;align-items:center;gap:8px}
-                .wp-team-document-box-card .wp-team-box-icon .dashicons{font-size:20px;width:20px;height:20px;line-height:20px}
-                .wp-team-admin-btn{margin-top:8px;display:inline-block}
-            </style>
         </div>
-
     <?php 
     } 
 

@@ -428,6 +428,7 @@ public function shortcode_callback($atts) {
     $theme_card_bg      = Helper::get_team_setting( $post_id, 'dwl_team_theme_card_bg', '', 'string' );
     $theme_title_color  = Helper::get_team_setting( $post_id, 'dwl_team_theme_title_color', '', 'string' );
     $theme_text_color   = Helper::get_team_setting( $post_id, 'dwl_team_theme_text_color', '', 'string' );
+    $social_icon_color  = Helper::get_team_setting( $post_id, 'dwl_team_social_icon_color', '', 'string' );
     $theme_radius       = Helper::get_team_setting( $post_id, 'dwl_team_theme_border_radius', '', 'string' );
     $theme_gap          = Helper::get_team_setting( $post_id, 'dwl_team_theme_gap', '', 'string' );
     $theme_shadow_key   = Helper::get_team_setting( $post_id, 'dwl_team_theme_shadow', 'sm', 'string' );
@@ -439,7 +440,8 @@ public function shortcode_callback($atts) {
     $theme_card_bg     = function_exists('sanitize_hex_color') ? ( $theme_card_bg ? sanitize_hex_color( $theme_card_bg ) : '' ) : $theme_card_bg;
     $theme_title_color = function_exists('sanitize_hex_color') ? ( $theme_title_color ? sanitize_hex_color( $theme_title_color ) : '' ) : $theme_title_color;
     $theme_text_color  = function_exists('sanitize_hex_color') ? ( $theme_text_color ? sanitize_hex_color( $theme_text_color ) : '' ) : $theme_text_color;
-
+    $social_icon_color = function_exists('sanitize_hex_color') ? ( $social_icon_color ? sanitize_hex_color( $social_icon_color ) : '' ) : $social_icon_color;
+   
     // Validate radius & gap CSS units (px|rem|em|%)
     $unit_ok = '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/';
     if ( $theme_radius && ! preg_match( $unit_ok, $theme_radius ) ) { $theme_radius = ''; }
@@ -490,6 +492,10 @@ public function shortcode_callback($atts) {
     }
     if ( $theme_primary ) {
       $scoped_css .= "$scoped_id .team-member-socials a, $scoped_id a.wtm-read-more{background-color:{$theme_primary};}\n";
+    }
+       if ( $social_icon_color ) {
+      $scoped_css .= "$scoped_id .team-member-socials a, $scoped_id a.wtm-read-more{color:{$social_icon_color};}\n";
+      
     }
     // if ( $theme_gap ) {
     //   $scoped_css .= "$scoped_id .wtm-row, $scoped_id .dwl-team-cards{gap:{$theme_gap};}\n";

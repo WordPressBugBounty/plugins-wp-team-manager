@@ -95,8 +95,13 @@ if(!empty($data)):
                         </div>
                     <?php endif; ?>
                     
-                    <?php if(isset($settings['show_other_info']) AND 'yes' == $settings['show_other_info']) : ?>
-                        <?php echo wp_kses_post( Helper::get_team_other_infos( $teamInfo->ID, $settings['other_info_elements']) ); ?>
+                      <?php if(!empty($settings['show_other_info']) && $settings['show_other_info'] === 'yes'): ?>
+                        <?php 
+                            $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
+                            echo wp_kses_post(
+                                Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'], $enable_links)
+                            ); 
+                        ?>
                     <?php endif; ?>
 
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>

@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.0.0
 Tested up to: 6.7.2
-Stable tag: 2.3.13
+Stable tag: 2.3.14
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -254,6 +254,15 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 12. AI Agent
 
 == Changelog ==
+
+= 2.3.14 =
+* UI Improvement: Separated Toolbox tabs into "Getting Started", "Recommended", "Changelog", and "Join the Community".
+* Migration Tool (Free): Added a basic migration tool to import team members from other plugins.
+* Import/Export (Free): Added support for importing and exporting team members via CSV.
+* New Pro Fields: Resume URL, Hire Me URL
+* Freemius Integration: Improved handling of free vs. pro user restrictions on individual fields.
+* Settings UI: Added toggle UI for enabling/disabling certain features like Debug Log and AI Agents.
+* Code Cleanup: Removed inline styles and replaced with consistent CSS class-based styling.
 
 = 2.3.13 =
 * Added 4 new Pro layouts for the Slider.

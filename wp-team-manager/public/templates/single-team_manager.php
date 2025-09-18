@@ -57,14 +57,14 @@ $selected = Helper::generate_single_fields('frontend');
                         <?php endif; ?>
 
                         <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
-                                <div class="wtm-progress-bar">
-                                <?php
-                                        if (class_exists('DWL_Wtm_Pro_Helper')) {
+                            <div class="wtm-progress-bar">
+                            <?php
+                                if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                            echo DWL_Wtm_Pro_Helper::display_skills_output($post_id);
+                                    echo DWL_Wtm_Pro_Helper::display_skills_output($post_id);
 
-                                        } ?>
-                                </div>
+                                } ?>
+                            </div>
                         <?php endif; ?>
 
                         <?php 

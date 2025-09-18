@@ -18,6 +18,7 @@ if (!$data) {
     $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
     $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
     $show_other_info = !empty($settings['dwl_team_team_show_other_info'][0]);
+    $enable_links = (isset($settings['dwl_team_team_link_mobile_phone'][0]) && 'on' == $settings['dwl_team_team_link_mobile_phone'][0]) ? 'yes' : 'no'; 
     $hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
     $selected = Helper::generate_single_fields('frontend');
     $show_social = !empty($settings['dwl_team_team_show_social'][0]);
@@ -102,9 +103,9 @@ if (!$data) {
                     </div>
                 <?php endif; ?>
 
-            <?php if (!$show_other_info): ?>
-                <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $selected)); ?>
-            <?php endif; ?>
+            <?php  if (!$show_other_info): 
+                  echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $selected, $enable_links));
+                 endif;  ?>
             <?php if (!empty($settings['show_other_info'])): ?>
                 <div class="team-other-info-icons">
                     <?php 

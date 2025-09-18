@@ -34,7 +34,7 @@ class TeamMetabox {
         \add_action( 'cmb2_init', [$this, 'create_member_information_metabox'] );
 
         $this->proLink = '';
-        if ( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ) {
+        if ( Helper::freemius_is_free_user() ) {
            
             $this->proLink = '<span class="wptm-pro-text">' . __( ' Pro', 'wp-team-manager' ) . '</span> <a class="wptm-pro-link" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">'  . __('Upgrade Now!', 'wp-team-manager') . '</a>';
         }
@@ -53,7 +53,7 @@ private function pagination_options( $box ) {
         'infinite' => esc_html__( 'Infinite Scroll', 'wp-team-manager' ),
     );
 
-    $is_locked   = function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial();
+    $is_locked   = Helper::freemius_is_free_user();
     $locked_keys = array( 'ajax', 'infinite' ); 
 
     $box->add_field( array(
@@ -120,15 +120,7 @@ private function pagination_options( $box ) {
 
         $shortcode = '[dwl_create_team id="' . esc_attr( $post_id ) . '"]';
         $title = sprintf(
-            '<style>
-                .wtm-sc-wrap{margin-top:6px}
-                .wtm-sc-help{margin:2px 0 8px;color:#555}
-                .wtm-sc-row{display:flex;gap:6px}
-                .wtm-sc-input{flex:1}
-                .wtm-sc-input input{width:100%%;font-family:monospace;background:#f7f7f7}
-                .wtm-sc-note{margin-top:6px;color:#777;font-size:12px}
-            </style>
-            <div class="wtm-sc-wrap">
+            '<div class="wtm-sc-wrap">
                 <p class="wtm-sc-help">%s</p>
                 <div class="wtm-sc-row">
                     <span class="wtm-sc-input">
@@ -171,13 +163,7 @@ private function pagination_options( $box ) {
             esc_html__( 'Copied!', 'wp-team-manager' ),
             esc_html__( 'Copy', 'wp-team-manager' )
         );
-        $documentation = '<style>
-        .wtm-help{margin-top:4px}
-        .wtm-help .wtm-help-desc{color:#666;margin:0 0 8px;font-size:12px}
-        .wtm-help .wtm-btn{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:6px 12px;border-radius:4px;border:2px solid #A259FF;background:#fff;color:#A259FF;text-decoration:none;font-weight:600}
-        .wtm-help .wtm-btn:hover{background:#A259FF;color:#fff}
-        .wtm-help .dashicons{font-size:16px;line-height:1}
-        </style>'
+        $documentation = ''
         . '<div class="wtm-help">'
         . '<p class="wtm-help-desc">' . esc_html__( 'Browse step‑by‑step guides and videos.', 'wp-team-manager' ) . '</p>'
         . '<a class="wtm-btn" href="https://wpteammanager.com/documentation/?utm_source=wp-admin&utm_medium=metabox&utm_campaign=wtm" target="_blank" rel="noopener"><span class="dashicons dashicons-book-alt"></span> ' . esc_html__( 'Open Documentation', 'wp-team-manager' ) . '</a>'
@@ -289,14 +275,14 @@ private function pagination_options( $box ) {
                     'style-5'     => 'icons/short-code-layout/grid-5.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
+                'classes'        => Helper::freemius_is_free_user() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'grid') ),
                 ),
           'sanitization_cb' => function( $val ) {
             
-            if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+            if ( Helper::freemius_is_free_user() ) {
                 $blocked_styles = array( 'style-4');
                 return in_array( $val, $blocked_styles, true ) ? 'style-1' : $val;
             }
@@ -324,14 +310,14 @@ private function pagination_options( $box ) {
                     'style-3'     => 'icons/short-code-layout/List-3.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
+                'classes'        => Helper::freemius_is_free_user() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'list' ) ),
                 ),
                        'sanitization_cb' => function( $val ) {
               
-                if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+                if ( Helper::freemius_is_free_user() ) {
                     return $val === 'style-3' ? 'style-1' : $val; 
                 }
                 return $val;
@@ -363,14 +349,14 @@ private function pagination_options( $box ) {
                     'style-6'     => 'icons/short-code-layout/Slider-6.svg',
 				),
 				'default'        => 'style-1',
-                'classes'        => function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ? 'col-12 pro-locked' : 'col-12',
+                'classes'        => Helper::freemius_is_free_user() ? 'col-12 pro-locked' : 'col-12',
                 'attributes'                 => array(
                     'data-conditional-id'    => $this->prefix . 'layout_option',
                    'data-conditional-value' => wp_json_encode( array( 'slider' ) ),
                 ),
           'sanitization_cb' => function( $val ) {
             
-            if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
+            if ( Helper::freemius_is_free_user() ) {
                 $blocked_styles = array( 'style-3', 'style-4', 'style-5', 'style-6' );
                 return in_array( $val, $blocked_styles, true ) ? 'style-1' : $val;
             }
@@ -402,28 +388,6 @@ private function pagination_options( $box ) {
                 ),
         	) 
 		);
-
-        
-
-        // $dwl_layout->add_field( 
-		// 	array(
-		// 		'name'           => __( 'Layout Style', 'wp-team-manager' ),
-		// 		'desc'           => __( 'Select Layout Style', 'wp-team-manager' ),
-		// 		'id'             => $this->prefix . 'style_type',
-		// 		'type'           => 'radio_image',
-		// 		'options'        => array(
-		// 			'style-1'        => __('Style 1', 'wp-team-manager'),
-		// 			'style-2'        => __('Style 2', 'wp-team-manager'),
-		// 		),
-		// 		'images_path'    => TM_ADMIN_ASSETS,
-		// 		'images'         => array(
-		// 			'style-1'     => 'icons/style-1.png',
-		// 			'style-2'     => 'icons/style-2.png',
-		// 		),
-		// 		'default'        => 'style-1',
-        //         'classes'        => 'col-12',
-        // 	) 
-		// );
 
         $dwl_layout->add_field( array(
             'name'    => __( 'Mobile', 'wp-team-manager' ),
@@ -611,6 +575,7 @@ private function pagination_options( $box ) {
                         'fields' => array(
                          
                             $this->prefix . 'team_show_other_info',
+                            $this->prefix . 'team_link_mobile_phone',
                             $this->prefix . 'team_show_social',
                             $this->prefix . 'show_progress_bar',
                             $this->prefix . 'hide_short_bio',
@@ -855,6 +820,24 @@ private function pagination_options( $box ) {
 			)
 		);
 
+
+        $link_mobile_phone =  array(
+            'name'    => __( 'Links Mobile & Telephone', 'wp-team-manager' ) .  wp_kses_post( $this->proLink ),
+            'desc' => 'Show/hide',
+            'id'      => $this->prefix . 'team_link_mobile_phone',
+            'type'    => 'checkbox',
+        );
+
+        if( Helper::freemius_is_free_user() ){
+
+            $link_mobile_phone['attributes'] =   array(
+                'disabled' => true
+            );
+
+        }
+
+        $dwl_team_metabox->add_field( $link_mobile_phone );
+
         $dwl_team_metabox->add_field( 
 			array(
 				'name'    => __( 'Hide Read More', 'wp-team-manager' ),
@@ -880,7 +863,7 @@ private function pagination_options( $box ) {
             'type'    => 'checkbox',
         );
 
-        if( !tmwstm_fs()->is_paying_or_trial() ){
+        if( Helper::freemius_is_free_user() ){
 
             $show_progress_bar['attributes'] =   array(
                 'disabled' => true
@@ -922,13 +905,13 @@ private function pagination_options( $box ) {
             'type'  => 'checkbox',
     
             'sanitization_cb' => function( $val ) {
-                if ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) {
-                    return ''; // force unchecked (CMB2 checkbox খালি রাখলে false ধরা হয়)
+                if ( Helper::freemius_is_free_user() ) {
+                    return '';
                 }
                 return $val;
             },
 
-            'after_row' => ( function_exists( 'tmwstm_fs' ) && tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() )
+            'after_row' => ( Helper::freemius_is_free_user() )
                 ? '<script>
                     (function(){
                         var id = ' . wp_json_encode( $this->prefix . 'filter_enable' ) . ';
@@ -1073,13 +1056,6 @@ private function pagination_options( $box ) {
             )
         );
 
-        // $dwl_team_metabox->add_field( array(
-        //     'name'    => __( 'Dark Mode', 'wp-team-manager' ),
-        //     'id'      => $this->prefix . 'theme_dark_mode',
-        //     'type'    => 'checkbox',
-        //     'desc'    => __( 'Invert colors for dark backgrounds.', 'wp-team-manager' ),
-        // ) );
-
         $custom_css_field = array(
             'name' => __( 'Custom CSS (scoped)', 'wp-team-manager' ),
             'id'   => $this->prefix . 'theme_custom_css',
@@ -1141,7 +1117,7 @@ private function pagination_options( $box ) {
          * Job Title
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Job Title', 'wp-team-manager' ),
+            'name'       => esc_html__( 'Position/Job Title', 'wp-team-manager' ),
             'desc'       => esc_html__( 'Job title of this team member', 'wp-team-manager' ),
             'id'         => 'tm_jtitle',
             'type'       => 'text',
@@ -1154,7 +1130,7 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Email Address', 'wp-team-manager' ),
-            //'desc'       => esc_html__( 'Telephone number of this team member', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Provide the official email address of this team member.', 'wp-team-manager' ),
             'id'         => 'tm_email',
             'type'       => 'text_email',
             'classes'    => 'col-md-4',
@@ -1166,7 +1142,7 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Telephone (Office)', 'wp-team-manager' ),
-            //'desc'       => esc_html__( 'Telephone number of this team member', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Enter the office telephone number.', 'wp-team-manager' ),
             'id'         => 'tm_telephone',
             'type'       => 'text',
             'classes'    => 'col-md-4',
@@ -1177,7 +1153,7 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Mobile (Personal)', 'wp-team-manager' ),
-            //'desc'       => esc_html__( 'Telephone number of this team member', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Enter the personal mobile phone number.', 'wp-team-manager' ),
             'id'         => 'tm_mobile',
             'type'       => 'text',
             'classes'    => 'col-md-4',
@@ -1189,7 +1165,7 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Location', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Location of this team member', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Specify the team member\'s current location or office.', 'wp-team-manager' ),
             'id'         => 'tm_location',
             'type'       => 'text',
             'classes'    => 'col-md-4',
@@ -1200,6 +1176,7 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Years of Experience', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Total years of professional experience.', 'wp-team-manager' ),
             'id'         => 'tm_year_experience',
             'type'       => 'text',
             'classes'    => 'col-md-4',
@@ -1211,31 +1188,80 @@ private function pagination_options( $box ) {
          */
         $dwl_team_general->add_field( array(
             'name'       => esc_html__( 'Web URL', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Website url of this team member', 'wp-team-manager' ),
+            'desc'       => esc_html__( 'Official personal or company website URL.', 'wp-team-manager' ),
             'id'         => 'tm_web_url',
             'type'       => 'text',
             'classes'    => 'col-md-4',
         ) );
 
         /**
+         * Custom Detail URL (Pro)
+         */
+        $custom_detail_url = array(
+            'name'       => esc_html__( 'Custom Detail URL', 'wp-team-manager' ) . wp_kses_post( $this->proLink ),
+            'desc'       => esc_html__( 'Provide a custom link to replace the default detail page.', 'wp-team-manager' ),
+            'id'         => 'tm_custom_detail_url',
+            'type'       => 'text_url',
+            'classes'    => 'col-md-4',
+        );
+
+        if ( Helper::freemius_is_free_user() ) {
+            $custom_detail_url['attributes'] = array( 'disabled' => true );
+        }
+
+        $dwl_team_general->add_field( $custom_detail_url );
+
+
+        /**
+         * Resume URL (Pro)
+         */
+
+        $resume_url = array(
+            'name'       => esc_html__( 'Resume URL', 'wp-team-manager' ) . wp_kses_post( $this->proLink ),
+            'desc'       => esc_html__( 'Link to the member\'s resume or CV (PDF or web page).', 'wp-team-manager' ),
+            'id'         => 'tm_resume_url',
+            'type'       => 'text_url',
+            'classes'    => 'col-md-4',
+        );
+
+        if ( Helper::freemius_is_free_user() ) {
+            $resume_url['attributes'] = array( 'disabled' => true );
+        }
+
+        $dwl_team_general->add_field( $resume_url );
+
+        /**
+         * Hire Me URL (Pro)
+         */
+        $hire_me_url = array(
+            'name'       => esc_html__( 'Hire Me URL', 'wp-team-manager' ) . wp_kses_post( $this->proLink ),
+            'desc'       => esc_html__( 'Link to the member\'s Hire Me page or booking form.', 'wp-team-manager' ),
+            'id'         => 'tm_hire_me_url',
+            'type'       => 'text_url',
+            'classes'    => 'col-md-4',
+        );
+
+        if ( Helper::freemius_is_free_user() ) {
+            $hire_me_url['attributes'] = array( 'disabled' => true );
+        }
+
+        $dwl_team_general->add_field( $hire_me_url );
+
+        /**
          * Image
          */
         $dwl_team_general->add_field( array(
             'name'    => 'Add vCard File',
-            'desc'    => 'Upload a File',
+            'desc'    => 'Upload a vCard (.vcf) file containing contact information.',
             'id'      => 'tm_vcard',
             'type'    => 'file',
             'classes'    => 'col-md-4',
-            // Optional:
             'options' => array(
-                //'url' => false, // Hide the text input for the url
                 'url' => true, // Hide the text input for the url
             ),
             'text'    => array(
                 'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
             ),
-            // query_args are passed to wp.media's library query.
-            'preview_size' => 'medium', // Image size to use when previewing in the admin.
         ), 
         );
 
@@ -1380,7 +1406,7 @@ private function pagination_options( $box ) {
                 'type' => 'text',
             );
             
-            if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ){
+            if( Helper::freemius_is_free_user() ){
                 $show_team_skills['attributes'] = array(
                     'disabled' => true
                 );   
@@ -1402,7 +1428,7 @@ private function pagination_options( $box ) {
                 'desc' => __( 'Enter a number between 0 and 100.', 'wp-team-manager' ),
             );
             
-            if( tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial()){
+            if( Helper::freemius_is_free_user()){
                 $show_team_skills_percentage['attributes']['disabled'] = true;
             }
             

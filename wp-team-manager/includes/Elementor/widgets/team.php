@@ -1028,6 +1028,19 @@ class Team extends Widget_Base
 				'description' => __('Switch on to show team member other info(E-mail,Phone Number etc).', 'wp-team-manager'),
 			]
 		);
+		$this->add_control(
+			'other_info_link',
+			[
+				'label' => __( 'Links Mobile & Telephone', 'wp-team-manager' ),
+				'type' => \Elementor\Controls_Manager::SWITCHER,
+				'label_on' => __( 'Yes', 'wp-team-manager' ),
+				'label_off' => __( 'No', 'wp-team-manager' ),
+				'return_value' => 'yes',
+				'default' => 'yes',
+				'description' => Helper::showProFeatureLink('Pro Feature'),
+				'classes' => tmwstm_fs()->is_not_paying() && !tmwstm_fs()->is_trial() ? 'is-pro-feature' : '',
+			]
+		);
 
 		$this->add_control(
 			'other_info_elements',

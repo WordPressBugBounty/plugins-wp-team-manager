@@ -81,9 +81,14 @@ if (!empty($data)):
                 </div>
             <?php endif; ?>
  
-            <?php if (isset($settings["show_other_info"]) and "yes" == $settings["show_other_info"]): ?>
-                <?php echo wp_kses_post(Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'])); ?>
-            <?php endif; ?>
+             <?php if(!empty($settings['show_other_info']) && $settings['show_other_info'] === 'yes'): ?>
+                        <?php 
+                            $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
+                            echo wp_kses_post(
+                                Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'], $enable_links)
+                            ); 
+                        ?>
+                    <?php endif; ?>
             
             <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
                 <?php if (isset($settings['progress_bar_show']) && 'yes' === $settings['progress_bar_show']): ?>

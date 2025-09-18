@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.3.13';
+	const version = '2.3.14';
 
 	/**
 	 * Class init.
@@ -83,6 +83,9 @@ final class Wp_Team_Manager {
 			$controllers[] = ControllerClass\Admin::class;
 			$controllers[] = ControllerClass\AdminAssets::class;
 			$controllers[] = ControllerClass\AdminSettings::class;
+			$controllers[] = ControllerClass\Tools::class;
+			$controllers[] = ControllerClass\ImportExportTools::class;
+			$controllers[] = ControllerClass\MigrationTools::class;
 			$controllers[] = ControllerClass\GetHelp::class;
 		}
 
@@ -154,7 +157,8 @@ final class Wp_Team_Manager {
 		$upload_dir = wp_upload_dir();
 		$css_file   = $upload_dir['basedir'] . '/wp-team-manager/team.css';
 		if ( file_exists( $css_file ) ) {
-			wp_enqueue_style( 'team-generated', set_url_scheme( $upload_dir['baseurl'] ) . '/wp-team-manager/team.css', null, time() );
+			$version = filemtime( $css_file );
+			wp_enqueue_style( 'team-generated', set_url_scheme( $upload_dir['baseurl'] ) . '/wp-team-manager/team.css', null, $version );
 		}
 	}
 	

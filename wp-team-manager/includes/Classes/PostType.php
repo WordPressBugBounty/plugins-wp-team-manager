@@ -111,7 +111,7 @@ class PostType {
         );
 
         // Hide Taxonomy Conditionally
-        if (!in_array('team_groups', $tm_taxonomy_fields)) {
+        if (!in_array('team_groups', $tm_taxonomy_fields) && !taxonomy_exists('team_groups')) {
             register_taxonomy('team_groups', 'team_manager', $args);
         }
 
@@ -152,7 +152,7 @@ class PostType {
         );
 
         // Hide Taxonomy Conditionally
-        if (!in_array('team_designation', $tm_taxonomy_fields)) {
+        if (!in_array('team_designation', $tm_taxonomy_fields) && !taxonomy_exists('team_designation')) {
             register_taxonomy( 'team_designation', 'team_manager', $args );
         }
 
@@ -194,7 +194,7 @@ class PostType {
         );
 
         // Hide Taxonomy Conditionally
-        if (!in_array('team_department', $tm_taxonomy_fields)) {
+        if (!in_array('team_department', $tm_taxonomy_fields) && !taxonomy_exists('team_department')) {
             register_taxonomy( 'team_department', 'team_manager', $args );
         }
 
@@ -236,7 +236,7 @@ class PostType {
         );
 
         // Hide Taxonomy Conditionally
-        if (!in_array('team_genders', $tm_taxonomy_fields)) {
+        if (!in_array('team_genders', $tm_taxonomy_fields) && !taxonomy_exists('team_genders')) {
             register_taxonomy( 'team_genders', 'team_manager', $args );
         }
 

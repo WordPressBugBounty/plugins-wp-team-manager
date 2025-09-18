@@ -15,6 +15,26 @@ class Admin {
 		\add_filter( 'manage_dwl_team_generator_posts_custom_column', [ $this, 'shortocode_in_post_column_data' ], 10, 2 );
 
 		\add_action( 'save_post_team_manager', [ $this, 'clear_team_cache' ] );
+
+		\add_action( 'admin_head', [ $this, 'add_css' ] );
+	}
+
+	/**
+	 * Hides the migration menu item from the admin menu.
+	 *
+	 * Since the migration process is intended to be started from the notice
+	 * displayed in the post list table, we don't want to show the menu item.
+	 */
+	public function add_css() {
+			echo '<style>
+				#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-migration"],
+				#menu-posts-team_manager ul.wp-submenu li a[href*="team-ai-agents"],
+				#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-shortcode-generator"],
+				#menu-posts-team_manager ul.wp-submenu li a[href*="wtm-import-export"]
+				 {
+					display: none !important;
+				}
+			</style>';
 	}
 
 	/**

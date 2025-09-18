@@ -9,7 +9,7 @@
     left: 0;
     bottom: 0;
     width: 0;
-    height: 6px;
+    height: 2px;
     border-radius: 15px;
     background-color: #47479f;
     transition: .2s;
@@ -19,12 +19,12 @@
     padding: 16px 20px 11px;
     font-size: 16px;
     text-align: center;
-    color: #47479f;
+    color: #000;
     background-color: #fff;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border-bottom: 5px solid transparent;
-    opacity: .6;
+    border-bottom: 1px solid transparent;
+    opacity: .9;
     cursor: pointer;
     transition: .5s;
 }
@@ -41,6 +41,7 @@
 }
 .tab-item.active {
     opacity: 1;
+    color: #4f2edc;
 }
 .tm-tab-content-wrapper {
     padding: 15px;
@@ -153,18 +154,13 @@
 }
 #wpbody-content .wrap form .tm-tab-content-wrapper .tab-pane .tm-field-wrapper .tm-field textarea {
     width: 90%}
-/* @media (min-width: 1024px) { */
-    /* #wpbody-content .wrap form {
-        width: 57%;
-        display: inline-block;
-    } */
+
     #wpbody-content .wrap #wptm_support {
         margin-top: 0;
-        width: 43%;
+        width: 100%;
         align-items: start;
         justify-content: start;
     }
-/* } */
 .wp-team-box-content a {
     text-align: center;
     font-size: 15px;
@@ -180,13 +176,53 @@
     border: 2px solid #A259FF;
 }
 .wptm-settings-wrap{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: 2fr 1.3fr;
+    gap: 32px;
 }
-.wptm-settings-form{
-    width: 57%;
-    display: inline-block;
+.wptm-settings-form {
+    width: 100%;
+}
+.wptm-settings-form .form-table {
+    width: 100%;
+    max-width: 720px;
+}
+.wptm-settings-form .form-table th {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    padding: 0;
+}
+.wptm-settings-form .form-table td {
+    padding-bottom: 20px;
+}
+.wptm-settings-form input[type="text"],
+.wptm-settings-form input[type="url"],
+.wptm-settings-form input[type="number"],
+.wptm-settings-form textarea,
+.wptm-settings-form select {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.wptm-settings-form textarea {
+    min-height: 100px;
+}
+.wptm-settings-form .description,
+.wptm-settings-form .cmb2-metabox-description {
+    font-size: 13px;
+    color: #666;
+    margin-top: 4px;
+    display: block;
+}
+@media only screen and (max-width: 960px) {
+    .wptm-settings-wrap {
+        grid-template-columns: 1fr;
+    }
 }
 @media only screen and (max-width:1312px) {
     /* #wpbody-content .wrap form {
@@ -257,3 +293,301 @@
 #wpwrap .tm-tab-content-wrapper .team-satting-customize-field-labels p .regular-text{
     width: 230px;
 }
+
+.wtm-tools-hub-sections {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.wtm-tools-section {
+  flex: 1 1 350px;
+  min-width: 320px;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.wtm-tools-section h2 {
+  margin-top: 0;
+}
+
+.wtm-tools-section ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.wtm-tools-section ul li {
+  margin-bottom: 6px;
+  color: #666;
+}
+
+
+/* Improved styles added below */
+.wtm-tools-hub-sections {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.wtm-tools-section {
+  flex: 1 1 350px;
+  min-width: 320px;
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 24px;
+  border-radius: 8px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.wtm-tools-section:hover {
+  border-color: #A259FF;
+  box-shadow: 0 4px 15px rgba(162, 89, 255, 0.3);
+}
+
+.wtm-tools-card-icon {
+  font-size: 36px;
+  color: #555;
+  display: block;
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
+}
+
+.wtm-tools-section:hover .wtm-tools-card-icon {
+  color: #7a3fff;
+}
+
+.wtm-tools-section h2 {
+  margin-top: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.wtm-tools-section p {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.wtm-tools-section ul {
+  margin: 0 0 16px 20px;
+  padding: 0;
+  color: #666;
+}
+
+.wtm-tools-section .button {
+  background-color: #fff;
+    color: #000;
+    border: 2px solid #555;
+    text-transform: uppercase;
+    font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.wtm-tools-section .button:hover {
+  background-color: rgba(79, 46, 220, .9);
+  color: #fff;
+}
+
+/* Added improved CSS rules */
+.wptm-settings-wrap {
+  padding-top: 20px;
+  display: grid;
+  grid-template-columns: 2fr 1.3fr;
+  gap: 32px;
+}
+
+.wptm-settings-form .form-table th {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.wptm-settings-form .form-table td {
+  padding-bottom: 18px;
+}
+
+.wptm-settings-form input[type="text"],
+.wptm-settings-form input[type="number"],
+.wptm-settings-form textarea {
+  width: 100%;
+  max-width: 400px;
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+.wp-team-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 16px;
+}
+
+@media (max-width: 960px) {
+  .wp-team-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wp-team-document-box-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 6px;
+  transition: box-shadow 0.2s ease;
+}
+
+.wp-team-document-box-card:hover {
+  box-shadow: 0 0 0 2px #7c3aed44;
+}
+
+.wp-team-box-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.wp-team-box-icon .dashicons {
+  font-size: 20px;
+  color: #7c3aed;
+}
+
+.wp-team-admin-btn {
+  margin-top: 10px;
+  display: inline-block;
+  font-weight: 500;
+  color: #7c3aed;
+  border: 1px solid #7c3aed;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.wp-team-admin-btn:hover {
+  background: #7c3aed;
+  color: #fff;
+  text-decoration: none;
+}
+
+
+/* Fix tab pane width & centering */
+.tm-tab-content-wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Fix tab icon alignment */
+.tm-tabs {
+  align-items: flex-end;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+}
+
+.tab-icon {
+  font-size: 18px;
+  position: static;
+  line-height: 1;
+}
+.wptm-settings-form  #tm_social_size{
+        max-width: 80px;
+}
+.wptm-settings-form #tm_custom_css{
+    width: 100%;
+    max-width: 100%;
+}
+.wptm-settings-wrap #wptm_support .wp-team-document-box-card p {
+    margin: 0 0 5px 0;
+}
+.wptm-settings-wrap #wptm_support .wp-team-box-icon i {
+    color: #000;
+    margin: 0;
+}
+.wptm-settings-wrap .wp-team-box-content a {
+    color: #000;
+    border: 2px solid #000;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Migration */
+    .wtm-migration-wrapper {
+      width: 100%;
+    }
+
+    .wtm-migration-wrapper h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .wtm-migration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .wtm-migration-grid .wtm-card {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 16px;
+      border-radius: 6px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .wtm-migration-grid .wtm-card:hover {
+      box-shadow: 0 0 0 2px #7c3aed33;
+    }
+
+    .wtm-migration-grid .wtm-card .dashicons {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #7c3aed;
+    }
+
+    .wtm-migration-grid .wtm-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .wtm-migration-wrapper table.widefat {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+    }
+
+    .wtm-migration-wrapper table.widefat th {
+      background: #f9f9f9;
+      font-weight: 600;
+    }
+
+    .wtm-migration-wrapper table.widefat tbody tr:nth-child(odd) {
+      background-color: #fcfcfc;
+    }
+
+    .wtm-migration-wrapper table.widefat tbody tr:nth-child(even) {
+      background-color: #f0f0f0;
+    }
+
+    .wtm-migration-wrapper .notice {
+      margin-top: 16px;
+    }

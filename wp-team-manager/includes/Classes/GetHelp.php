@@ -53,311 +53,229 @@ namespace DWL\Wtm\Classes;
      */
     public function team_manager_setting_function() {
         ?>
-            <style>
-            /* Scoped styles for Get Help page */
-            .wtm-section{margin-bottom:20px}
-            .wtm-list{margin-left:20px}
-            .wtm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
-            .wtm-card{border:1px solid #ddd;padding:15px;border-radius:6px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-            .wtm-plugins{margin-top:15px}
-            .wtm-full{width:100%;max-width:100%;display:block}
-            /* Ensure the card section doesn't constrain width */
-            .wp-team-card-section.wtm-full{display:block}
-            .wp-team-card-section.wtm-full .wp-team-document-box{max-width:100%}
-            /* Wider, responsive grid for plugin cards */
-            .wtm-grid-plugins{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-            @media (min-width: 1200px){
-              .wtm-grid-plugins{grid-template-columns:repeat(3,minmax(280px,1fr))}
-            }
-            </style>
-            <section class="wp-team-get-help wp-team-header">
+        <?php if ( Helper::freemius_is_free_user() ) : ?>
+            <div class="wtm-upgrade-banner">
+                <p>
+                    <?php esc_html_e( 'You’re using WP Team Manager Free Version. Upgrade to Pro to unlock advanced team layouts, filtering, Elementor widgets, and more.', 'wp-team-manager' ); ?>
+                    <a href="<?php echo esc_url( tmwstm_fs()->get_upgrade_url() ); ?>" class="wtm-upgrade-link" target="_blank">
+                        🚀 <?php esc_html_e( 'Upgrade to Pro!', 'wp-team-manager' ); ?>
+                    </a>
+                </p>
+            </div>
+        <?php endif; ?>
+        <div class="wtm-tabs-wrapper">
+            <ul class="wtm-tab-nav">
+                <li class="active" data-tab="getting-started">🎥 <?php esc_html_e( 'Getting Started', 'wp-team-manager' ); ?></li>
+                <li data-tab="pro-features">🚀 <?php esc_html_e( 'Lite vs Pro', 'wp-team-manager' ); ?></li>
+                <li data-tab="recommended">🌟 <?php esc_html_e( 'Recommended', 'wp-team-manager' ); ?></li>
+            </ul>
 
-                <div class="wp-team-header-area">
-
-                    <div class="wp-team-container">
-                        <div class="wp-team-header-logo">
-                            <img src="<?php echo esc_url( 'https://wpteammanager.com/wp-content/uploads/2024/07/Logo.svg' )?>" alt="team logo">
-                            <span><?php echo TM_VERSION; ?></span>
-                        </div>
-                        <div class="wp-team-header-pro">
-                       <?php
-                        if(tmwstm_fs()-> is_not_paying() && !tmwstm_fs()->is_trial()){
-                            echo '<a class="wp-team-upgrade-button button button-primary" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">Upgrade to Pro !</a>';
-                        }
-                        ?>
+            <div class="wtm-tab-content active" id="getting-started">
+                <h2><?php esc_html_e( 'Welcome to WP Team Manager', 'wp-team-manager' ); ?> <?php echo esc_html( TM_VERSION ); ?></h2>
+                <p><?php esc_html_e( 'Thank you for installing. Watch the video below to get started.', 'wp-team-manager' ); ?></p>
+                <div class="wp-team-getting-started-wrapper">
+                    <div class="wp-team-responsive-iframe wp-team-video-section">
+                        <iframe width="800" height="450" src="https://www.youtube.com/embed/T-cF14_TxXE?feature=oembed" title="Intro" frameborder="0" allowfullscreen></iframe>
                     </div>
-                    </div>
-
-                    
-
-                </div>
-
-            </section>
-
-            <section class="wp-team-document-wrap">
-
-                <div class="wp-team-document-box">
-
-                    <div class="wp-team-box-icon">
-                        <i class="dashicons dashicons-media-document"></i>
-                        <h3 class="wp-team-main-title"><?php esc_html_e( 'Thank you for installing WP Team Manager Plugin', 'wp-team-manager' )?></h3>
-                    </div>
-
-                    <div class="wp-team-box-content">
-
-                        <div class="wp-team-video-wrapper">
-                            <div class="wp-team-video-col">
-                                <div class="wp-team-responsive-iframe">
-                                    <iframe width="800" height="450" src="<?php echo esc_url( 'https://www.youtube.com/embed/T-cF14_TxXE?feature=oembed' )?>" title="How To Create Team Page Using Elementor Addon With WordPress Team Members Showcase Plugin" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                </div>
-                            </div>
+                    <div class="wp-team-doc-card-grid">
+                        <div class="wtm-feature-box">
+                            <h4>📘 <?php esc_html_e( 'Getting Started', 'wp-team-manager' ); ?></h4>
+                            <p><?php esc_html_e( 'Step-by-step guide to help you quickly launch your first team section.', 'wp-team-manager' ); ?></p>
+                            <a href="https://wpteammanager.com/docs/team-manager/getting-started/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Open Guide', 'wp-team-manager' ); ?></a>
                         </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <section class="wp-team-document-wrap">
-
-                <div class="wp-team-document-box">
-
-                    <div class="wp-team-box-icon">
-                        <i class="dashicons dashicons-megaphone"></i>
-                        <h3 class="wp-team-main-title"><?php esc_html_e( 'Pro Features of the WP team manager plugin', 'wp-team-manager' )?></h3>
-                    </div>
-                    <div class="wp-team-features-box-wrapper">
-                        <ul class="wp-team-features-box wtm-list">
-                            <li><strong><?php esc_html_e('8+ Additional Layouts:', 'wp-team-manager'); ?></strong></li>
-                            <li>• <strong><?php esc_html_e('Grid Layouts (Elementor)', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Multiple grid styles for showcasing team members.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('List Layouts (Elementor)', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Stylish list-based layouts for better readability.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('Slider Layouts (Elementor)', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Over 4 dynamic slider designs for engaging displays.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('Isotope Layouts', 'wp-team-manager'); ?></strong> – <?php esc_html_e('2+ advanced filtering layouts for interactive team showcases.', 'wp-team-manager'); ?></li>
-                            <li><strong><?php esc_html_e('Customization & Features:', 'wp-team-manager'); ?></strong></li>
-                            <li>• <strong><?php esc_html_e('Customizable Bio Field Labels', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Edit and personalize team member bio labels.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('Ajax-Based Navigation', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Includes number pagination, load more button, and smooth transitions.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('Progress Bar for Skills', 'wp-team-manager'); ?></strong> – <?php esc_html_e('Showcase expertise with animated skill bars.', 'wp-team-manager'); ?></li>
-                            <li>• <strong><?php esc_html_e('Image Gallery Popup', 'wp-team-manager'); ?></strong> – <?php esc_html_e('View member images in a sleek lightbox on the details page.', 'wp-team-manager'); ?></li>
-                            <li><?php esc_html_e('…and many more powerful features to enhance your team display!', 'wp-team-manager'); ?></li>
-                        </ul>
-
-                    </div>
-
-                    <div class="wp-team-box-content">
-                        <?php if ( tmwstm_fs()->is_not_paying() && ! tmwstm_fs()->is_trial() ) : ?>
-                            <div class="wtm-upgrade-cta">
-                                <a href="<?php echo esc_url( tmwstm_fs()->get_upgrade_url() ); ?>" target="_blank" class="button button-primary wtm-cta-button">
-                                    <?php esc_html_e( 'Unlock All Pro Features', 'wp-team-manager' ); ?>
-                                </a>
-                                <p class="description"><?php esc_html_e( 'Includes 1 year of updates & support.', 'wp-team-manager' ); ?></p>
-                            </div>
-                        <?php else : ?>
-                            <div class="wtm-upgrade-cta">
-                                <span class="dashicons dashicons-yes-alt"></span>
-                                <strong><?php esc_html_e( 'You’re on Pro — thanks for supporting us!', 'wp-team-manager' ); ?></strong>
-                            </div>
-                        <?php endif; ?>     
-                    </div>
-
-                </div>
-
-            </section>
-        
-            <section class="wp-team-document-wrap">
-
-               <div class="wp-team-document-box wtm-section">
-
-                    <div class="wp-team-box-icon">
-                        <i class="dashicons dashicons-thumbs-up"></i>
-                        <h3 class="wp-team-box-title"><?php esc_html_e( 'Happy clients of WP Team Manager plugin', 'wp-team-manager' )?></h3>
-                    </div>
-
-                    <div class="wp-team-box-content">
-                        
-                        <div class="wp-team-testimonials">
-                            <div class="wp-team-testimonial">
-                                <p><?php esc_html_e( 'This plug in has helped many people through our website to get jobs and find what they need for their productions. 100% recommendable!!!', 'wp-team-manager' )?></p>
-                                <div class="wp-team-client-info">
-                                    <img src="<?php echo esc_url( 'https://secure.gravatar.com/avatar/093ca6f23cf63c3679a07a8c2bdd2a62?s=100&d=retro&r=g' )?>">
-                                    <div>
-                                        <div class="wp-team-star">
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                        </div>
-                                        <span class="wp-team-client-name"><?php esc_html_e( 'laescaleta', 'wp-team-manager' )?></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="wp-team-testimonial">
-                                <p><?php esc_html_e( 'Great plugin, and so easy to use. I have bought two but this one is much better. Buddy', 'wp-team-manager' )?></p>
-                                <div class="wp-team-client-info">
-                                    <img src="<?php echo esc_url( 'https://secure.gravatar.com/avatar/093ca6f23cf63c3679a07a8c2bdd2a62?s=100&d=retro&r=g' )?>">
-                                    <div>
-                                        <div class="wp-team-star">
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                            <i class="dashicons dashicons-star-filled"></i>
-                                        </div>
-                                        <span class="wp-team-client-name"><?php esc_html_e( 'Buddyr', 'wp-team-manager' )?></span>
-                                    </div>
-                                </div>
-                            </div>
-
+                        <div class="wtm-feature-box">
+                            <h4>👥 <?php esc_html_e( 'Join the Community', 'wp-team-manager' ); ?></h4>
+                            <p><?php esc_html_e( 'Connect with other users, ask questions, share feedback, and get help directly from our team.', 'wp-team-manager' ); ?></p>
+                            <a href="https://www.facebook.com/groups/1652621408980514" target="_blank" class="button button-secondary"><?php esc_html_e( 'Join on Facebook', 'wp-team-manager' ); ?></a>
                         </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <section class="wp-team-document-wrap wp-team-get-help-documention">
-                <div class="wp-team-card-section wtm-section">
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-media-document"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Documentation', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Step‑by‑step guides to install, configure, and customize WP Team Manager.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/team-manager/getting-started/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Open Docs', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
+                        <div class="wtm-feature-box">
+                            <h4>💡 <?php esc_html_e( 'FAQ', 'wp-team-manager' ); ?></h4>
+                            <p><?php esc_html_e( 'Get answers to common questions regarding features, compatibility, and usage.', 'wp-team-manager' ); ?></p>
+                            <a href="https://wpteammanager.com/faq/" target="_blank" class="button button-secondary"><?php esc_html_e( 'View FAQs', 'wp-team-manager' ); ?></a>
                         </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-video-alt3"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Video Tutorials', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Quick videos covering layouts, Elementor widgets, and shortcode builder.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/videos/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Watch Videos', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-list-view"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Changelog', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'See what’s new, improved, and fixed in each release.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wordpress.org/plugins/wp-team-manager/#developers' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'View Changelog', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-randomize"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Roadmap', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Explore upcoming features including AI Agents, Telegram/Slack, and advanced filtering.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/roadmap/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'View Roadmap', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-editor-help"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'FAQ', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Answers for common questions about setup, templates, and performance.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/faq/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Read FAQ', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-editor-code"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Developer Hooks', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content">
-                                <p><?php esc_html_e( 'Actions & filters for extending layouts, queries, and templates.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://wpteammanager.com/docs/developers/hooks/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Browse Hooks', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="wp-team-document-box wp-team-document-box-card">
-                            <div class="wp-team-box-icon">
-                                <i class="dashicons dashicons-sos"></i>
-                                <h3 class="wp-team-box-title"><?php esc_html_e( 'Need Help?', 'wp-team-manager' ); ?></h3>
-                            </div>
-                            <div class="wp-team-box-content wp-team-need-help">
-                                <p><?php esc_html_e( 'Stuck with something? Create a support ticket and we’ll help you out.', 'wp-team-manager' ); ?></p>
-                                <a href="<?php echo esc_url( 'https://dynamicweblab.com/submit-a-request/?utm_source=wordpress&utm_medium=settings-card' ); ?>" target="_blank" rel="noopener" class="wp-team-admin-btn">
-                                    <?php esc_html_e( 'Get Support', 'wp-team-manager' ); ?>
-                                </a>
-                            </div>
-                        </div>
-                </div>
-                
-            </section>
-
-            <section class="wp-team-document-wrap">
-                <div class="wp-team-card-section wtm-section wtm-full">
-                    <div class="wp-team-document-box wp-team-document-box-card">
-                        <div class="wp-team-box-icon">
-                            <i class="dashicons dashicons-admin-plugins"></i>
-                            <h3 class="wp-team-box-title"><?php esc_html_e( 'More Plugins from Dynamic Web Lab', 'wp-team-manager' )?></h3>
-                        </div>
-                        <div class="wp-team-box-content">
-                            <div class="wp-team-plugins-grid wtm-grid-plugins">
-                                <?php
-                                $plugins = apply_filters( 'wtm_gethelp_plugins', [
-                                    [
-                                        'title' => 'SearchJet Instant Search',
-                                        'desc'  => 'Lightning-fast AJAX search for WordPress & WooCommerce.',
-                                        'link'  => 'https://wordpress.org/plugins/searchjet-instant-search/',
-                                    ],
-                                    [
-                                        'title' => 'Dynamic Product Categories Design',
-                                        'desc'  => 'Beautiful, customizable WooCommerce category layouts.',
-                                        'link'  => 'https://wordpress.org/plugins/dynamic-product-categories-design/',
-                                    ],
-                                    [
-                                        'title' => 'Lean GA4 Tracker',
-                                        'desc'  => 'Lightweight Google Analytics 4 tracking for WordPress.',
-                                        'link'  => 'https://wordpress.org/plugins/lean-ga4-tracker/',
-                                    ],
-                                ] );
-                                foreach ( $plugins as $plugin ) : ?>
-                                    <div class="wp-team-plugin-card wtm-card">
-                                        <h4><?php echo esc_html( $plugin['title'] ); ?></h4>
-                                        <p><?php echo esc_html( $plugin['desc'] ); ?></p>
-                                        <a href="<?php echo esc_url( $plugin['link'] ); ?>" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'View Plugin', 'wp-team-manager' ); ?></a>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                           <div class="wtm-plugins">
-                                <a href="https://profiles.wordpress.org/maidulcu/#content-plugins" target="_blank" class="wp-team-admin-btn"><?php esc_html_e( 'See all our plugins', 'wp-team-manager' ); ?></a>
-                            </div>
+                        <div class="wtm-feature-box">
+                            <h4>📝 <?php esc_html_e( 'Changelog', 'wp-team-manager' ); ?></h4>
+                            <p><?php esc_html_e( 'See what’s new in each version and track our plugin\'s development progress.', 'wp-team-manager' ); ?></p>
+                            <a href="https://wordpress.org/plugins/wp-team-manager/#developers" target="_blank" class="button button-secondary"><?php esc_html_e( 'View Log', 'wp-team-manager' ); ?></a>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-        <?php 
-    } 
+            <div class="wtm-tab-content" id="pro-features">
+                <h2><?php esc_html_e( 'Lite vs Pro Comparison', 'wp-team-manager' ); ?></h2>
+                <p><?php esc_html_e( 'Explore the full list of features available in the free and Pro version of WP Team Manager.', 'wp-team-manager' ); ?></p>
+                <div class="wp-team-comparison-wrapper">
+                  <table class="wp-team-comparison-table">
+                    <thead>
+                      <tr>
+                        <th><?php esc_html_e( 'FEATURES', 'wp-team-manager' ); ?></th>
+                        <th><?php esc_html_e( 'Lite', 'wp-team-manager' ); ?></th>
+                        <th><?php esc_html_e( 'Pro', 'wp-team-manager' ); ?></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><?php esc_html_e( 'Team Layouts (Grid, List, Slider, Isotope, etc.)', 'wp-team-manager' ); ?></td>
+                        <td>✅</td>
+                        <td><?php esc_html_e( '✅ + 8+', 'wp-team-manager' ); ?></td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Unlimited Team Member Groups', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Custom Bio Field Labels', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Skills Progress Bar', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Gallery Lightbox Popup', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'vCard Download Support', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Ajax-Based Filtering & Pagination', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Elementor Widgets', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( 'Priority Support', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                      <tr>
+                        <td><?php esc_html_e( '...and more', 'wp-team-manager' ); ?></td>
+                        <td>❌</td>
+                        <td>✅</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="margin-top: 20px;">
+                  <?php if ( Helper::freemius_is_free_user() ) : ?>
+                      <a href="<?php echo esc_url( tmwstm_fs()->get_upgrade_url() ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Upgrade to Pro', 'wp-team-manager' ); ?></a>
+                  <?php else : ?>
+                      <span class="dashicons dashicons-yes-alt"></span>
+                      <strong><?php esc_html_e( 'You’re on Pro — thanks for supporting us!', 'wp-team-manager' ); ?></strong>
+                  <?php endif; ?>
+                  <p style="margin-top:10px;"><a href="https://wpteammanager.com/all-features/" target="_blank"><?php esc_html_e( 'See full list of features', 'wp-team-manager' ); ?> &rarr;</a></p>
+                </div>
+            </div>
+
+            <div class="wtm-tab-content" id="recommended">
+                <h2><?php esc_html_e( 'Recommended Plugins', 'wp-team-manager' ); ?></h2>
+                <p><?php esc_html_e( 'Here are some plugins and tools we recommend to enhance your site:', 'wp-team-manager' ); ?></p>
+                <div class="wtm-feature-grid">
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">💬</div>
+                        <h4><?php esc_html_e( 'Chat Notifications for Telegram with CF7', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Send Telegram messages when users submit Contact Form 7 forms.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/chat-notifications-for-telegram-cf7/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">📊</div>
+                        <h4><?php esc_html_e( 'Dynamic Product Category Grid, Slider for WooCommerce', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Show WooCommerce categories in stylish grids and sliders.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/product-category-grid-slider-for-woocommerce/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">📈</div>
+                        <h4><?php esc_html_e( 'Lean GA4 Tracker', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Lightweight Google Analytics 4 tracking plugin.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/lean-ga4-tracker/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">🧱</div>
+                        <h4><?php esc_html_e( 'Post and Product Grid for Elementor', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Create blog and product layouts with Elementor.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/post-product-grid-elementor/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">📖</div>
+                        <h4><?php esc_html_e( 'Quran in Text and Audio', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Read and listen to the Quran with ease.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/quran-in-text-and-audio/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">🎥</div>
+                        <h4><?php esc_html_e( 'Review Showcase for TikTok', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Embed and display TikTok video reviews.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/review-showcase-for-tiktok/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">💾</div>
+                        <h4><?php esc_html_e( 'Save & Continue for Contact Form 7', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Enable draft saving for Contact Form 7 submissions.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/save-continue-cf7/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">🔎</div>
+                        <h4><?php esc_html_e( 'SearchJet – AI-Powered Instant Search', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Deliver fast, AI-enhanced search for WooCommerce and WordPress.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/searchjet/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">📌</div>
+                        <h4><?php esc_html_e( 'Social Pin & Media Showcase', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Showcase Pinterest pins and media in a beautiful layout.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/social-pin-media-showcase/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                    <div class="wtm-feature-box">
+                        <div class="wtm-feature-icon">👥</div>
+                        <h4><?php esc_html_e( 'Team Manager – Team Showcase with Elementor', 'wp-team-manager' ); ?></h4>
+                        <p><?php esc_html_e( 'Showcase your team with grids, sliders, tables, and Elementor.', 'wp-team-manager' ); ?></p>
+                        <a href="https://wordpress.org/plugins/team-manager/" target="_blank" class="button button-secondary"><?php esc_html_e( 'Read more', 'wp-team-manager' ); ?> &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wtm-footer">
+            <p>
+                <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="https://dynamicweblab.com/"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
+            </p>
+            <p>
+                <?php esc_html_e( 'Connect with us on', 'wp-team-manager' ); ?>
+                <a href="https://www.facebook.com/dynamicweblab" target="_blank" class="wtm-footer-icon dashicons dashicons-facebook"></a>
+                <a href="https://profiles.wordpress.org/maidulcu/#content-plugins" target="_blank" class="wtm-footer-icon dashicons dashicons-wordpress"></a>
+                <a href="https://www.youtube.com/@DynamicWebLab" target="_blank" class="wtm-footer-icon dashicons dashicons-video-alt3"></a>
+            </p>
+            <p class="wtm-footer-rating">
+                <?php esc_html_e( 'Enjoying WP Team Manager?', 'wp-team-manager' ); ?>
+                <?php esc_html_e( 'Please rate us 5⭐ on', 'wp-team-manager' ); ?>
+                <a href="https://wordpress.org/support/plugin/wp-team-manager/reviews/#new-post" target="_blank"><?php esc_html_e( 'WordPress.org', 'wp-team-manager' ); ?></a> 🙏
+            </p>
+            <p class="wtm-footer-version">WP Team Manager <?php echo esc_html( TM_VERSION ); ?></p>
+        </div>
+
+        <script>
+        document.querySelectorAll('.wtm-tab-nav li').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.wtm-tab-nav li').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.wtm-tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+        </script>
+        <?php
+    }
 
 }
