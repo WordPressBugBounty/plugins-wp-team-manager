@@ -98,7 +98,7 @@ $context = isset($settings['context']) ? $settings['context'] : '';
                                                           <?php 
                                                  // Trim to 20 words, default is escaped output
                                                     $trimmed_bio = wp_trim_words( $short_bio, 20, '...' );
-                                                 echo apply_filters('wtm_team_short_bio_output', esc_html($trimmed_bio), $short_bio, $teamInfo->ID); ?>
+                                                    echo apply_filters('wtm_team_short_bio_output', esc_html($trimmed_bio), $short_bio, $teamInfo->ID); ?>
 
                                                             <?php 
                                                             $post_content = !empty($teamInfo->post_excerpt) 

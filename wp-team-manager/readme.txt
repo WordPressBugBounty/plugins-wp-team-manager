@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
 Requires at least: 6.2.0
 Tested up to: 6.7.2
-Stable tag: 2.3.15
+Stable tag: 2.3.16
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -254,6 +254,9 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 12. AI Agent
 
 == Changelog ==
+
+= 2.3.16 =
+* Add html support for short bio on list layout
 
 = 2.3.15 =
 * Performance: Improved Telegram notification performance by using non-blocking requests.

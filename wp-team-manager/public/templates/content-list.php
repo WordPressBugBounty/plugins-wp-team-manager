@@ -20,8 +20,7 @@ if(!empty($data)){
       
       // Sanitize the retrieved post meta values
       $job_title = isset( $post_meta['tm_jtitle'][0] ) ? sanitize_text_field( $post_meta['tm_jtitle'][0] ) : '';
-      $short_bio = isset( $post_meta['tm_short_bio'][0] ) ? sanitize_textarea_field( $post_meta['tm_short_bio'][0] ) : '';
-      
+      $short_bio = $post_meta['tm_short_bio'][0] ?? '';
       ?>
 
           <div <?php post_class('team-member-info-wrap m-0 p-2 wtm-col-12'); ?>>
@@ -43,7 +42,7 @@ if(!empty($data)){
             <?php endif;?>
             <div class="team-short-bio">
             <?php if( !empty( $short_bio ) ): ?>
-              <?php echo esc_html( $short_bio ); ?>
+              <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $teamInfo->ID); ?>
               <?php else: ?>
                 <?php 
                     $post_content = !empty($teamInfo->post_excerpt) 
