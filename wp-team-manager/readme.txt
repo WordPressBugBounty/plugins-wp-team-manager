@@ -2,9 +2,9 @@
 Contributors: maidulcu,dynamicweblab
 Donate link: https://wpteammanager.com/
 Tags: team slider,our team,team,team members,team showcase
-Requires at least: 6.0.0
+Requires at least: 6.2.0
 Tested up to: 6.7.2
-Stable tag: 2.3.14
+Stable tag: 2.3.15
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -255,7 +255,12 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 
 == Changelog ==
 
+= 2.3.15 =
+* Performance: Improved Telegram notification performance by using non-blocking requests.
+* Security: Popup team id validation.
+
 = 2.3.14 =
+* UI Improvements: reorganized settings panels for clearer usability.
 * UI Improvement: Separated Toolbox tabs into "Getting Started", "Recommended", "Changelog", and "Join the Community".
 * Migration Tool (Free): Added a basic migration tool to import team members from other plugins.
 * Import/Export (Free): Added support for importing and exporting team members via CSV.
@@ -263,6 +268,7 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 * Freemius Integration: Improved handling of free vs. pro user restrictions on individual fields.
 * Settings UI: Added toggle UI for enabling/disabling certain features like Debug Log and AI Agents.
 * Code Cleanup: Removed inline styles and replaced with consistent CSS class-based styling.
+* Resolved CSS conflicts with grid layout on specific themes.
 
 = 2.3.13 =
 * Added 4 new Pro layouts for the Slider.

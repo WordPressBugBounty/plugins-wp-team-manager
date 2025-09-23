@@ -30,7 +30,7 @@ if (!empty($data['posts'])) {
 
         // Retrieve and sanitize values from the $post_meta array
         $job_title = isset($post_meta['tm_jtitle'][0]) ? sanitize_text_field($post_meta['tm_jtitle'][0]) : '';
-        $short_bio = isset($post_meta['tm_short_bio'][0]) ? sanitize_textarea_field($post_meta['tm_short_bio'][0]) : '';
+        $short_bio = $post_meta['tm_short_bio'][0] ?? '';
 
         ?>
 
@@ -56,7 +56,7 @@ if (!empty($data['posts'])) {
                 <?php if (!$hide_short_bio_control): ?>
                     <div class="team-short-bio">
                         <?php if( !empty( $short_bio ) ): ?>
-                            <?php echo esc_html( $short_bio ); ?>
+                          <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $teamInfo->ID); ?>
                         <?php else: ?>
                             <?php 
                                 $post_content = !empty($teamInfo->post_excerpt) 

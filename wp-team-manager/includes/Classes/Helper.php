@@ -52,7 +52,7 @@ class Helper {
      * @return bool True if user is free (not paying, not trial), false otherwise.
      */
     public static function freemius_is_free_user() {
-        return true;
+       
         return function_exists('tmwstm_fs')
             && tmwstm_fs()->is_not_paying()
             && ! tmwstm_fs()->is_trial();
@@ -1561,6 +1561,31 @@ class Helper {
                 return sanitize_text_field( $raw );
         }
     }
+
+
+public static function getTaxonomies()
+{
+    // Base taxonomy options
+    $options = [
+        'team_groups'     => __('Group', 'wp-team-manager'),
+        'team_department' => __('Department', 'wp-team-manager'),
+        'team_genders'    => __('Gender', 'wp-team-manager'),
+        'team_designation'=> __('Designation', 'wp-team-manager'),
+    ];
+
+    // Load hidden taxonomies from option (expects array of slugs)
+    $hidden_slugs = get_option('tm_taxonomy_fields') ?: [];
+
+    if (!empty($hidden_slugs) && is_array($hidden_slugs)) {
+        foreach ($hidden_slugs as $slug) {
+            unset($options[$slug]); // remove matching entries
+        }
+    }
+
+    return $options;
+}
+
+
 
     
 }

@@ -85,7 +85,7 @@ class Telegram_Agent {
             'headers' => [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
             'body'    => $body,
             'timeout' => 12,
-            'blocking'=> true,
+            'blocking'=> false,
         ] );
 
         if ( is_wp_error( $response ) ) {

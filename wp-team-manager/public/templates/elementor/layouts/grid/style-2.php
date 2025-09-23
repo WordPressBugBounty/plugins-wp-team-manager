@@ -27,7 +27,7 @@ if (!empty($data)):
     foreach ($data as $key => $teamInfo):
         $meta = get_post_meta( $teamInfo->ID );
         $job_title = isset($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
-        $short_bio = isset($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+        $short_bio = $meta['tm_short_bio'][0] ?? '';
         ?>
         <div <?php post_class("team-member-info-wrap " . esc_attr($settings["bootstrap_class"])); ?>>
             <div class="team-member-info-content"> 
@@ -68,7 +68,7 @@ if (!empty($data)):
                     <?php if ("yes" === $show_shortBio): ?>
                     <div class="team-short-bio">
                     <?php if (!empty($short_bio) && "yes" == $settings["team_show_short_bio"]): ?>
-                        <?php echo esc_html($short_bio); ?>
+                       <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $teamInfo->ID); ?>
                     <?php else: ?>
                         <?php 
                             $post_content = !empty($teamInfo->post_excerpt) 

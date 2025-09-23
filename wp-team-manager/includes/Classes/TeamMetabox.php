@@ -50,7 +50,7 @@ private function pagination_options( $box ) {
         'none'     => esc_html__( 'None', 'wp-team-manager' ),
         'numbers'  => esc_html__( 'Numbers', 'wp-team-manager' ),
         'ajax'     => esc_html__( 'Ajax (Load More)', 'wp-team-manager' ),
-        'infinite' => esc_html__( 'Infinite Scroll', 'wp-team-manager' ),
+        // 'infinite' => esc_html__( 'Infinite Scroll', 'wp-team-manager' ),
     );
 
     $is_locked   = Helper::freemius_is_free_user();
@@ -884,15 +884,15 @@ private function pagination_options( $box ) {
         $dwl_team_metabox->add_field( $hide_short_bio );
 
 
-        $dwl_team_metabox->add_field( 
-			array(
-				'name'    => __( 'Show Pagination', 'wp-team-manager' ),
-                'desc' => 'Show/hide',
-				'id'      => $this->prefix . 'show_pagination',
-				'type'    => 'checkbox',
-                'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
-			)
-		);
+        // $dwl_team_metabox->add_field( 
+		// 	array(
+		// 		'name'    => __( 'Show Pagination', 'wp-team-manager' ),
+        //         'desc' => 'Show/hide',
+		// 		'id'      => $this->prefix . 'show_pagination',
+		// 		'type'    => 'checkbox',
+        //         'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
+		// 	)
+		// );
         
         // NEW: add Pagination & Loading (CMB2) fields
         $this->pagination_options( $dwl_team_metabox );

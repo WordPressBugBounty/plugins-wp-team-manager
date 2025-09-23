@@ -65,12 +65,17 @@ class AdminAssets {
 	
 	public function wtm_admin_preview(){
 
-		if ( !wp_verify_nonce($_POST['nonce'], 'wtm-setting-page') ){ 
-			die('Permission Denied.'); 
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wtm-setting-page' ) ) {
+			wp_die( esc_html__( 'Permission Denied.', 'wp-team-manager' ), 403 );
 		}
 
-		if(isset($_POST['shortcode'])){
-			echo do_shortcode(stripslashes($_POST['shortcode']));
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Insufficient permissions.', 'wp-team-manager' ), 403 );
+		}
+
+		if ( isset( $_POST['shortcode'] ) ) {
+			$shortcode = wp_kses_post( wp_unslash( $_POST['shortcode'] ) );
+			echo do_shortcode( $shortcode );
 		}
 		
 		wp_die();

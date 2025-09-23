@@ -53,7 +53,7 @@ if(!empty($data)):
 
                             $meta = get_post_custom($teamInfo->ID);
                             $job_title = !empty($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
-                            $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+                            $short_bio = $meta['tm_short_bio'][0] ?? '';
                             $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                             $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
                                 
@@ -126,7 +126,11 @@ if(!empty($data)):
                                             <div class="team-col bio dwl-table-data-short-bio">
                                                 <div class="team-short-bio">
                                                     <?php if( !empty( $short_bio ) && 'yes'== $settings['team_show_short_bio'] ): ?>
-                                                        <?php echo esc_html( wp_trim_words( $short_bio, 20, '...' ) ); ?>
+                                                       <?php 
+                                                 // Trim to 20 words, default is escaped output
+                                                    $trimmed_bio = wp_trim_words( $short_bio, 20, '...' );
+                                                 echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($trimmed_bio), $short_bio, $teamInfo->ID); ?>
+                                               
                                                     <?php else: ?>
                                                         <?php 
                                                         $post_content = !empty($teamInfo->post_excerpt) 

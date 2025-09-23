@@ -144,12 +144,7 @@ class Isotope extends \Elementor\Widget_Base
 				'label' => esc_html__('Taxonomies', 'wp-team-manager'),
 				'type' => Controls_Manager::SELECT,
 				'default' => 'team_groups',
-				'options' => [
-					'team_groups' => __('Group', 'wp-team-manager'),
-					'team_department' => __('Department', 'wp-team-manager'),
-					'team_genders' => __('Gender', 'wp-team-manager'),
-					'team_designation' => __('Designation', 'wp-team-manager'),
-				],
+				'options' => Helper::getTaxonomies(),
 			]
 		);
 

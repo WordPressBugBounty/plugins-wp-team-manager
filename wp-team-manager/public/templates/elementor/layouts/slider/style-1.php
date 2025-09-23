@@ -35,7 +35,7 @@ if ( ! empty( $data ) ) :
 
         $meta = get_post_meta( $team->ID );
         $job_title = isset($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
-        $short_bio = isset($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+        $short_bio = $meta['tm_short_bio'][0] ?? '';
 
     ?>
         <div <?php post_class( 'team-member-info-wrap' ); ?>>
@@ -82,7 +82,7 @@ if ( ! empty( $data ) ) :
                     <?php if ( 'yes' === $show_short_bio ) : ?>
                         <div class="team-short-bio">
                             <?php if ( ! empty( $short_bio ) && 'yes' === $settings['team_show_short_bio'] ) : ?>
-                                <?php echo esc_html( $short_bio ); ?>
+                                <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $teamInfo->ID); ?>
                             <?php else : ?>
                                 <?php 
                                 $post_content = !empty($team->post_excerpt) 
@@ -99,7 +99,7 @@ if ( ! empty( $data ) ) :
                         <?php 
                             $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
                             echo wp_kses_post(
-                                Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'], $enable_links)
+                                Helper::get_team_other_infos($team->ID, $settings['other_info_elements'], $enable_links)
                             ); 
                         ?>
                     <?php endif; ?>

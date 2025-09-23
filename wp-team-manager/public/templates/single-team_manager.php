@@ -29,7 +29,8 @@ $selected = Helper::generate_single_fields('frontend');
             <?php while (have_posts()) : the_post();
                 $post_id   = absint(get_the_ID()); // Ensure post ID is an integer
                 $job_title = esc_html(get_post_meta($post_id, 'tm_jtitle', true)); // Escape early
-                $short_bio = wp_kses_post(get_post_meta($post_id, 'tm_short_bio', true)); 
+                //$short_bio = wp_kses_post(get_post_meta($post_id, 'tm_short_bio', true)); 
+                $short_bio = get_post_meta($post_id, 'tm_short_bio', true) ?? '';
                 $long_bio = Helper::get_wysiwyg_output('tm_long_bio', $post_id);
 
                 do_action('wtm_before_team_member_content', $post_id);
@@ -52,7 +53,7 @@ $selected = Helper::generate_single_fields('frontend');
 
                         <?php if (!empty($short_bio)) : ?>
                             <div class="team-short-bio">
-                                <?php echo $short_bio; ?>
+                                <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $post_id); ?>
                             </div>
                         <?php endif; ?>
 

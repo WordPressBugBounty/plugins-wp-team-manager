@@ -45,7 +45,7 @@ if(!empty($data['posts'])): ?>
                         
                         $meta = get_post_custom($teamInfo->ID);
                         $job_title = !empty($meta['tm_jtitle'][0]) ? sanitize_text_field($meta['tm_jtitle'][0]) : '';
-                        $short_bio = !empty($meta['tm_short_bio'][0]) ? sanitize_textarea_field($meta['tm_short_bio'][0]) : '';
+                        $short_bio = $meta['tm_short_bio'][0] ?? '';
                         $tm_email = !empty($meta['tm_email'][0]) ? sanitize_email($meta['tm_email'][0]) : '';
                         $tm_mobile = !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '';
                     ?>
@@ -82,7 +82,10 @@ if(!empty($data['posts'])): ?>
                             <td class="dwl-table-data">
                                 <div class="team-short-bio">
                                     <?php if (!$hide_short_bio_control): ?>
-                                        <?php echo esc_html(wp_trim_words($short_bio, 20, '...')); ?>
+                                       <?php 
+                                                 // Trim to 20 words, default is escaped output
+                                                    $trimmed_bio = wp_trim_words( $short_bio, 20, '...' );
+                                                 echo apply_filters('wtm_team_short_bio_output', esc_html($trimmed_bio), $short_bio, $teamInfo->ID); ?>
                                     <?php endif; ?>
                                 </div>
                             </td>
