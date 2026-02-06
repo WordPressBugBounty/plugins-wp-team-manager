@@ -20,6 +20,22 @@ namespace DWL\Wtm\Classes;
     protected function init(){
         \add_action('admin_menu', array( $this, 'tm_create_menu' ) );
         \add_action( 'admin_init', array( $this, 'page_init' ) );
+        \add_action( 'update_option_tm_taxonomy_designation_enable', array( $this, 'update_taxonomy_fields' ) );
+        \add_action( 'update_option_tm_taxonomy_department_enable', array( $this, 'update_taxonomy_fields' ) );
+        \add_action( 'update_option_tm_taxonomy_gender_enable', array( $this, 'update_taxonomy_fields' ) );
+        \add_action( 'update_option_tm_taxonomy_groups_enable', array( $this, 'update_taxonomy_fields' ) );
+        \add_action( 'init', array( $this, 'maybe_flush_rewrite_rules' ) );
+    }
+
+    /**
+     * Flush rewrite rules if the transient flag is set
+     * This defers the expensive flush operation instead of running it on every settings save
+     */
+    public function maybe_flush_rewrite_rules() {
+        if ( get_transient( 'tm_flush_rewrite_rules' ) ) {
+            flush_rewrite_rules();
+            delete_transient( 'tm_flush_rewrite_rules' );
+        }
     }
 
     /**
@@ -176,6 +192,12 @@ namespace DWL\Wtm\Classes;
                 </div>
             </div>
         </div>
+
+        <div class="wtm-footer">
+            <p>
+                <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="https://dynamicweblab.com/"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
+            </p>
+        </div>
     <?php 
     } 
 
@@ -188,31 +210,36 @@ namespace DWL\Wtm\Classes;
            'tm_social_size', 
            array( $this, 'tm_social_sanitize' ) // Add sanitization
        );
-        register_setting( 'tm-settings-group', 'tm_link_new_window' );
-        register_setting( 'tm-settings-group', 'single_team_member_view' );
+        register_setting( 'tm-settings-group', 'tm_link_new_window', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_dashboard_mode', array( $this, 'sanitize_dashboard_mode' ) );
+        register_setting( 'tm-settings-group', 'single_team_member_view', array( $this, 'sanitize_pro_checkbox' ) );
         register_setting( 
             'tm-settings-group', 
             'tm_custom_css', 
             array( $this, 'tm_custom_css_sanitize' ) // Add sanitization
         );
-        register_setting( 'tm-settings-group', 'old_team_manager_style' );
-        register_setting( 'tm-settings-group', 'tm_single_fields');
-        register_setting( 'tm-settings-group', 'tm_taxonomy_fields');
-        register_setting( 'tm-settings-group', 'tm_custom_template' );
-        register_setting( 'tm-settings-group', 'tm_single_team_lightbox' );
+        register_setting( 'tm-settings-group', 'old_team_manager_style', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_single_fields', array( $this, 'sanitize_array_of_text' ) );
+        register_setting( 'tm-settings-group', 'tm_taxonomy_fields', array( $this, 'tm_taxonomy_fields_sanitize' ) );
+        register_setting( 'tm-settings-group', 'tm_taxonomy_designation_enable', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_taxonomy_department_enable', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_taxonomy_gender_enable', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_taxonomy_groups_enable', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_custom_template', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_single_team_lightbox', array( $this, 'sanitize_pro_checkbox' ) );
         register_setting( 
             'tm-settings-group', 
             'tm_vcard_btn_text', 
             array( $this, 'tm_vcard_btn_sanitize' ) // Add sanitization
         );
-        register_setting( 'tm-settings-group', 'tm_single_gallery_column' );
+        register_setting( 'tm-settings-group', 'tm_single_gallery_column', array( $this, 'sanitize_text' ) );
         register_setting( 
             'tm-settings-group', 
             'tm_slug',
             array( $this, 'tm_slug_sanitize' ) // Sanitize
         );
         
-        register_setting( 'tm-settings-group', 'team_image_size_change' );
+        register_setting( 'tm-settings-group', 'team_image_size_change', array( $this, 'sanitize_pro_text' ) );
         register_setting( 
             'tm-settings-group', 
             'tm_custom_labels', 
@@ -229,6 +256,30 @@ namespace DWL\Wtm\Classes;
         register_setting( 'tm-settings-group', 'tm_a11y_focus_ring', array( $this, 'sanitize_checkbox' ) );
         register_setting( 'tm-settings-group', 'tm_a11y_list_roles', array( $this, 'sanitize_checkbox' ) );
         register_setting( 'tm-settings-group', 'tm_seo_jsonld_enable', array( $this, 'sanitize_checkbox' ) );
+        
+        // Additional accessibility settings
+        register_setting( 'tm-settings-group', 'tm_alt_text', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_keyboard_nav', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_screen_reader', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_high_contrast', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_focus_style', array( $this, 'sanitize_text' ) );
+        
+        // SEO settings (Pro features)
+        register_setting( 'tm-settings-group', 'tm_schema_markup', array( $this, 'sanitize_pro_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_meta_description', array( $this, 'sanitize_pro_text' ) );
+        
+        // Performance settings
+        register_setting( 'tm-settings-group', 'tm_lazy_loading', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_preload_images', 'absint' );
+        
+        // Debug settings
+        register_setting( 'tm-settings-group', 'wtm_debug_log', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'wtm_debug_log_path', array( $this, 'sanitize_text' ) );
+        
+        // Taxonomy settings
+        register_setting( 'tm-settings-group', 'tm_show_taxonomy_filter', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_show_taxonomy_count', array( $this, 'sanitize_checkbox' ) );
+        register_setting( 'tm-settings-group', 'tm_hierarchical_taxonomy', array( $this, 'sanitize_checkbox' ) );
 
         // Accessibility & SEO section and fields
         add_settings_section(
@@ -354,6 +405,11 @@ namespace DWL\Wtm\Classes;
     }
 
     public function tm_custom_labels_sanitize( $input ) {
+        // Pro feature: Return empty array if user doesn't have pro access
+        if ( ! Helper::is_pro_active() ) {
+            return array();
+        }
+
         $sanitized = array();
         if ( is_array( $input ) ) {
             foreach ( $input as $key => $value ) {
@@ -368,12 +424,17 @@ namespace DWL\Wtm\Classes;
      *
      * This function strips unwanted characters and ensures the path is a safe string.
      *
-     * @param string $input The input string for the log path.
+     * @param string|null $input The input string for the log path.
      *
      * @return string The sanitized log path.
      */
     public function tm_log_path_sanitize( $input ) {
-        $input = trim( $input );
+        // Handle null values to prevent PHP 8.1+ deprecation warnings
+        if ( $input === null ) {
+            return '';
+        }
+        
+        $input = trim( (string) $input );
         // Remove any tags or special characters except basic path characters
         $input = wp_strip_all_tags( $input );
         // Allow only safe characters for file paths: alphanumeric, slashes, dots, hyphens, underscores
@@ -386,9 +447,108 @@ namespace DWL\Wtm\Classes;
         return $val ? 1 : 0;
     }
 
+    /**
+     * Pro-aware checkbox sanitizer
+     * Returns the value only if user has pro access, otherwise returns false/0
+     *
+     * @param mixed $val The checkbox value to sanitize
+     * @return int 1 if checked and has pro, 0 otherwise
+     */
+    public function sanitize_pro_checkbox( $val ) {
+        // If user doesn't have pro access, always return 0 (disabled)
+        if ( ! Helper::is_pro_active() ) {
+            return 0;
+        }
+
+        // User has pro, sanitize normally
+        return $val ? 1 : 0;
+    }
+
+    /**
+     * Pro-aware text sanitizer
+     * Returns the value only if user has pro access, otherwise returns empty string
+     *
+     * @param mixed $val The text value to sanitize
+     * @return string Sanitized text if has pro, empty string otherwise
+     */
+    public function sanitize_pro_text( $val ) {
+        // If user doesn't have pro access, always return empty string
+        if ( ! Helper::is_pro_active() ) {
+            return '';
+        }
+
+        // User has pro, sanitize normally
+        return sanitize_text_field( $val );
+    }
+
     /** Generic text sanitizer */
     public function sanitize_text( $val ) {
         return sanitize_text_field( $val );
+    }
+
+    /**
+     * Sanitize dashboard mode setting.
+     *
+     * @param string $val The mode value to sanitize.
+     * @return string Sanitized mode key, defaults to 'corporate' if invalid.
+     */
+    public function sanitize_dashboard_mode( $val ) {
+        $valid_modes = array_keys( Helper::get_dashboard_presets() );
+        return in_array( $val, $valid_modes, true ) ? sanitize_text_field( $val ) : 'corporate';
+    }
+
+    /** Sanitize array of text fields */
+    public function sanitize_array_of_text( $input ) {
+        if ( ! is_array( $input ) ) {
+            return array();
+        }
+        return array_map( 'sanitize_text_field', $input );
+    }
+
+    /**
+     * Sanitize taxonomy fields array
+     * This function is called after individual taxonomy settings are saved
+     * It builds the hidden taxonomies array based on the individual checkbox states
+     */
+    public function tm_taxonomy_fields_sanitize( $input ) {
+        return $this->build_hidden_taxonomies();
+    }
+
+    /**
+     * Build the hidden taxonomies array based on individual checkbox states
+     *
+     * @return array List of hidden taxonomy slugs
+     */
+    private function build_hidden_taxonomies() {
+        $hidden_taxonomies = array();
+
+        // Check each taxonomy enable setting and build hidden list
+        if ( !get_option('tm_taxonomy_designation_enable', 1) ) {
+            $hidden_taxonomies[] = 'team_designation';
+        }
+        if ( !get_option('tm_taxonomy_department_enable', 1) ) {
+            $hidden_taxonomies[] = 'team_department';
+        }
+        if ( !get_option('tm_taxonomy_gender_enable', 1) ) {
+            $hidden_taxonomies[] = 'team_genders';
+        }
+        if ( !get_option('tm_taxonomy_groups_enable', 1) ) {
+            $hidden_taxonomies[] = 'team_groups';
+        }
+
+        return $hidden_taxonomies;
+    }
+
+    /**
+     * Update taxonomy fields array when individual taxonomy settings change
+     */
+    public function update_taxonomy_fields() {
+        $hidden_taxonomies = $this->build_hidden_taxonomies();
+        update_option( 'tm_taxonomy_fields', $hidden_taxonomies );
+
+        // Set a flag to flush rewrite rules on next init instead of flushing immediately
+        // This prevents expensive flush on every settings save
+        set_transient( 'tm_flush_rewrite_rules', 1, 60 );
     }
 
     /** Field: Enable Accessibility Features */

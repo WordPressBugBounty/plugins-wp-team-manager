@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Default image size
 $image_size = isset( $settings['image_size'] ) ? $settings['image_size'] : 'thumbnail';  
 
-// Disable single template view check
-$disable_single_template = ( get_option('single_team_member_view') === 'True' ) ? true : false;
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 
 // Validate the $settings array and check if keys exist and their values are valid.

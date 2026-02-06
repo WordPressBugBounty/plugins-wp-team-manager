@@ -18,33 +18,10 @@ namespace DWL\Wtm\Classes;
     use \DWL\Wtm\Traits\Singleton;
 
     protected function init(){
-        \add_action('admin_menu', array( $this, 'create_menu' ) );
+        // Note: Menu creation handled by UnifiedTools class
     }
 
-    /**
-     * create plugin settings menu
-     *
-     * @since 1.0
-     */
-    public function create_menu() {
 
-        $tm_settings_menu = add_submenu_page( 
-            'edit.php?post_type=team_manager', 
-            __('Get Help', 'wp-team-manager'), 
-            __('Get Help', 'wp-team-manager'), 
-            'manage_options', 
-            'wtm_get_help', 
-            [ $this, 'team_manager_setting_function'] 
-        );
-
-        add_action( $tm_settings_menu, array($this, 'add_admin_script' ) );
-
-    }
-
-    public function add_admin_script() {
-
-        wp_enqueue_style( 'wp-team-get-help-admin' ); 
-    }
 
     /**
      * Register settings function
@@ -65,17 +42,30 @@ namespace DWL\Wtm\Classes;
         <?php endif; ?>
         <div class="wtm-tabs-wrapper">
             <ul class="wtm-tab-nav">
-                <li class="active" data-tab="getting-started">🎥 <?php esc_html_e( 'Getting Started', 'wp-team-manager' ); ?></li>
+                <li class="active" data-tab="dashboard">📊 <?php esc_html_e( 'Dashboard', 'wp-team-manager' ); ?></li>
+                <li data-tab="getting-started"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="back" viewBox="0 0 24 24">
+    <path d="M17 10.5V7c0-1.1-.9-2-2-2H3C1.9 5 1 5.9 1 7v10c0 1.1.9 2 2 2h12c1.1 
+           0 2-.9 2-2v-3.5l4 4v-11l-4 4z"/>
+        </svg>
+                <?php esc_html_e( 'Getting Started', 'wp-team-manager' ); ?></li>
                 <li data-tab="pro-features">🚀 <?php esc_html_e( 'Lite vs Pro', 'wp-team-manager' ); ?></li>
                 <li data-tab="recommended">🌟 <?php esc_html_e( 'Recommended', 'wp-team-manager' ); ?></li>
             </ul>
 
-            <div class="wtm-tab-content active" id="getting-started">
+            <div class="wtm-tab-content active" id="dashboard">
+                <?php 
+                // Include dashboard content
+                $dashboard = \DWL\Wtm\Classes\Dashboard::get_instance();
+                $dashboard->render_dashboard();
+                ?>
+            </div>
+
+            <div class="wtm-tab-content" id="getting-started">
                 <h2><?php esc_html_e( 'Welcome to WP Team Manager', 'wp-team-manager' ); ?> <?php echo esc_html( TM_VERSION ); ?></h2>
                 <p><?php esc_html_e( 'Thank you for installing. Watch the video below to get started.', 'wp-team-manager' ); ?></p>
                 <div class="wp-team-getting-started-wrapper">
                     <div class="wp-team-responsive-iframe wp-team-video-section">
-                        <iframe width="800" height="450" src="https://www.youtube.com/embed/T-cF14_TxXE?feature=oembed" title="Intro" frameborder="0" allowfullscreen></iframe>
+                        <iframe width="800" height="450" src="<?php echo esc_url( 'https://www.youtube.com/embed/T-cF14_TxXE?feature=oembed' ); ?>" title="<?php esc_attr_e( 'WP Team Manager Introduction', 'wp-team-manager' ); ?>" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <div class="wp-team-doc-card-grid">
                         <div class="wtm-feature-box">
@@ -168,14 +158,14 @@ namespace DWL\Wtm\Classes;
                     </tbody>
                   </table>
                 </div>
-                <div style="margin-top: 20px;">
+                <div class="wtm-upgrade-cta">
                   <?php if ( Helper::freemius_is_free_user() ) : ?>
                       <a href="<?php echo esc_url( tmwstm_fs()->get_upgrade_url() ); ?>" target="_blank" class="button button-primary"><?php esc_html_e( 'Upgrade to Pro', 'wp-team-manager' ); ?></a>
                   <?php else : ?>
                       <span class="dashicons dashicons-yes-alt"></span>
-                      <strong><?php esc_html_e( 'You’re on Pro — thanks for supporting us!', 'wp-team-manager' ); ?></strong>
+                      <strong><?php esc_html_e( 'You\'re on Pro — thanks for supporting us!', 'wp-team-manager' ); ?></strong>
                   <?php endif; ?>
-                  <p style="margin-top:10px;"><a href="https://wpteammanager.com/all-features/" target="_blank"><?php esc_html_e( 'See full list of features', 'wp-team-manager' ); ?> &rarr;</a></p>
+                  <p class="wtm-features-link"><a href="<?php echo esc_url( 'https://wpteammanager.com/all-features/' ); ?>" target="_blank"><?php esc_html_e( 'See full list of features', 'wp-team-manager' ); ?> &rarr;</a></p>
                 </div>
             </div>
 
@@ -249,32 +239,22 @@ namespace DWL\Wtm\Classes;
 
         <div class="wtm-footer">
             <p>
-                <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="https://dynamicweblab.com/"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
+                <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="<?php echo esc_url( 'https://dynamicweblab.com/' ); ?>"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
             </p>
             <p>
                 <?php esc_html_e( 'Connect with us on', 'wp-team-manager' ); ?>
-                <a href="https://www.facebook.com/dynamicweblab" target="_blank" class="wtm-footer-icon dashicons dashicons-facebook"></a>
-                <a href="https://profiles.wordpress.org/maidulcu/#content-plugins" target="_blank" class="wtm-footer-icon dashicons dashicons-wordpress"></a>
-                <a href="https://www.youtube.com/@DynamicWebLab" target="_blank" class="wtm-footer-icon dashicons dashicons-video-alt3"></a>
+                <a href="<?php echo esc_url( 'https://www.facebook.com/dynamicweblab' ); ?>" target="_blank" class="wtm-footer-icon dashicons dashicons-facebook"></a>
+                <a href="<?php echo esc_url( 'https://profiles.wordpress.org/maidulcu/#content-plugins' ); ?>" target="_blank" class="wtm-footer-icon dashicons dashicons-wordpress"></a>
+                <a href="<?php echo esc_url( 'https://www.youtube.com/@DynamicWebLab' ); ?>" target="_blank" class="wtm-footer-icon dashicons dashicons-video-alt3"></a>
             </p>
             <p class="wtm-footer-rating">
                 <?php esc_html_e( 'Enjoying WP Team Manager?', 'wp-team-manager' ); ?>
                 <?php esc_html_e( 'Please rate us 5⭐ on', 'wp-team-manager' ); ?>
-                <a href="https://wordpress.org/support/plugin/wp-team-manager/reviews/#new-post" target="_blank"><?php esc_html_e( 'WordPress.org', 'wp-team-manager' ); ?></a> 🙏
+                <a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/wp-team-manager/reviews/#new-post' ); ?>" target="_blank"><?php esc_html_e( 'WordPress.org', 'wp-team-manager' ); ?></a> 🙏
             </p>
             <p class="wtm-footer-version">WP Team Manager <?php echo esc_html( TM_VERSION ); ?></p>
         </div>
 
-        <script>
-        document.querySelectorAll('.wtm-tab-nav li').forEach(tab => {
-            tab.addEventListener('click', function () {
-                document.querySelectorAll('.wtm-tab-nav li').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.wtm-tab-content').forEach(c => c.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
-            });
-        });
-        </script>
         <?php
     }
 

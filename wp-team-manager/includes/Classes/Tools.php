@@ -17,24 +17,15 @@ class Tools {
      * This acts as the central hub for all tools-related functionality.
      */
     public function register_tools_submenu() {
-        // Only add ONE submenu for all tools
-         $hook_suffix = add_submenu_page(
-            'edit.php?post_type=team_manager', // parent slug
-            __( 'Tools', 'wp-team-manager' ),
-            __( 'Tools', 'wp-team-manager' ),
-            'manage_options',
-            'team-manager-tools',
-            [ $this, 'render_tools_page' ]
-        );
-
-        // Enqueue assets only on this settings screen per WP standards
-        add_action( 'load-' . $hook_suffix, [ $this, 'add_admin_script' ] );
+        // Disabled - using UnifiedTools instead
+        return;
     }
 
         
     public function add_admin_script() {
         wp_enqueue_style( 'wp-team-setting-admin' );
-        wp_enqueue_style( 'wp-team-get-help-admin' ); 
+        wp_enqueue_style( 'wp-team-get-help-admin' );
+        wp_enqueue_style( 'wp-team-tools-admin', TM_URL . '/admin/assets/css/tm-tools.css', [], TM_VERSION );
     }
 
     /**
@@ -64,9 +55,10 @@ class Tools {
                 <div class="wtm-tools-section card">
                     <span class="dashicons dashicons-migrate wtm-tools-card-icon"></span>
                     <h2 class="title"><?php esc_html_e( 'Migration Tool', 'wp-team-manager' ); ?></h2>
-                    <p><?php esc_html_e( 'Migrate your team data from other plugins or formats.', 'wp-team-manager' ); ?></p>
+                    <p><?php esc_html_e( 'Seamlessly migrate your team data from other plugins like Team Members, Our Team Showcase, and more. Preserve all your existing data while upgrading to WP Team Manager.', 'wp-team-manager' ); ?></p>
                     <a href="<?php echo esc_url( admin_url( 'admin.php?page=team-manager-migration' ) ); ?>" class="button button-secondary wtm-btn-secondary">
-                        <?php esc_html_e( 'Go to Migration Tool', 'wp-team-manager' ); ?>
+                        <span class="dashicons dashicons-migrate"></span>
+                        <?php esc_html_e( 'Start Migration', 'wp-team-manager' ); ?>
                     </a>
                 </div>
 
@@ -74,9 +66,10 @@ class Tools {
                 <div class="wtm-tools-section card">
                     <span class="dashicons dashicons-superhero-alt wtm-tools-card-icon"></span>
                     <h2 class="title"><?php esc_html_e( 'AI Agent Modules', 'wp-team-manager' ); ?></h2>
-                    <p><?php esc_html_e( 'Manage and configure AI-powered agents integrated with your team data.', 'wp-team-manager' ); ?></p>
+                    <p><?php esc_html_e( 'Configure AI-powered automation including Telegram notifications, Slack integration, profile sync agents, and FAQ bots to streamline your team management workflow.', 'wp-team-manager' ); ?></p>
                     <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=team_manager&page=team-ai-agents' ) ); ?>" class="button button-secondary wtm-btn-secondary">
-                        <?php esc_html_e( 'Go to AI Agent Modules', 'wp-team-manager' ); ?>
+                        <span class="dashicons dashicons-superhero-alt"></span>
+                        <?php esc_html_e( 'Configure AI Agents', 'wp-team-manager' ); ?>
                     </a>
                 </div>
 
@@ -84,33 +77,43 @@ class Tools {
                 <div class="wtm-tools-section card">
                     <span class="dashicons dashicons-editor-code wtm-tools-card-icon"></span>
                     <h2 class="title"><?php esc_html_e( 'Shortcode Generator', 'wp-team-manager' ); ?></h2>
-                    <p><?php esc_html_e( 'Create and customize shortcodes to display your team members easily.', 'wp-team-manager' ); ?></p>
+                    <p><?php esc_html_e( 'Create customized shortcodes with live preview. Configure layouts, filters, styling options, and generate ready-to-use shortcodes for your pages and posts.', 'wp-team-manager' ); ?></p>
                     <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=team_manager&page=team-manager-shortcode-generator' ) ); ?>" class="button button-secondary wtm-btn-secondary">
-                        <?php esc_html_e( 'Go to Shortcode Generator', 'wp-team-manager' ); ?>
+                        <span class="dashicons dashicons-editor-code"></span>
+                        <?php esc_html_e( 'Generate Shortcode', 'wp-team-manager' ); ?>
                     </a>
                 </div>
 
                 <!-- Import/Export Section -->
                 <div class="wtm-tools-section card">
                     <span class="dashicons dashicons-database-import wtm-tools-card-icon"></span>
-                    <h2 class="title"><?php echo esc_html__( 'Import/Export', 'wp-team-manager' ); ?></h2>
-                    <p><?php echo esc_html__( 'Import or export your team data easily.', 'wp-team-manager' ); ?></p>
+                    <h2 class="title"><?php echo esc_html__( 'Import/Export Data', 'wp-team-manager' ); ?></h2>
+                    <p><?php echo esc_html__( 'Import team members from CSV files or export your existing team data for backup, sharing, or migration purposes. Supports bulk operations.', 'wp-team-manager' ); ?></p>
                     <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=team_manager&page=wtm-import-export' ) ); ?>" class="button button-secondary wtm-btn-secondary">
-                        <?php echo esc_html__( 'Go to Import/Export', 'wp-team-manager' ); ?>
+                        <span class="dashicons dashicons-database-import"></span>
+                        <?php echo esc_html__( 'Manage Data', 'wp-team-manager' ); ?>
                     </a>
                 </div>
 
                 <!-- Future Tools Section -->
                 <div class="wtm-tools-section card">
                     <span class="dashicons dashicons-hammer wtm-tools-card-icon"></span>
-                    <h2 class="title"><?php esc_html_e( 'More Tools (Coming Soon)', 'wp-team-manager' ); ?></h2>
+                    <h2 class="title"><?php esc_html_e( 'Advanced Tools', 'wp-team-manager' ); ?></h2>
+                    <p><?php esc_html_e( 'Additional powerful tools are in development to enhance your team management experience:', 'wp-team-manager' ); ?></p>
                     <ul class="coming-soon">
                         <li><?php esc_html_e( 'Bulk Edit Team Members', 'wp-team-manager' ); ?></li>
-                        <li><?php esc_html_e( 'Data Cleanup', 'wp-team-manager' ); ?></li>
-                        <li><?php esc_html_e( 'Advanced Export Options', 'wp-team-manager' ); ?></li>
+                        <li><?php esc_html_e( 'Data Cleanup & Optimization', 'wp-team-manager' ); ?></li>
+                        <li><?php esc_html_e( 'Advanced Export Formats', 'wp-team-manager' ); ?></li>
+                        <li><?php esc_html_e( 'Team Analytics Dashboard', 'wp-team-manager' ); ?></li>
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <div class="wtm-footer">
+            <p>
+                <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="https://dynamicweblab.com/"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
+            </p>
         </div>
         <?php
     }

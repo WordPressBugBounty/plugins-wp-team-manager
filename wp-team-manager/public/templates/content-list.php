@@ -6,11 +6,11 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Retrieve the value of 'image_size' from settings, default to 'thumbnail' if not set
 $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';  
 
-// Fetch the option value once and store it in a variable for efficiency
-$single_team_member_view = get_option('single_team_member_view');
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
-// Perform a strict comparison to ensure the option is exactly 'True' (case-sensitive)
-$disable_single_template = ( 'true' === strtolower( $single_team_member_view ) );
+// Render taxonomy filters if enabled
+echo Helper::render_taxonomy_filters();
 
 if(!empty($data)){
     foreach ($data['posts'] as $key => $teamInfo) {
@@ -21,9 +21,10 @@ if(!empty($data)){
       // Sanitize the retrieved post meta values
       $job_title = isset( $post_meta['tm_jtitle'][0] ) ? sanitize_text_field( $post_meta['tm_jtitle'][0] ) : '';
       $short_bio = $post_meta['tm_short_bio'][0] ?? '';
+      $taxonomy_classes = Helper::get_team_taxonomy_classes($teamInfo->ID);
       ?>
 
-          <div <?php post_class('team-member-info-wrap m-0 p-2 wtm-col-12'); ?>>
+          <div <?php post_class('team-member-info-wrap m-0 p-2 wtm-col-12 ' . esc_attr($taxonomy_classes)); ?>>
           <div class="wtm-row g-0 team-member-info-content"> 
            <header class="wtm-col-12 wtm-col-lg-3 wtm-col-md-6">
               <?php if(!$disable_single_template): ?>

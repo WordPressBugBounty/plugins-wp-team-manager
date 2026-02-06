@@ -1,0 +1,349 @@
+:root {
+   --wtm-primary: #4a5568;
+    --wtm-primary-dark: #2d3748;
+    --wtm-primary-light: #718096;
+    --wtm-secondary: #a0aec0;
+    --wtm-accent: #cbd5e0;
+    --wtm-success: #718096;
+    --wtm-warning: #ecc94b;
+    --wtm-danger: #e53e3e;
+    --wtm-surface: #ffffff;
+    --wtm-surface-alt: #f7fafc;
+    --wtm-border: #e2e8f0;
+    --wtm-text: #2d3748;
+    --wtm-text-muted: #718096;
+    --wtm-shadow-sm: 0 1px 2px 0 rgb(45 80 22 / 0.05);
+    --wtm-shadow-md: 0 4px 6px -1px rgb(45 80 22 / 0.1), 0 2px 4px -2px rgb(45 80 22 / 0.1);
+    --wtm-shadow-lg: 0 10px 15px -3px rgb(45 80 22 / 0.1), 0 4px 6px -4px rgb(45 80 22 / 0.1);
+    --wtm-radius: 12px;
+    --wtm-radius-sm: 8px;
+}
+
+/* Tools Hub Main Container */
+.wtm-tools-hub-sections.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Tool Section Cards */
+.wtm-tools-section.card {
+    background: var(--wtm-surface-alt);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: var(--wtm-shadow-sm);
+}
+
+.wtm-tools-section.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.wtm-tools-section.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--wtm-shadow-lg);
+    border-color: var(--wtm-primary);
+}
+
+.wtm-tools-section.card:hover::before {
+    transform: scaleY(1);
+}
+
+/* Tool Card Icons */
+.wtm-tools-card-icon {
+    font-size: 3rem;
+    color: var(--wtm-primary);
+    margin-bottom: 2rem;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.wtm-tools-section.card:hover .wtm-tools-card-icon {
+    color: var(--wtm-primary-light);
+    transform: scale(1.1);
+}
+
+/* Specific icon colors */
+.dashicons-migrate {
+    color: #5dca66;
+}
+
+.dashicons-superhero-alt {
+    color: #d63638;
+}
+
+.dashicons-editor-code {
+    color: #3dcda9;
+}
+
+.dashicons-database-import {
+    color: #6fe08c;
+}
+
+.dashicons-hammer {
+    color: #dba617;
+}
+
+/* Tool Card Titles */
+.wtm-tools-section .title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--wtm-text);
+    margin: 0 0 1rem;
+    line-height: 1.3;
+}
+
+/* Tool Card Descriptions */
+.wtm-tools-section p {
+    color: var(--wtm-text-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* Coming Soon List */
+.wtm-tools-section .coming-soon {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+}
+
+.wtm-tools-section .coming-soon li {
+    color: var(--wtm-text-muted);
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--wtm-border);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.wtm-tools-section .coming-soon li:last-child {
+    border-bottom: none;
+}
+
+.wtm-tools-section .coming-soon li::before {
+    content: '⏳';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Tool Buttons */
+.wtm-btn-secondary {
+    background: linear-gradient(135deg, var(--wtm-secondary-light) 0%, var(--wtm-primary-light) 100%) !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: var(--wtm-radius-sm) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+   
+}
+
+.wtm-btn-secondary:hover {
+   background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    transform: translateY(-2px) !important;
+  
+}
+
+.wtm-btn-secondary:focus {
+    outline: 3px solid rgba(45, 80, 22, 0.3) !important;
+    outline-offset: 2px !important;
+}
+
+/* Page Header */
+.wrap h1 {
+    color: var(--wtm-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.wrap .description {
+    color: var(--wtm-text-muted);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+/* Upgrade Banner */
+.wtm-upgrade-banner {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 50%, var(--wtm-secondary) 100%);
+    color: white;
+    padding: 1.5rem;
+    margin: 0 0 2rem;
+    border-radius: var(--wtm-radius);
+    position: relative;
+    overflow: hidden;
+}
+
+.wtm-upgrade-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.wtm-upgrade-banner p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.wtm-upgrade-link {
+    color: var(--wtm-text) !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px !important;
+    margin-left: 0.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.wtm-upgrade-link:hover {
+    background: white !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Special styling for AI Agent card */
+.wtm-tools-section.card:nth-child(2) {
+    background: linear-gradient(135deg, rgba(214, 54, 56, 0.05) 0%, rgba(214, 54, 56, 0.02) 100%);
+}
+
+.wtm-tools-section.card:nth-child(2):hover {
+    background: linear-gradient(135deg, rgba(214, 54, 56, 0.1) 0%, rgba(214, 54, 56, 0.05) 100%);
+}
+
+/* Special styling for Migration card */
+.wtm-tools-section.card:nth-child(1) {
+    background: linear-gradient(135deg, rgba(0, 115, 170, 0.05) 0%, rgba(0, 115, 170, 0.02) 100%);
+}
+
+.wtm-tools-section.card:nth-child(1):hover {
+    background: linear-gradient(135deg, rgba(0, 115, 170, 0.1) 0%, rgba(0, 115, 170, 0.05) 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wtm-tools-hub-sections.grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .wtm-tools-section.card {
+        padding: 1.5rem;
+    }
+    
+    .wtm-tools-card-icon {
+        font-size: 2.5rem;
+    }
+    
+    .wtm-tools-section .title {
+        font-size: 1.125rem;
+    }
+}
+
+/* Loading animation for future tools */
+.wtm-tools-section.card:last-child {
+    opacity: 0.8;
+    position: relative;
+}
+
+.wtm-tools-section.card:last-child::after {
+    content: 'Coming Soon';
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--wtm-accent);
+    color: var(--wtm-text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Footer Styles */
+.wtm-footer {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--wtm-surface-alt) 0%, var(--wtm-surface) 100%);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.wtm-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 50%, var(--wtm-secondary) 100%);
+}
+
+.wtm-footer p {
+    margin: 0;
+    color: var(--wtm-text);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.wtm-footer a {
+    color: var(--wtm-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.wtm-footer a:hover {
+    color: var(--wtm-primary-light);
+    text-decoration: underline;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --wtm-surface: #1a1a1a;
+        --wtm-surface-alt: #2a2a2a;
+        --wtm-text: #e0e0e0;
+        --wtm-text-muted: #a0a0a0;
+        --wtm-border: #404040;
+    }
+}

@@ -6,10 +6,10 @@
  * @package           Wp_Team_Manager
  *
  * @wordpress-plugin
- * Plugin Name:       WordPress Team Manager
+ * Plugin Name:       Dynamic Team Manager
  * Plugin URI:        https://wpteammanager.com/
- * Description:       Showcase your team members with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder.
- * Version:           2.3.16
+ * Description:       Showcase your team members, sports rosters, or creative portfolios with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder. Supports Corporate, Sports League, and more modes.
+ * Version:           2.5.1
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -56,7 +56,7 @@ if ( function_exists( 'tmwstm_fs' ) ) {
                     'has_affiliation' => 'customers',
                     'menu'            => array(
                         'slug'       => 'edit.php?post_type=team_manager',
-                        'first-path' => 'edit.php?post_type=team_manager&page=wtm_get_help',
+                        'first-path' => 'edit.php?post_type=team_manager&page=team-manager-tools',
                         'contact'    => true,
                         'support'    => false,
                     ),
@@ -70,18 +70,17 @@ if ( function_exists( 'tmwstm_fs' ) ) {
         // Signal that SDK was initiated.
         do_action( 'tmwstm_fs_loaded' );
     }
-    // ... Your plugin's main file logic ...
-    $wptm_autoload_path = dirname( __FILE__ ) . '/vendor/autoload.php';
-    if ( file_exists( $wptm_autoload_path ) ) {
-        require_once $wptm_autoload_path;
-    } else {
+    // Check PHP version compatibility
+    if ( version_compare( PHP_VERSION, '8.0.0', '<' ) ) {
         add_action( 'admin_notices', function () {
             echo '<div class="notice notice-error"><p>';
-            echo esc_html__( 'The WordPress Team Manager plugin is missing its Composer dependencies. Please run composer install.', 'wp-team-manager' );
+            echo sprintf( __( 'WP Team Manager requires PHP 8.0 or higher. Current version: %s. Please upgrade PHP.', 'wp-team-manager' ), PHP_VERSION );
             echo '</p></div>';
         } );
+        return;
     }
-    define( 'TM_VERSION', '2.3.16' );
+    define( 'TM_VERSION', '2.4.9' );
+    define( 'TM_PHP_MIN_VERSION', '8.0.0' );
     define( 'TM_FILE', __FILE__ );
     define( 'TM_PATH', __DIR__ );
     define( 'TM_URL', plugins_url( '', TM_FILE ) );
@@ -90,6 +89,18 @@ if ( function_exists( 'tmwstm_fs' ) ) {
     define( 'TM_PRO_PATH', __DIR__ . '/pro' );
     define( 'TM_PRO_URL', plugins_url( '/pro', TM_FILE ) );
     define( 'TM_PRO_PUBLIC', TM_PRO_URL . '/public' );
+    // Load Composer autoloader before Core.php
+    $wptm_autoload_path = dirname( __FILE__ ) . '/vendor/autoload.php';
+    if ( file_exists( $wptm_autoload_path ) ) {
+        require_once $wptm_autoload_path;
+    } else {
+        add_action( 'admin_notices', function () {
+            echo '<div class="notice notice-error"><p>';
+            echo esc_html__( 'The Dynamic Team Manager plugin is missing its Composer dependencies. Please run composer install.', 'wp-team-manager' );
+            echo '</p></div>';
+        } );
+        return;
+    }
     $core_path = __DIR__ . '/Core.php';
     if ( file_exists( $core_path ) ) {
         require_once $core_path;

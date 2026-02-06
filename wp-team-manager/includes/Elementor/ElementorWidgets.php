@@ -1,10 +1,14 @@
 <?php
+
 namespace DWL\Wtm\Elementor;
+
+require_once __DIR__ . '/Performance/WidgetOptimizer.php';
 
 if (!defined('ABSPATH'))
 	exit; // Exit if accessed directly
 
 use Elementor\Plugin;
+use Elementor\Modules\DynamicTags\Module as TagsModule;
 /**
  * Class Plugin
  *
@@ -47,9 +51,30 @@ class ElementorWidgets {
 	public function registerControls( $controls_manager ) {
 		
 		require_once( __DIR__ . '/Controls/ImageSelector.php' );
+		require_once( __DIR__ . '/Controls/AdvancedLayoutControl.php' );
 		
 		$controls_manager->register( new ImageSelector() );
+		$controls_manager->register( new Controls\AdvancedLayoutControl() );
 
+	}
+
+	/**
+	 * Register dynamic tags
+	 */
+	public function register_dynamic_tags( $dynamic_tags ) {
+		require_once( __DIR__ . '/DynamicTags/TeamDynamicTags.php' );
+		
+		$dynamic_tags->register_group(
+			'team-manager',
+			[
+				'title' => __( 'Team Manager', 'wp-team-manager' )
+			]
+		);
+		
+		$dynamic_tags->register_tag( new DynamicTags\TeamMemberName() );
+		$dynamic_tags->register_tag( new DynamicTags\TeamMemberPosition() );
+		$dynamic_tags->register_tag( new DynamicTags\TeamMemberImage() );
+		$dynamic_tags->register_tag( new DynamicTags\TeamMemberBio() );
 	}
 	/**
 	 * Include Widgets files
@@ -63,6 +88,7 @@ class ElementorWidgets {
 		$files = [
 			__DIR__ . '/widgets/team.php',
 			__DIR__ . '/widgets/isotope.php',
+			__DIR__ . '/ThemeBuilder/TeamArchive.php',
 		];
 	
 		foreach ($files as $file) {
@@ -106,6 +132,11 @@ class ElementorWidgets {
 		// Register Widgets
         Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Team() );
 		Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Isotope() );
+		
+		// Register Theme Builder widgets
+		if ( class_exists( '\Elementor\Modules\ThemeBuilder\Module' ) ) {
+			Plugin::instance()->widgets_manager->register_widget_type( new ThemeBuilder\TeamArchive() );
+		}
 	}
 	
 
@@ -128,6 +159,12 @@ class ElementorWidgets {
 
 		// Register editor scripts
 		\add_action( 'elementor/editor/after_enqueue_scripts', [ $this, 'editor_scripts' ] );
+		
+		// Register dynamic tags
+		\add_action( 'elementor/dynamic_tags/register_tags', [ $this, 'register_dynamic_tags' ] );
+		
+		// Initialize performance optimizer
+		Performance\WidgetOptimizer::getInstance();
 	
 	}
 	

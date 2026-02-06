@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/theme.json",
+    "version": 2,
+    "customTemplates": [
+        {
+            "name": "team-archive",
+            "title": "Team Archive",
+            "postTypes": ["team_manager"]
+        },
+        {
+            "name": "single-team",
+            "title": "Single Team Member",
+            "postTypes": ["team_manager"]
+        }
+    ],
+    "templateParts": [
+        {
+            "name": "team-header",
+            "title": "Team Header",
+            "area": "header"
+        },
+        {
+            "name": "team-footer",
+            "title": "Team Footer", 
+            "area": "footer"
+        }
+    ],
+    "settings": {
+        "blocks": {
+            "wp-team-manager/team-block": {
+                "color": {
+                    "background": true,
+                    "text": true,
+                    "gradients": true,
+                    "custom": true
+                },
+                "spacing": {
+                    "margin": true,
+                    "padding": true,
+                    "blockGap": true
+                },
+                "typography": {
+                    "fontSize": true,
+                    "fontFamily": true,
+                    "fontWeight": true,
+                    "lineHeight": true,
+                    "textDecoration": true,
+                    "textTransform": true,
+                    "letterSpacing": true
+                },
+                "border": {
+                    "color": true,
+                    "radius": true,
+                    "style": true,
+                    "width": true
+                }
+            }
+        },
+        "custom": {
+            "teamManager": {
+                "layouts": {
+                    "grid": {
+                        "columns": {
+                            "min": 1,
+                            "max": 6,
+                            "default": 3
+                        },
+                        "gap": {
+                            "small": "1rem",
+                            "medium": "2rem", 
+                            "large": "3rem"
+                        }
+                    },
+                    "list": {
+                        "spacing": "2rem"
+                    },
+                    "slider": {
+                        "autoplay": true,
+                        "dots": true,
+                        "arrows": true
+                    }
+                },
+                "colors": {
+                    "primary": "#007cba",
+                    "secondary": "#50575e",
+                    "accent": "#00a0d2"
+                }
+            }
+        }
+    },
+    "styles": {
+        "blocks": {
+            "wp-team-manager/team-block": {
+                "spacing": {
+                    "margin": {
+                        "top": "var(--wp--preset--spacing--40)",
+                        "bottom": "var(--wp--preset--spacing--40)"
+                    }
+                },
+                "elements": {
+                    "h1": {
+                        "typography": {
+                            "fontSize": "var(--wp--preset--font-size--x-large)"
+                        }
+                    },
+                    "h2": {
+                        "typography": {
+                            "fontSize": "var(--wp--preset--font-size--large)"
+                        }
+                    },
+                    "h3": {
+                        "typography": {
+                            "fontSize": "var(--wp--preset--font-size--medium)"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

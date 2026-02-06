@@ -24,7 +24,7 @@ class AdminAssets {
 	 */
 	protected function init(){
 		\add_action( 'admin_enqueue_scripts', [ $this, 'wp_team_manager_admin_assets' ] );
-		\add_action("wp_ajax_wtm_admin_preview" , [ $this, 'wtm_admin_preview' ]);
+		\add_action( 'wp_ajax_wtm_admin_preview', [ $this, 'wtm_admin_preview' ] );
 	}
 
 	/**
@@ -51,15 +51,20 @@ class AdminAssets {
 		wp_register_style( 'wp-team-style-admin', TM_PUBLIC . '/assets/css/tm-style.css', [], TM_VERSION );
 		wp_register_style( 'wp-team-setting-admin', TM_ADMIN_ASSETS . '/css/tm-settings.css', [], TM_VERSION );
 		wp_register_style( 'wp-team-get-help-admin', TM_ADMIN_ASSETS . '/css/tm-get-help.css', [], TM_VERSION );
+		wp_register_style( 'wp-team-generator-admin', TM_ADMIN_ASSETS . '/css/tm-generator.css', [], TM_VERSION );
 
-		// register scritps
-		wp_register_script( 'wp-team-slick-admin', TM_PUBLIC . '/assets/vendor/slick/slick.min.js', array(), '5.9.0', true );
-		wp_register_script( 'wp-team-script-admin', TM_PUBLIC . '/assets/js/team.js', array(), TM_VERSION, true );
-		wp_register_script( 'wp-team-settings-admin', TM_ADMIN_ASSETS . '/js/settings.js', array(), TM_VERSION, true );
-		wp_register_script( 'wp-team-el-admin', TM_ADMIN_ASSETS . '/js/admin.js', array(), TM_VERSION, true );
+		// register scripts
+		wp_register_script( 'wp-team-slick-admin', TM_PUBLIC . '/assets/vendor/slick/slick.min.js', array( 'jquery' ), '5.9.0', true );
+		wp_register_script( 'wp-team-script-admin', TM_PUBLIC . '/assets/js/team.js', array( 'jquery' ), TM_VERSION, true );
+		wp_register_script( 'wp-team-settings-admin', TM_ADMIN_ASSETS . '/js/settings.js', array( 'jquery' ), TM_VERSION, true );
+		wp_register_script( 'wp-team-el-admin', TM_ADMIN_ASSETS . '/js/admin.js', array( 'jquery' ), TM_VERSION, true );
 
-		if ( ('post-new.php' == $hook OR 'post.php' == $hook ) AND ( $screen->post_type == 'team_manager' || $screen->post_type == 'dwl_team_generator' ) ) {
+		if ( ( 'post-new.php' === $hook || 'post.php' === $hook ) && ( $screen->post_type === 'team_manager' || $screen->post_type === 'dwl_team_generator' ) ) {
 			wp_enqueue_style( 'wp-team-post-admin', TM_ADMIN_ASSETS . '/css/tm-post.css', [], TM_VERSION );
+		}
+
+		if ( ( 'post-new.php' === $hook || 'post.php' === $hook ) && $screen->post_type === 'dwl_team_generator' ) {
+			wp_enqueue_style( 'wp-team-generator-admin', TM_ADMIN_ASSETS . '/css/tm-generator.css', [], TM_VERSION );
 		}
 	}
 	
@@ -75,9 +80,11 @@ class AdminAssets {
 
 		if ( isset( $_POST['shortcode'] ) ) {
 			$shortcode = wp_kses_post( wp_unslash( $_POST['shortcode'] ) );
+			// Output is already sanitized by wp_kses_post, and do_shortcode output is escaped by the shortcode callback
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo do_shortcode( $shortcode );
 		}
-		
+
 		wp_die();
 	}
 

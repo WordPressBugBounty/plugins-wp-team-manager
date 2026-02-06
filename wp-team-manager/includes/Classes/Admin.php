@@ -2,7 +2,7 @@
 namespace DWL\Wtm\Classes;
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+	wp_die( 'Direct access not allowed.' );
 }
 class Admin {
 
@@ -10,9 +10,9 @@ class Admin {
 
     protected function init(){
 
-		\add_filter( 'manage_dwl_team_generator_posts_columns', [ $this, 'shortocode_in_post_column'] );
+		\add_filter( 'manage_dwl_team_generator_posts_columns', [ $this, 'shortcode_in_post_column'] );
 
-		\add_filter( 'manage_dwl_team_generator_posts_custom_column', [ $this, 'shortocode_in_post_column_data' ], 10, 2 );
+		\add_filter( 'manage_dwl_team_generator_posts_custom_column', [ $this, 'shortcode_in_post_column_data' ], 10, 2 );
 
 		\add_action( 'save_post_team_manager', [ $this, 'clear_team_cache' ] );
 
@@ -20,31 +20,31 @@ class Admin {
 	}
 
 	/**
-	 * Hides the migration menu item from the admin menu.
-	 *
-	 * Since the migration process is intended to be started from the notice
-	 * displayed in the post list table, we don't want to show the menu item.
+	 * Hides specific menu items that are now integrated into unified tools
 	 */
 	public function add_css() {
-			echo '<style>
-				#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-migration"],
-				#menu-posts-team_manager ul.wp-submenu li a[href*="team-ai-agents"],
-				#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-shortcode-generator"],
-				#menu-posts-team_manager ul.wp-submenu li a[href*="wtm-import-export"]
-				 {
-					display: none !important;
-				}
-			</style>';
+		// Use wp_add_inline_style for better security and WordPress standards
+		$custom_css = '
+			#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-migration"],
+			#menu-posts-team_manager ul.wp-submenu li a[href*="team-ai-agents"],
+			#menu-posts-team_manager ul.wp-submenu li a[href*="team-manager-shortcode-generator"],
+			#menu-posts-team_manager ul.wp-submenu li a[href*="wtm_dashboard"] {
+				display: none !important;
+			}
+		';
+		wp_register_style( 'wtm-admin-inline', false );
+		wp_enqueue_style( 'wtm-admin-inline' );
+		wp_add_inline_style( 'wtm-admin-inline', $custom_css );
 	}
 
 	/**
 	 * Add shortcode admin column
 	 *
-	 * @param $columns
+	 * @param array $columns
 	 *
-	 * @return mixed
+	 * @return array
 	 */
-	public function shortocode_in_post_column( $columns ) {
+	public function shortcode_in_post_column( $columns ) {
 
 		unset( $columns['date'] );
 
@@ -59,12 +59,12 @@ class Admin {
 	/**
 	 * Show shortcode admin column
 	 *
-	 * @param $column
-	 * @param $post_id
+	 * @param string $column
+	 * @param int $post_id
 	 */
-	public function shortocode_in_post_column_data($column, $post_id) {
+	public function shortcode_in_post_column_data($column, $post_id) {
 		if ($column === 'shortcode') {
-			printf('<code>[dwl_create_team id="%d"]</code>', esc_attr($post_id));
+			echo '<code>' . sprintf( '[dwl_create_team id="%d"]', esc_attr($post_id) ) . '</code>';
 		}
 	}
 
@@ -74,12 +74,29 @@ class Admin {
 	 * @param int $post_id The post ID
 	 */
 	public function clear_team_cache( $post_id ) {
+		// Skip for autosaves
 		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
 			return;
 		}
 
+		// Verify user has permission to edit this post
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		// Only clear cache for published posts (not drafts, pending, trash, etc.)
+		$post_status = get_post_status( $post_id );
+		if ( $post_status !== 'publish' ) {
+			return;
+		}
+
+		// Clear team data transients with proper LIKE escaping
 		global $wpdb;
-		$wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_wtm_team_data_%' OR option_name LIKE '_transient_timeout_wtm_team_data_%'" );
+		$wpdb->query( $wpdb->prepare(
+			"DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+			$wpdb->esc_like( '_transient_wtm_team_data_' ) . '%',
+			$wpdb->esc_like( '_transient_timeout_wtm_team_data_' ) . '%'
+		) );
 	}
 
 }

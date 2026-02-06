@@ -28,28 +28,40 @@ $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
 
 // Determine if the single template should be disabled
-$disable_single_template = get_option('single_team_member_view') === 'True';
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 // Sanitize and validate column numbers
-$desktop_column = isset($settings['dwl_team_desktop'][0]) ? absint($settings['dwl_team_desktop'][0]) : 4;
-$tablet_column = isset($settings['dwl_team_tablet'][0]) ? absint($settings['dwl_team_tablet'][0]) : 3;
-$mobile_column = isset($settings['dwl_team_mobile'][0]) ? absint($settings['dwl_team_mobile'][0]) : 1;
+$desktop_column = isset($settings['dwl_team_desktop_columns'][0]) ? absint($settings['dwl_team_desktop_columns'][0]) : 3;
+$tablet_column = isset($settings['dwl_team_tablet_columns'][0]) ? absint($settings['dwl_team_tablet_columns'][0]) : 2;
+$mobile_column = isset($settings['dwl_team_mobile_columns'][0]) ? absint($settings['dwl_team_mobile_columns'][0]) : 1;
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
 $selected = Helper::generate_single_fields('frontend');
 
 
 foreach ($data['posts'] as $teamInfo) {
- 
+
     // Retrieve all post meta for the current team member in one call (if necessary)
     $post_meta = get_post_meta($teamInfo->ID);
-    
+
     // Ensure post meta exists and sanitize
     $job_title = isset($post_meta['tm_jtitle'][0]) ? sanitize_text_field($post_meta['tm_jtitle'][0]) : '';
    $short_bio = $post_meta['tm_short_bio'][0] ?? '';
- 
+   $taxonomy_classes = Helper::get_team_taxonomy_classes($teamInfo->ID);
+
+    $allowed_tags = array_merge(
+        wp_kses_allowed_html( 'post' ), // All default post tags
+        array(
+            'progress' => array(
+                'value' => true,
+                'max'   => true,
+                'style' => true,
+            ),
+        )
+    );
     ?>
 
-    <div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class)); ?>>
+    <div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class) . " " . esc_attr($taxonomy_classes)); ?>>
         <div class="team-member-info-content">
             <header>
                 <?php if (!$disable_single_template): ?>
@@ -64,9 +76,15 @@ foreach ($data['posts'] as $teamInfo) {
             </header>
 
             <div class="team-member-desc">
-                <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                <?php if (!$disable_single_template): ?>
+                    <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
+                <?php endif; ?>
+                    <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                <?php if (!$disable_single_template): ?>
+                    </a>
+                <?php endif; ?>
 
-                <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
+                <?php if (!empty($job_title) && !$hide_team_show_position): ?>
                     <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                 <?php endif; ?>
                 <?php if (!$hide_short_bio_control): ?>
@@ -95,7 +113,7 @@ foreach ($data['posts'] as $teamInfo) {
                             <?php
                                 if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                    echo DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID);
+                                    echo wp_kses(DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID), $allowed_tags);
 
                                 } ?>
                             </div>

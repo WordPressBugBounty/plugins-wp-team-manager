@@ -8,9 +8,12 @@ if(!empty($data)):
     $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';  // Sanitize image size value
     $show_shortBio = isset( $settings['team_show_short_bio'] ) && !empty( $settings['team_show_short_bio'] ) ? sanitize_textarea_field( $settings['team_show_short_bio'] ) : '';  // Sanitize the short bio
 
-    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
-    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
-    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+    // Pro feature: Popup functionality
+    $show_popup = Helper::is_pro_feature_enabled( $settings, 'popup_bar_show' );
+    $popup_settings = $show_popup ? "true" : 'false';
+
+    // Pro feature: Disable single member
+    $disable_single_member = Helper::is_pro_feature_enabled( $settings, 'disable_single_member' );
 
         ?>
             <div class="dwl-team-table-responsive team-table-<?php echo esc_attr( $style_type )?>">
@@ -73,7 +76,7 @@ if(!empty($data)):
                                             <div class="dwl-table-img-wraper">
 
                                                 <?php if("yes" == $settings['show_image']): ?>
-                                                    <?php if($disable_single_member) : ?>
+                                                    <?php if(!$disable_single_member) : ?>
                                                         <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
                                                     <?php endif; ?>
                                                     <?php if($show_popup): ?>
@@ -83,7 +86,7 @@ if(!empty($data)):
                                                     <?php if($show_popup): ?>
                                                         </div>
                                                     <?php endif; ?>
-                                                    <?php if($disable_single_member) : ?>
+                                                    <?php if(!$disable_single_member) : ?>
                                                         </a>
                                                     <?php endif; ?>
                                                 <?php endif;?>

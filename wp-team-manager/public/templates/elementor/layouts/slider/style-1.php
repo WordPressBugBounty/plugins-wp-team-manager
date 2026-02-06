@@ -12,9 +12,12 @@ if ( ! empty( $data ) ) :
     $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
     $team_arrow_position = isset( $settings['team_arrow_position'] ) && ( $settings['team_arrow_position'] === 'side' ) ? 'team-arrow-postion-side' : '';
 
-    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
-    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
-    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+    // Pro feature: Popup functionality
+    $show_popup = Helper::is_pro_feature_enabled( $settings, 'popup_bar_show' );
+    $popup_settings = $show_popup ? "true" : 'false';
+
+    // Pro feature: Disable single member
+    $disable_single_member = Helper::is_pro_feature_enabled( $settings, 'disable_single_member' );
 
 
     $allowed_tags = array_merge(
@@ -42,7 +45,7 @@ if ( ! empty( $data ) ) :
             <div class="team-member-info-content">
                 <header>
                     <?php if ( 'yes' === $settings['show_image'] ) : ?>
-                        <?php if ( $disable_single_member ) : ?>
+                        <?php if ( !$disable_single_member ) : ?>
                             <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>">
                         <?php endif; ?>
                         <?php if($show_popup): ?>
@@ -52,7 +55,7 @@ if ( ! empty( $data ) ) :
                         <?php if($show_popup): ?>
                             </div>
                         <?php endif; ?>
-                        <?php if ( $disable_single_member ) : ?>
+                        <?php if ( !$disable_single_member ) : ?>
                             </a>
                         <?php endif; ?>
 
@@ -60,7 +63,7 @@ if ( ! empty( $data ) ) :
                 </header>
                 <div class="team-member-desc">
                     <?php if ( 'yes' === $settings['show_title'] ) : ?>
-                        <?php if ( $disable_single_member ) : ?>
+                        <?php if (!$disable_single_member ) : ?>
                             <a href="<?php echo esc_url( get_the_permalink( $team->ID ) ); ?>">
                         <?php endif; ?>
                         <?php if($show_popup): ?>
@@ -70,7 +73,7 @@ if ( ! empty( $data ) ) :
                         <?php if($show_popup): ?>
                             </div>
                         <?php endif; ?>
-                        <?php if ( $disable_single_member ) : ?>
+                        <?php if (!$disable_single_member ) : ?>
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -96,11 +99,12 @@ if ( ! empty( $data ) ) :
                     <?php endif; ?>
 
                        <?php if(!empty($settings['show_other_info']) && $settings['show_other_info'] === 'yes'): ?>
-                        <?php 
-                            $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
+                        <?php
+                            // Pro feature: Other info links
+                            $enable_links = Helper::is_pro_feature_enabled( $settings, 'other_info_link' ) ? 'yes' : 'no';
                             echo wp_kses_post(
                                 Helper::get_team_other_infos($team->ID, $settings['other_info_elements'], $enable_links)
-                            ); 
+                            );
                         ?>
                     <?php endif; ?>
 

@@ -47,7 +47,7 @@ class ShortcodeGenerator{
   public function admin_notice() {
 
     $screen = get_current_screen();
-    if('team_manager_page_team-manager-shortcode-generator' == $screen->id):
+    if('team_manager_page_team-manager-shortcode-generator' === $screen->id):
     ?>
     <div class="notice notice-warning is-dismissible">
     <?php echo \sprintf( "<p>Shortcode Generator is deprecated please use <a href='%s'>Team Generator</a> instate.</p>", esc_url( admin_url( 'edit.php?post_type=dwl_team_generator' ) ) ); ?>
@@ -70,19 +70,16 @@ class ShortcodeGenerator{
     //print_r($hook );
     \wp_enqueue_style( 'wp-color-picker' );
 
-    \wp_enqueue_script( 'team-manager-admin' ); 
+    \wp_enqueue_script( 'team-manager-admin' );
     \wp_enqueue_style( 'team-manager-admin' );
 
-    \wp_enqueue_style([
-      'wp-team-font-awesome-admin',
-      'wp-team-style-admin',
-        'wp-team-slick-admin',
-        'wp-team-slick-theme-admin'
-      ]);
-      \wp_enqueue_script([
-        'wp-team-slick-admin',
-        'wp-team-script-admin'
-       ]);
+    \wp_enqueue_style( 'wp-team-font-awesome-admin' );
+    \wp_enqueue_style( 'wp-team-style-admin' );
+    \wp_enqueue_style( 'wp-team-slick-admin' );
+    \wp_enqueue_style( 'wp-team-slick-theme-admin' );
+
+    \wp_enqueue_script( 'wp-team-slick-admin' );
+    \wp_enqueue_script( 'wp-team-script-admin' );
 
   } 
 
@@ -106,10 +103,10 @@ class ShortcodeGenerator{
                   <div class="col-sm-4">
                     <select name="category" class="form-select" id="category">      
                       <option value="0"><?php \esc_html_e( "All Group", "wp-team-manager" ); ?></option>
-                        <?php 
+                        <?php
                           $terms = get_terms( "team_groups" );
 
-                          if(is_array($terms)){
+                          if( ! is_wp_error( $terms ) && is_array($terms)){
                             $count = count( $terms );
 
                             if ( $count > 0 ){
@@ -241,15 +238,17 @@ class ShortcodeGenerator{
 
                 <div class="row mb-3">
                   <label class="col-sm-7 col-form-label" for="tm_image_size"><?php esc_html_e('Select image size:','wp-team-manager'); ?></label>
-                  <?php 
-                    global $_wp_additional_image_sizes; 
-                  ?>
                   <div class="col-sm-4">
                     <select id="image_size" class="form-select" name="image_size">
                       <option value="thumbnail" selected><?php echo  esc_html__( "thumbnail", "wp-team-manager" ); ?></option>
-                      <?php foreach ( $_wp_additional_image_sizes as $size_name => $size_attrs ): ?>
-                        <option value="<?php echo esc_attr( $size_name ); ?>"><?php echo esc_html( $size_name ) ; ?></option>
-                      <?php endforeach; ?>
+                      <?php
+                        global $_wp_additional_image_sizes;
+                        if ( isset( $_wp_additional_image_sizes ) && is_array( $_wp_additional_image_sizes ) ) {
+                          foreach ( $_wp_additional_image_sizes as $size_name => $size_attrs ) {
+                            printf( '<option value="%s">%s</option>', esc_attr( $size_name ), esc_html( $size_name ) );
+                          }
+                        }
+                      ?>
                     </select>
                   </div>
                 </div>  
@@ -286,11 +285,27 @@ class ShortcodeGenerator{
                     <div id="shortcode_output_box" class="alert alert-dark"></div>
                   </div>
                 </div>
+
+                <div class="row mb-3">
+                  <div class="col-sm-12">
+                    <div class="alert alert-info">
+                      <strong><?php esc_html_e('Enhanced Search Shortcode (Pro):', 'wp-team-manager'); ?></strong><br>
+                      <code>[wtm_enhanced_search]</code>
+                      <p class="mb-0 mt-2"><?php esc_html_e('Add live search, filtering, and analytics to any page.', 'wp-team-manager'); ?></p>
+                    </div>
+                  </div>
+                </div>
               </form> 
             </div>
             <div id="wtpm_short_code_preview" class="col-9"><?php echo  esc_html__( "Preview Loading...", "wp-team-manager" ); ?></div>
           </div>
         </div>
+      </div>
+
+      <div class="wtm-footer">
+          <p>
+              <?php esc_html_e( 'Made with', 'wp-team-manager' ); ?> ❤️ <a href="https://dynamicweblab.com/"><?php esc_html_e( 'by the Dynamic Web Lab', 'wp-team-manager' ); ?></a>
+          </p>
       </div>
       <?php 
     }

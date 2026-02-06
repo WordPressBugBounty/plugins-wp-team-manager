@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace DWL\Wtm\AI;
 
 use DWL\Wtm\Classes\Log;
@@ -30,7 +32,7 @@ class AI_Manager {
     /**
      * Initialize the AI modules.
      */
-    public function init() {
+    public function init(): void {
         $enabled_modules = get_option( 'wp_team_ai_enabled_modules', [] );
 
         if ( ! is_array( $enabled_modules ) ) {
@@ -38,7 +40,7 @@ class AI_Manager {
         }
 
         $allowed = ['telegram', 'sync', 'faq', 'slack', 'onboarding'];
-        $enabled_modules = array_intersect($enabled_modules, $allowed);
+        $enabled_modules = array_intersect( $enabled_modules, $allowed );
 
         $module_path = __DIR__ . '/Modules/';
         $pro_active = Helper::is_pro_active();
@@ -49,11 +51,17 @@ class AI_Manager {
         // Free: Telegram
         if ( in_array( 'telegram', $enabled_modules, true ) ) {
             $file = $module_path . 'Telegram_Agent.php';
-            if ( file_exists( $file ) ) {
-                require_once $file;
-                $this->modules['telegram'] = new Modules\Telegram_Agent();
-                if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
-                    Log::info('AI_Manager: Telegram module loaded');
+            if ( file_exists( $file ) && $this->is_safe_path( $file, $module_path ) ) {
+                try {
+                    require_once $file;
+                    $this->modules['telegram'] = new Modules\Telegram_Agent();
+                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                        Log::info('AI_Manager: Telegram module loaded');
+                    }
+                } catch ( \Exception $e ) {
+                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                        Log::error('AI_Manager: Failed to load Telegram module', ['error' => $e->getMessage()]);
+                    }
                 }
             } else {
                 if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
@@ -65,11 +73,17 @@ class AI_Manager {
         // Free: Profile Sync
         if ( in_array( 'sync', $enabled_modules, true ) ) {
             $file = $module_path . 'Profile_Sync_Agent.php';
-            if ( file_exists( $file ) ) {
-                require_once $file;
-                $this->modules['sync'] = new Modules\Profile_Sync_Agent();
-                if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
-                    Log::info('AI_Manager: Profile Sync module loaded');
+            if ( file_exists( $file ) && $this->is_safe_path( $file, $module_path ) ) {
+                try {
+                    require_once $file;
+                    $this->modules['sync'] = new Modules\Profile_Sync_Agent();
+                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                        Log::info('AI_Manager: Profile Sync module loaded');
+                    }
+                } catch ( \Exception $e ) {
+                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                        Log::error('AI_Manager: Failed to load Profile Sync module', ['error' => $e->getMessage()]);
+                    }
                 }
             } else {
                 if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
@@ -80,14 +94,20 @@ class AI_Manager {
 
         // Pro: FAQ (only if Pro path available)
         if ( in_array( 'faq', $enabled_modules, true ) ) {
-            if ( $pro_active ) {
-                $file = $pro_module_path . 'FAQ_Agent.php';
-                if ( file_exists( $file ) ) {
-                    require_once $file;
-                    // Pro namespace for FAQ agent
-                    $this->modules['faq'] = new \WP_Team_Manager_Pro\AI\Modules\FAQ_Agent();
-                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
-                        Log::info('AI_Manager: Pro FAQ module loaded');
+            if ( $pro_active && $pro_module_path ) {
+                $file = $pro_module_path . 'Faq_Agent.php';
+                if ( file_exists( $file ) && $this->is_safe_path( $file, $pro_module_path ) ) {
+                    try {
+                        require_once $file;
+                        // Pro namespace for FAQ agent
+                        $this->modules['faq'] = new \WP_Team_Manager_Pro\AI\Modules\FAQ_Agent();
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::info('AI_Manager: Pro FAQ module loaded');
+                        }
+                    } catch ( \Exception $e ) {
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::error('AI_Manager: Failed to load Pro FAQ module', ['error' => $e->getMessage()]);
+                        }
                     }
                 } else {
                     if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
@@ -103,13 +123,19 @@ class AI_Manager {
 
         // Pro: Slack (only if Pro path available)
         if ( in_array( 'slack', $enabled_modules, true ) ) {
-            if ( $pro_active ) {
+            if ( $pro_active && $pro_module_path ) {
                 $file = $pro_module_path . 'Slack_Agent.php';
-                if ( file_exists( $file ) ) {
-                    require_once $file;
-                    $this->modules['slack'] = new \WP_Team_Manager_Pro\AI\Modules\Slack_Agent();
-                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
-                        Log::info('AI_Manager: Pro Slack module loaded');
+                if ( file_exists( $file ) && $this->is_safe_path( $file, $pro_module_path ) ) {
+                    try {
+                        require_once $file;
+                        $this->modules['slack'] = new \WP_Team_Manager_Pro\AI\Modules\Slack_Agent();
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::info('AI_Manager: Pro Slack module loaded');
+                        }
+                    } catch ( \Exception $e ) {
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::error('AI_Manager: Failed to load Pro Slack module', ['error' => $e->getMessage()]);
+                        }
                     }
                 } else {
                     if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
@@ -125,13 +151,19 @@ class AI_Manager {
 
         // Pro: Onboarding (only if Pro path available)
         if ( in_array( 'onboarding', $enabled_modules, true ) ) {
-            if ( $pro_active ) {
+            if ( $pro_active && $pro_module_path ) {
                 $file = $pro_module_path . 'Onboarding_Agent.php';
-                if ( file_exists( $file ) ) {
-                    require_once $file;
-                    $this->modules['onboarding'] = new \WP_Team_Manager_Pro\AI\Modules\Onboarding_Agent();
-                    if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
-                        Log::info('AI_Manager: Pro Onboarding module loaded');
+                if ( file_exists( $file ) && $this->is_safe_path( $file, $pro_module_path ) ) {
+                    try {
+                        require_once $file;
+                        $this->modules['onboarding'] = new \WP_Team_Manager_Pro\AI\Modules\Onboarding_Agent();
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::info('AI_Manager: Pro Onboarding module loaded');
+                        }
+                    } catch ( \Exception $e ) {
+                        if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
+                            Log::error('AI_Manager: Failed to load Pro Onboarding module', ['error' => $e->getMessage()]);
+                        }
                     }
                 } else {
                     if ( class_exists( '\\DWL\\Wtm\\Classes\\Log' ) ) {
@@ -147,11 +179,31 @@ class AI_Manager {
     }
 
     /**
+     * Validate that a file path is within the expected directory (prevent path traversal)
+     *
+     * @param string $file Full file path to validate
+     * @param string $base_path Expected base directory
+     * @return bool True if path is safe, false otherwise
+     */
+    private function is_safe_path( string $file, string $base_path ): bool {
+        $real_file = realpath( $file );
+        $real_base = realpath( $base_path );
+
+        // If realpath fails, the path doesn't exist yet or is invalid
+        if ( false === $real_file || false === $real_base ) {
+            return false;
+        }
+
+        // Check that the file is within the base path
+        return strpos( $real_file, $real_base ) === 0;
+    }
+
+    /**
      * Get all loaded modules.
      *
      * @return array<string,object>
      */
-    public function get_modules() {
+    public function get_modules(): array {
         return $this->modules;
     }
 }

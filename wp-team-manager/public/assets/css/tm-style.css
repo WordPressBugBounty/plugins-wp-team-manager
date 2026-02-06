@@ -5052,6 +5052,7 @@
   text-transform: none;
   margin-top: 12px;
   padding: 0px;
+  margin-bottom: 10px;
 }
 
 .dwl-team-layout-slider .team-member-title {
@@ -5381,10 +5382,21 @@ text-align: center;
 	flex-direction: column;
 }
 
+.dwl-team-wrapper--main.dwl-team-layout-list.dwl-team-list-style-3{
+	flex-direction: row;
+}
 
 .dwl-team-wrapper .dwl-team-layout-list h2.team-member-title{
 	text-align: left;
   color: var(--wtm-color-black);
+}
+
+.dwl-team-wrapper .dwl-team-layout-list.dwl-team-list-style-3 h2.team-member-title,
+.dwl-team-layout-list.dwl-team-list-style-3 .team-member-info-wrap .team-position{
+  text-align: right;
+}
+.dwl-team-list-style-3 .team-member-info-wrap img{
+  border-radius: 50%;
 }
 
 .dwl-team-layout-list .team-member-info{
@@ -5394,6 +5406,10 @@ text-align: center;
 }
 
 /* Reverse it */
+
+.dwl-team-layout-list.dwl-team-list-style-3 .team-member-info{
+  flex-direction: row-reverse;
+}
 
 .style-3 .dwl-team-elementor-layout-list .team-member-info{
       flex-direction: row-reverse;
@@ -5518,7 +5534,8 @@ text-align: center;
 .dwl-team-filters {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  gap: 10px;
+  justify-content: left;
   margin-top: 40px;
   margin-bottom: 40px;
 }
@@ -5547,6 +5564,7 @@ text-align: center;
 .dwl-team-pagination-ajax {
   display: flex;
   justify-content: center;
+  margin-top: 30px;
 }
 
 .button.dwl-team-load-more {
@@ -6492,6 +6510,10 @@ margin-top: 17px;
   width: 100%;
 }
 
+.dwl-team-elementor-layout-table .team-table-style-2 table thead:first-child tr:first-child th {
+    border-collapse: collapse;
+    border-top: none;
+}
 /* .dwl-team-elementor-layout-table .team-table-style-2 th,
 .dwl-team-elementor-layout-table .team-table-style-2 td {
   border-color: transparent;
@@ -6550,6 +6572,11 @@ margin-top: 17px;
 
 .dwl-team-elementor-layout-table .team-table-style-2 .dwl-table-data{
   border-bottom: 1px solid #999999;
+  background-color: var(--wtm-color-white);
+}
+
+.dwl-team-elementor-layout-table .table>:not(:first-child) {
+    border-top: none;
 }
 
 th.dwl-table-head-cotact {
@@ -6699,7 +6726,7 @@ th.dwl-table-head-cotact {
   font-size: 23px;
   line-height: 1.2em;
   color: var(--wtm-color-white);
-  letter-spacing: 2;
+  letter-spacing: 2px;
 }
 
 .dwl-team-grid-style-2 .team-member-grid-style-two .team-position {
@@ -6744,6 +6771,7 @@ th.dwl-table-head-cotact {
 
 .dwl-team-grid-style-5 header{
   width: 33%;
+  margin: 0 auto;
 }
 
 .dwl-team-grid-style-5 header .dwl-box-shadow {
@@ -6765,7 +6793,8 @@ th.dwl-table-head-cotact {
 .dwl-team-grid-style-5 h2.team-member-title {
   padding: 6px 0px;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 500;
+  margin: 10px 0px 10px;
 }
 .dwl-team-grid-style-5 .team-member-socials a {
   font-size: 14px;
@@ -6961,6 +6990,10 @@ span.team-member-skill-title {
   color: var(--wtm-color-dark_blue);
 }
 
+.dwl-team-grid-style-4 span.team-member-skill-title{
+  color: var(--wtm-color-white);
+}
+
 .style-2 .team-member-skill {
   text-align: left;
   padding: 0px 10px 0px 10px;
@@ -7067,6 +7100,10 @@ progress[value]::after {
   flex-direction: column;
   justify-content: space-evenly;
   width: 50%;
+}
+
+.team-list-style-3-wrap .team-list-feature-img {
+    width: 50%;
 }
 
 .dwl-team-wrapper  .dwl-team-elementor-layout-list .dwl-team-list-style-3 .team-member-title {
@@ -7482,9 +7519,336 @@ text-align: right;
   text-decoration: none;
 }
 
+.wtm-team-manager-shortcode-generator .dwl-slide-arrow,
+.wtm-team-manager-shortcode-generator .slick-dots button {
+  box-shadow: none;
+}
+
+.elementor-widget-wtm-team-manager .slick-dots button,
+.wtm-team-manager-shortcode-generator .slick-dots button{
+  background: transparent;
+}
+
+.elementor-widget-wtm-team-manager .slick-dots,
+.wtm-team-manager-shortcode-generator .slick-dots{
+  bottom: auto;
+}
+
+.dwl-team-wrapper.wtm-team-manager-shortcode-generator {
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
 /* Dark Mode Css */
 .wtm-dark {
   background-color: #121212;
   color: #dadada;
 }
 
+/* .wtm-dark .team-short-bio,
+.wtm-dark .team-member-title,
+.wtm-dark .team-member-other-info .team-member-info,
+.wtm-dark .team-member-other-info a,
+.wtm-dark .wtm-read-more-wrap .wtm-read-more,
+.wtm-dark .team-member-skill-title,
+.wtm-dark .dwl-team-grid-style-3 .team-member-info-wrap .team-short-bio,
+.wtm-dark .dwl-team-grid-style-3 .team-member-socials a,
+.wtm-dark .dwl-team-grid-style-3 .team-member-other-info .team-member-info .fas,
+.wtm-dark .dwl-team-grid-style-3 .team-member-other-info .team-member-info a{
+  color: #dadada;
+} */
+
+/* ========================================
+   Accessibility Features CSS
+   ======================================== */
+
+/* Focus Ring Styles */
+.wtm-focus-enabled *:focus,
+.wtm-focus-enabled a:focus,
+.wtm-focus-enabled button:focus,
+.wtm-focus-enabled input:focus,
+.wtm-focus-enabled select:focus,
+.wtm-focus-enabled textarea:focus,
+.wtm-focus-enabled [tabindex]:focus {
+  outline: 2px solid #0073aa;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.3);
+}
+
+/* Enhanced Focus Ring */
+.wtm-focus-enhanced *:focus {
+  outline: 3px solid #ff6900;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.4);
+}
+
+/* Keyboard Navigation Support */
+.wtm-focus-enabled .team-member-info-wrap:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .team-member-info-wrap {
+    border: 2px solid;
+  }
+  
+  .team-member-socials a {
+    border: 2px solid;
+  }
+  
+  .wtm-read-more {
+    border: 2px solid;
+    background-color: transparent;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .team-member-info-wrap,
+  .team-member-socials a,
+  .wtm-read-more,
+  .dwl-team-overlay {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Skip Links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* ARIA Live Region */
+.wtm-live-region {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Keyboard Navigation Indicators */
+.team-member-info-wrap[tabindex]:focus {
+  outline: 2px solid #0073aa;
+  outline-offset: 2px;
+}
+
+/* Accessible Color Contrast */
+/* .team-member-title a:focus,
+.wtm-read-more:focus {
+  background-color: #0073aa;
+  color: #fff;
+} */
+
+/* Touch Target Size (Minimum 44px) */
+/* .team-member-socials a {
+  min-width: 44px;
+  min-height: 44px;
+} */
+
+/* Focus Management for Modals/Popups */
+.wtm-modal:focus {
+  outline: none;
+}
+
+.wtm-modal-content:focus {
+  outline: 2px solid #0073aa;
+}
+
+/* Accessible Form Elements */
+.dwl-team-search-input:focus {
+  outline: 2px solid #0073aa;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.3);
+}
+
+/* Print Accessibility */
+@media print {
+  .team-member-socials a::after {
+    content: " (" attr(href) ")";
+  }
+  
+  .wtm-read-more::after {
+    content: " (" attr(href) ")";
+  }
+}
+
+/* Taxonomy Filters */
+.wtm-taxonomy-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 24px 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.wtm-filter-all {
+  display: inline-flex;
+}
+
+.wtm-filter-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.wtm-filter-group h4 {
+  display: none;
+}
+
+.dwl-team-filters .dwl-team-filter, 
+.wtm-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dwl-team-filters .dwl-team-filter:hover,
+.wtm-filter-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #111827;
+  transform: none;
+}
+
+.dwl-team-filters .dwl-team-filter:focus,
+.wtm-filter-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.dwl-team-filters .dwl-team-filter.is-active,
+.wtm-filter-btn.active {
+  background: var(--wtm-color-dark_blue, #1e40af);
+  color: #ffffff;
+  border-color: var(--wtm-color-dark_blue, #1e40af);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dwl-team-filters .dwl-team-filter.is-active:hover,
+.wtm-filter-btn.active:hover {
+  background: var(--wtm-color-light_blue, #2563eb) !important;
+  border-color: var(--wtm-color-light_blue, #2563eb) !important;
+}
+
+/* Hidden team members */
+.team-member-info-wrap.hidden {
+  display: none !important;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.team-member-info-wrap:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  animation: wtmFadeIn 0.3s ease;
+}
+
+@keyframes wtmFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wtm-taxonomy-filters {
+    gap: 6px;
+    justify-content: center;
+  }
+
+  .wtm-filter-btn {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wtm-taxonomy-filters {
+    gap: 5px;
+  }
+
+  .wtm-filter-btn {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+}
+
+/* Hover Effects */
+.wtm-hover-fade .team-member-info-content {
+    transition: opacity 0.3s ease;
+}
+.wtm-hover-fade .team-member-info-content:hover {
+    opacity: 0.8;
+}
+
+.wtm-hover-slide .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+.wtm-hover-slide .team-member-info-content:hover {
+    transform: translateY(-10px);
+}
+
+.wtm-hover-zoom .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+.wtm-hover-zoom .team-member-info-content:hover {
+    transform: scale(1.05);
+}
+
+.wtm-hover-rotate .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+.wtm-hover-rotate .team-member-info-content:hover {
+    transform: rotate(2deg);
+}
+
+ 

@@ -6,3 +6,52 @@
 /*# sourceMappingURL=bootstrap.min.css.map */
 
 
+
+/* CMB2 Tooltip Styles */
+.cmb2-tooltip {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: #0073aa;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 8px;
+    position: relative;
+    vertical-align: middle;
+}
+
+.cmb2-tooltip:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: normal;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    max-width: 250px;
+    white-space: normal;
+    width: max-content;
+}
+
+.cmb2-tooltip:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #333;
+    z-index: 1001;
+}

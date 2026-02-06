@@ -80,24 +80,26 @@ class PostType {
 
         /**
          * register Group Taxonomy for the team manager
+         * Labels are dynamic based on dashboard mode (Corporate vs Sports)
          */
+        $group_labels = Helper::get_taxonomy_labels( 'team_groups' );
         $labels = array(
-            'name'                       => __( 'Groups', 'wp-team-manager' ),
-            'singular_name'              => __( 'Group', 'wp-team-manager' ),
-            'search_items'               => __( 'Search Groups', 'wp-team-manager' ),
-            'popular_items'              => __( 'Popular Groups', 'wp-team-manager' ),
-            'all_items'                  => __( 'All Groups', 'wp-team-manager' ),
+            'name'                       => $group_labels['name'] ?? __( 'Groups', 'wp-team-manager' ),
+            'singular_name'              => $group_labels['singular_name'] ?? __( 'Group', 'wp-team-manager' ),
+            'search_items'               => $group_labels['search_items'] ?? __( 'Search Groups', 'wp-team-manager' ),
+            'popular_items'              => $group_labels['popular_items'] ?? __( 'Popular Groups', 'wp-team-manager' ),
+            'all_items'                  => $group_labels['all_items'] ?? __( 'All Groups', 'wp-team-manager' ),
             'parent_item'                => null,
             'parent_item_colon'          => null,
-            'edit_item'                  => __( 'Edit Group', 'wp-team-manager' ),
-            'update_item'                => __( 'Update Group', 'wp-team-manager' ),
-            'add_new_item'               => __( 'Add New Group', 'wp-team-manager' ),
-            'new_item_name'              => __( 'New Group Name', 'wp-team-manager' ),
-            'separate_items_with_commas' => __( 'Separate Groups with commas', 'wp-team-manager' ),
-            'add_or_remove_items'        => __( 'Add or remove Groups', 'wp-team-manager' ),
-            'choose_from_most_used'      => __( 'Choose from the most used Groups', 'wp-team-manager' ),
-            'not_found'                  => __( 'No Groups found.', 'wp-team-manager' ),
-            'menu_name'                  => __( 'Groups', 'wp-team-manager' ),
+            'edit_item'                  => $group_labels['edit_item'] ?? __( 'Edit Group', 'wp-team-manager' ),
+            'update_item'                => $group_labels['update_item'] ?? __( 'Update Group', 'wp-team-manager' ),
+            'add_new_item'               => $group_labels['add_new_item'] ?? __( 'Add New Group', 'wp-team-manager' ),
+            'new_item_name'              => $group_labels['new_item_name'] ?? __( 'New Group Name', 'wp-team-manager' ),
+            'separate_items_with_commas' => $group_labels['separate_items_with_commas'] ?? __( 'Separate Groups with commas', 'wp-team-manager' ),
+            'add_or_remove_items'        => $group_labels['add_or_remove_items'] ?? __( 'Add or remove Groups', 'wp-team-manager' ),
+            'choose_from_most_used'      => $group_labels['choose_from_most_used'] ?? __( 'Choose from the most used Groups', 'wp-team-manager' ),
+            'not_found'                  => $group_labels['not_found'] ?? __( 'No Groups found.', 'wp-team-manager' ),
+            'menu_name'                  => $group_labels['menu_name'] ?? __( 'Groups', 'wp-team-manager' ),
         );
 
         $args = array(
@@ -110,8 +112,8 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_groups' ),
         );
 
-        // Hide Taxonomy Conditionally
-        if (!in_array('team_groups', $tm_taxonomy_fields) && !taxonomy_exists('team_groups')) {
+        // Register Taxonomy Conditionally - only register if not in hidden fields
+        if (!in_array('team_groups', $tm_taxonomy_fields)) {
             register_taxonomy('team_groups', 'team_manager', $args);
         }
 
@@ -121,24 +123,26 @@ class PostType {
 
         /**
          * register Designation Taxonomy for the team manager
+         * Labels are dynamic based on dashboard mode (Corporate vs Sports)
          */
+        $designation_labels = Helper::get_taxonomy_labels( 'team_designation' );
         $labels = array(
-            'name'                       => __( 'Designations', 'wp-team-manager' ),
-            'singular_name'              => __( 'Designation', 'wp-team-manager' ),
-            'search_items'               => __( 'Search Designation', 'wp-team-manager' ),
-            'popular_items'              => __( 'Popular Designation', 'wp-team-manager' ),
-            'all_items'                  => __( 'All Designations', 'wp-team-manager' ),
+            'name'                       => $designation_labels['name'] ?? __( 'Designations', 'wp-team-manager' ),
+            'singular_name'              => $designation_labels['singular_name'] ?? __( 'Designation', 'wp-team-manager' ),
+            'search_items'               => $designation_labels['search_items'] ?? __( 'Search Designation', 'wp-team-manager' ),
+            'popular_items'              => $designation_labels['popular_items'] ?? __( 'Popular Designation', 'wp-team-manager' ),
+            'all_items'                  => $designation_labels['all_items'] ?? __( 'All Designations', 'wp-team-manager' ),
             'parent_item'                => null,
             'parent_item_colon'          => null,
-            'edit_item'                  => __( 'Edit Designation', 'wp-team-manager' ),
-            'update_item'                => __( 'Update Designation', 'wp-team-manager' ),
-            'add_new_item'               => __( 'Add New Designation', 'wp-team-manager' ),
-            'new_item_name'              => __( 'New Designation', 'wp-team-manager' ),
-            'separate_items_with_commas' => __( 'Separate Designations with commas', 'wp-team-manager' ),
-            'add_or_remove_items'        => __( 'Add or remove Designation', 'wp-team-manager' ),
-            'choose_from_most_used'      => __( 'Choose from the most used Designation', 'wp-team-manager' ),
-            'not_found'                  => __( 'No Designation found.', 'wp-team-manager' ),
-            'menu_name'                  => __( 'Designations', 'wp-team-manager' ),
+            'edit_item'                  => $designation_labels['edit_item'] ?? __( 'Edit Designation', 'wp-team-manager' ),
+            'update_item'                => $designation_labels['update_item'] ?? __( 'Update Designation', 'wp-team-manager' ),
+            'add_new_item'               => $designation_labels['add_new_item'] ?? __( 'Add New Designation', 'wp-team-manager' ),
+            'new_item_name'              => $designation_labels['new_item_name'] ?? __( 'New Designation', 'wp-team-manager' ),
+            'separate_items_with_commas' => $designation_labels['separate_items_with_commas'] ?? __( 'Separate Designations with commas', 'wp-team-manager' ),
+            'add_or_remove_items'        => $designation_labels['add_or_remove_items'] ?? __( 'Add or remove Designation', 'wp-team-manager' ),
+            'choose_from_most_used'      => $designation_labels['choose_from_most_used'] ?? __( 'Choose from the most used Designation', 'wp-team-manager' ),
+            'not_found'                  => $designation_labels['not_found'] ?? __( 'No Designation found.', 'wp-team-manager' ),
+            'menu_name'                  => $designation_labels['menu_name'] ?? __( 'Designations', 'wp-team-manager' ),
         );
 
         $args = array(
@@ -151,8 +155,8 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_designation' ),
         );
 
-        // Hide Taxonomy Conditionally
-        if (!in_array('team_designation', $tm_taxonomy_fields) && !taxonomy_exists('team_designation')) {
+        // Register Taxonomy Conditionally - only register if not in hidden fields
+        if (!in_array('team_designation', $tm_taxonomy_fields)) {
             register_taxonomy( 'team_designation', 'team_manager', $args );
         }
 
@@ -163,24 +167,26 @@ class PostType {
 
         /**
          * register Department Taxonomy for the team manager
+         * Labels are dynamic based on dashboard mode (Corporate vs Sports)
          */
+        $department_labels = Helper::get_taxonomy_labels( 'team_department' );
         $labels = array(
-            'name'                       => __( 'Departments', 'wp-team-manager' ),
-            'singular_name'              => __( 'Department', 'wp-team-manager' ),
-            'search_items'               => __( 'Search Department', 'wp-team-manager' ),
-            'popular_items'              => __( 'Popular Department', 'wp-team-manager' ),
-            'all_items'                  => __( 'All Departments', 'wp-team-manager' ),
+            'name'                       => $department_labels['name'] ?? __( 'Departments', 'wp-team-manager' ),
+            'singular_name'              => $department_labels['singular_name'] ?? __( 'Department', 'wp-team-manager' ),
+            'search_items'               => $department_labels['search_items'] ?? __( 'Search Department', 'wp-team-manager' ),
+            'popular_items'              => $department_labels['popular_items'] ?? __( 'Popular Department', 'wp-team-manager' ),
+            'all_items'                  => $department_labels['all_items'] ?? __( 'All Departments', 'wp-team-manager' ),
             'parent_item'                => null,
             'parent_item_colon'          => null,
-            'edit_item'                  => __( 'Edit Department', 'wp-team-manager' ),
-            'update_item'                => __( 'Update Department', 'wp-team-manager' ),
-            'add_new_item'               => __( 'Add New Department', 'wp-team-manager' ),
-            'new_item_name'              => __( 'New Department', 'wp-team-manager' ),
-            'separate_items_with_commas' => __( 'Separate Departments with commas', 'wp-team-manager' ),
-            'add_or_remove_items'        => __( 'Add or remove Department', 'wp-team-manager' ),
-            'choose_from_most_used'      => __( 'Choose from the most used Department', 'wp-team-manager' ),
-            'not_found'                  => __( 'No Department found.', 'wp-team-manager' ),
-            'menu_name'                  => __( 'Departments', 'wp-team-manager' ),
+            'edit_item'                  => $department_labels['edit_item'] ?? __( 'Edit Department', 'wp-team-manager' ),
+            'update_item'                => $department_labels['update_item'] ?? __( 'Update Department', 'wp-team-manager' ),
+            'add_new_item'               => $department_labels['add_new_item'] ?? __( 'Add New Department', 'wp-team-manager' ),
+            'new_item_name'              => $department_labels['new_item_name'] ?? __( 'New Department', 'wp-team-manager' ),
+            'separate_items_with_commas' => $department_labels['separate_items_with_commas'] ?? __( 'Separate Departments with commas', 'wp-team-manager' ),
+            'add_or_remove_items'        => $department_labels['add_or_remove_items'] ?? __( 'Add or remove Department', 'wp-team-manager' ),
+            'choose_from_most_used'      => $department_labels['choose_from_most_used'] ?? __( 'Choose from the most used Department', 'wp-team-manager' ),
+            'not_found'                  => $department_labels['not_found'] ?? __( 'No Department found.', 'wp-team-manager' ),
+            'menu_name'                  => $department_labels['menu_name'] ?? __( 'Departments', 'wp-team-manager' ),
         );
 
         $args = array(
@@ -193,8 +199,8 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_department' ),
         );
 
-        // Hide Taxonomy Conditionally
-        if (!in_array('team_department', $tm_taxonomy_fields) && !taxonomy_exists('team_department')) {
+        // Register Taxonomy Conditionally - only register if not in hidden fields
+        if (!in_array('team_department', $tm_taxonomy_fields)) {
             register_taxonomy( 'team_department', 'team_manager', $args );
         }
 
@@ -235,8 +241,8 @@ class PostType {
             'rewrite'               => array( 'slug' => 'team_genders' ),
         );
 
-        // Hide Taxonomy Conditionally
-        if (!in_array('team_genders', $tm_taxonomy_fields) && !taxonomy_exists('team_genders')) {
+        // Register Taxonomy Conditionally - only register if not in hidden fields
+        if (!in_array('team_genders', $tm_taxonomy_fields)) {
             register_taxonomy( 'team_genders', 'team_manager', $args );
         }
 

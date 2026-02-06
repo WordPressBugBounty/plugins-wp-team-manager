@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace DWL\Wtm\Classes;
 
 use DWL\Wtm\Classes\Log;
@@ -7,6 +9,65 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 class Helper {
+
+    /**
+     * ===== Pro Features Registry =====
+     * Centralized list of all pro features/fields in the plugin
+     * Use this list to validate and check pro feature access throughout the codebase
+     */
+
+    /**
+     * Get the complete list of pro feature keys
+     *
+     * @return array List of pro feature setting keys
+     */
+    public static function get_pro_features_list() {
+        return [
+            // Elementor Widget Pro Features
+            'popup_bar_show'        => 'Team member detail popup modal',
+            'disable_single_member' => 'Disable single member page links',
+            'other_info_link'       => 'Enable clickable links for phone/mobile in other info',
+            'progress_bar_show'     => 'Skills progress bars display',
+            'enable_ajax_search'    => 'AJAX live search functionality',
+            'pagination'            => 'Ajax pagination (when value is "ajax")',
+
+            // Single Team Member Pro Features
+            'tm_single_team_lightbox' => 'Lightbox/gallery feature for single team member page',
+            'tm_skills'             => 'Skills/progress bars on single page',
+
+            // Global Settings Pro Features
+            'single_team_member_view' => 'Disable single team member page view (global setting)',
+            'tm_custom_labels'        => 'Custom field labels (global setting)',
+            'team_image_size_change'  => 'Custom single page image size (global setting)',
+            'tm_schema_markup'        => 'Enable schema markup for SEO (global setting)',
+            'tm_meta_description'     => 'Custom meta description template (global setting)',
+
+            // Add future pro features here
+            // 'feature_key'         => 'Feature description',
+        ];
+    }
+
+    /**
+     * Check if a given feature key is a pro feature
+     *
+     * @param string $feature_key The feature key to check
+     * @return bool True if it's a pro feature, false otherwise
+     */
+    public static function is_pro_feature( $feature_key ) {
+        $pro_features = self::get_pro_features_list();
+        return array_key_exists( $feature_key, $pro_features );
+    }
+
+    /**
+     * Get the description of a pro feature
+     *
+     * @param string $feature_key The feature key
+     * @return string|null Feature description or null if not found
+     */
+    public static function get_pro_feature_description( $feature_key ) {
+        $pro_features = self::get_pro_features_list();
+        return $pro_features[ $feature_key ] ?? null;
+    }
 
     /**
      * ===== Freemius helpers (centralized) =====
@@ -62,6 +123,386 @@ class Helper {
     public static function is_pro_active() {
         // Prefer can_use_premium_code which accounts for dev-mode scenarios too
         return self::freemius_can_use_premium() || self::freemius_is_paying_or_trial();
+    }
+
+    /**
+     * Check if a pro feature setting is enabled and user has pro access
+     *
+     * This method provides secure validation for pro features by checking:
+     * 1. Feature is registered in the pro features list (optional warning if not)
+     * 2. User has an active pro license/trial
+     * 3. The feature setting is explicitly enabled
+     *
+     * @param array $settings The settings array
+     * @param string $feature_key The setting key to check (e.g. 'popup_bar_show')
+     * @param string $expected_value The expected value (default: 'yes')
+     * @param bool $strict If true, logs warning for unregistered features (default: false for backward compatibility)
+     * @return bool True if user has pro access AND feature is enabled, false otherwise
+     */
+    public static function is_pro_feature_enabled( $settings, $feature_key, $expected_value = 'yes', $strict = false ) {
+        // Optional: Warn if feature is not in the registry (helps catch mistakes during development)
+        if ( $strict && ! self::is_pro_feature( $feature_key ) ) {
+            if ( class_exists( __NAMESPACE__ . '\\Log' ) ) {
+                Log::warning( 'Unregistered pro feature check', [
+                    'feature_key' => $feature_key,
+                    'tip' => 'Add this feature to Helper::get_pro_features_list()'
+                ] );
+            }
+        }
+
+        // Default to false if no pro access
+        if ( ! self::is_pro_active() ) {
+            return false;
+        }
+
+        // Default to false if setting is not set or doesn't match expected value
+        if ( ! isset( $settings[ $feature_key ] ) || $settings[ $feature_key ] !== $expected_value ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Sanitize settings array by removing/disabling pro features for free users
+     *
+     * This ensures that even if a free user somehow has pro settings enabled,
+     * they will be stripped out before being used.
+     *
+     * @param array $settings The settings array to sanitize
+     * @return array Sanitized settings array
+     */
+    public static function sanitize_pro_features( $settings ) {
+        // If user has pro access, return settings as-is
+        if ( self::is_pro_active() ) {
+            return $settings;
+        }
+
+        // Remove/disable all pro features for free users
+        $pro_features = array_keys( self::get_pro_features_list() );
+        foreach ( $pro_features as $feature_key ) {
+            if ( isset( $settings[ $feature_key ] ) ) {
+                // Set to 'no' or empty to disable
+                $settings[ $feature_key ] = '';
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Get list of all pro features with their current status
+     * Useful for debugging and admin displays
+     *
+     * @param array $settings Optional settings array to check
+     * @return array Array of features with status
+     */
+    public static function get_pro_features_status( $settings = [] ) {
+        $pro_features = self::get_pro_features_list();
+        $has_pro = self::is_pro_active();
+        $status = [];
+
+        foreach ( $pro_features as $key => $description ) {
+            $setting_value = $settings[ $key ] ?? null;
+            $is_enabled = self::is_pro_feature_enabled( $settings, $key );
+
+            $status[ $key ] = [
+                'description'   => $description,
+                'setting_value' => $setting_value,
+                'is_enabled'    => $is_enabled,
+                'has_pro'       => $has_pro,
+                'reason'        => $is_enabled ? 'Active' : ( ! $has_pro ? 'No Pro License' : 'Setting Disabled' ),
+            ];
+        }
+
+        return $status;
+    }
+
+    /**
+     * ===== Dashboard Mode Presets =====
+     * Central configuration for plugin "modes" (Corporate, Sports, Portfolio, etc.)
+     * This is the SINGLE SOURCE OF TRUTH for all mode-related labels and visibility.
+     */
+
+    /**
+     * Get all available dashboard mode presets.
+     *
+     * Each preset contains:
+     * - 'label': Human-readable name for the dropdown
+     * - 'description': Short description for the settings UI
+     * - 'field_labels': Array mapping field keys to display labels
+     * - 'taxonomy_labels': Array mapping taxonomy slugs to display labels
+     * - 'hidden_fields': Array of field keys to hide in this mode
+     *
+     * @return array
+     */
+    public static function get_dashboard_presets() {
+        return apply_filters( 'wp_team_manager_dashboard_presets', [
+            'corporate' => [
+                'label'       => __( 'Corporate / Business', 'wp-team-manager' ),
+                'description' => __( 'Default mode for companies, agencies, and organizations.', 'wp-team-manager' ),
+                'field_labels' => [
+                    'tm_jtitle'          => __( 'Position/Job Title', 'wp-team-manager' ),
+                    'tm_location'        => __( 'Location', 'wp-team-manager' ),
+                    'tm_year_experience' => __( 'Years of Experience', 'wp-team-manager' ),
+                    'tm_short_bio'       => __( 'Short Bio', 'wp-team-manager' ),
+                    'tm_long_bio'        => __( 'Long Bio', 'wp-team-manager' ),
+                    'tm_vcard'           => __( 'Add vCard File', 'wp-team-manager' ),
+                    'tm_resume_url'      => __( 'Resume URL', 'wp-team-manager' ),
+                    'tm_email'           => __( 'Email Address', 'wp-team-manager' ),
+                    'tm_telephone'       => __( 'Telephone (Office)', 'wp-team-manager' ),
+                    'tm_mobile'          => __( 'Mobile (Personal)', 'wp-team-manager' ),
+                    'tm_web_url'         => __( 'Web URL', 'wp-team-manager' ),
+                ],
+                'taxonomy_labels' => [
+                    'team_department'  => [
+                        'name'                       => __( 'Departments', 'wp-team-manager' ),
+                        'singular_name'              => __( 'Department', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Department', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Department', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Departments', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit Department', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update Department', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New Department', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New Department', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Departments with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Department', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Department', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Department found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Departments', 'wp-team-manager' ),
+                    ],
+                    'team_designation' => [
+                        'name'                       => __( 'Designations', 'wp-team-manager' ),
+                        'singular_name'              => __( 'Designation', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Designation', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Designation', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Designations', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit Designation', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update Designation', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New Designation', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New Designation', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Designations with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Designation', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Designation', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Designation found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Designations', 'wp-team-manager' ),
+                    ],
+                    'team_groups' => [
+                        'name'                       => __( 'Groups', 'wp-team-manager' ),
+                        'singular_name'              => __( 'Group', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Groups', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Groups', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Groups', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit Group', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update Group', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New Group', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New Group Name', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Groups with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Groups', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Groups', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Groups found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Groups', 'wp-team-manager' ),
+                    ],
+                ],
+                'hidden_fields' => [],
+            ],
+
+            'sports' => [
+                'label'       => __( 'Sports League', 'wp-team-manager' ),
+                'description' => __( 'Optimized for sports teams, athletes, and leagues.', 'wp-team-manager' ),
+                'field_labels' => [
+                    'tm_jtitle'          => __( 'Position', 'wp-team-manager' ),
+                    'tm_location'        => __( 'Jersey Number', 'wp-team-manager' ),
+                    'tm_year_experience' => __( 'Seasons / Games Played', 'wp-team-manager' ),
+                    'tm_short_bio'       => __( 'Player Stats', 'wp-team-manager' ),
+                    'tm_long_bio'        => __( 'Player Bio', 'wp-team-manager' ),
+                    'tm_vcard'           => __( 'vCard', 'wp-team-manager' ),
+                    'tm_resume_url'      => __( 'Resume', 'wp-team-manager' ),
+                    'tm_email'           => __( 'Email Address', 'wp-team-manager' ),
+                    'tm_telephone'       => __( 'Phone', 'wp-team-manager' ),
+                    'tm_mobile'          => __( 'Mobile', 'wp-team-manager' ),
+                    'tm_web_url'         => __( 'Website', 'wp-team-manager' ),
+                ],
+                'taxonomy_labels' => [
+                    'team_department'  => [
+                        'name'                       => __( 'Teams', 'wp-team-manager' ),
+                        'singular_name'              => __( 'Team', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Teams', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Teams', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Teams', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit Team', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update Team', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New Team', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New Team', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Teams with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Team', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Team', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Team found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Teams', 'wp-team-manager' ),
+                    ],
+                    'team_designation' => [
+                        'name'                       => __( 'Positions', 'wp-team-manager' ),
+                        'singular_name'              => __( 'Position', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Positions', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Positions', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Positions', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit Position', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update Position', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New Position', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New Position', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Positions with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Position', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Position', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Position found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Positions', 'wp-team-manager' ),
+                    ],
+                    'team_groups' => [
+                        'name'                       => __( 'Leagues', 'wp-team-manager' ),
+                        'singular_name'              => __( 'League', 'wp-team-manager' ),
+                        'search_items'               => __( 'Search Leagues', 'wp-team-manager' ),
+                        'popular_items'              => __( 'Popular Leagues', 'wp-team-manager' ),
+                        'all_items'                  => __( 'All Leagues', 'wp-team-manager' ),
+                        'edit_item'                  => __( 'Edit League', 'wp-team-manager' ),
+                        'update_item'                => __( 'Update League', 'wp-team-manager' ),
+                        'add_new_item'               => __( 'Add New League', 'wp-team-manager' ),
+                        'new_item_name'              => __( 'New League Name', 'wp-team-manager' ),
+                        'separate_items_with_commas' => __( 'Separate Leagues with commas', 'wp-team-manager' ),
+                        'add_or_remove_items'        => __( 'Add or remove Leagues', 'wp-team-manager' ),
+                        'choose_from_most_used'      => __( 'Choose from the most used Leagues', 'wp-team-manager' ),
+                        'not_found'                  => __( 'No Leagues found.', 'wp-team-manager' ),
+                        'menu_name'                  => __( 'Leagues', 'wp-team-manager' ),
+                    ],
+                ],
+                'hidden_fields' => [
+                    'tm_vcard',
+                    'tm_resume_url',
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * Get the currently active dashboard mode.
+     *
+     * @return string Mode key (e.g., 'corporate', 'sports')
+     */
+    public static function get_active_mode() {
+        $mode = get_option( 'tm_dashboard_mode', 'corporate' );
+        $presets = self::get_dashboard_presets();
+
+        // Safety: If stored mode doesn't exist, fall back to corporate
+        if ( ! isset( $presets[ $mode ] ) ) {
+            return 'corporate';
+        }
+
+        return $mode;
+    }
+
+    /**
+     * Get the display label for a field based on the active mode.
+     *
+     * @param string $field_key The field meta key (e.g., 'tm_jtitle')
+     * @return string The localized display label
+     */
+    public static function get_field_label( $field_key ) {
+        $mode = self::get_active_mode();
+        $presets = self::get_dashboard_presets();
+
+        // Check if this mode has a custom label for this field
+        if ( isset( $presets[ $mode ]['field_labels'][ $field_key ] ) ) {
+            return $presets[ $mode ]['field_labels'][ $field_key ];
+        }
+
+        // Fall back to corporate labels
+        if ( isset( $presets['corporate']['field_labels'][ $field_key ] ) ) {
+            return $presets['corporate']['field_labels'][ $field_key ];
+        }
+
+        // Ultimate fallback: return the key itself (shouldn't happen)
+        return $field_key;
+    }
+
+    /**
+     * Get the display labels for a taxonomy based on the active mode.
+     *
+     * @param string $taxonomy The taxonomy slug (e.g., 'team_department')
+     * @param string $label_key Optional. Specific label key to retrieve (e.g., 'name', 'singular_name')
+     * @return array|string Array of all labels, or specific label if $label_key provided
+     */
+    public static function get_taxonomy_labels( $taxonomy, $label_key = null ) {
+        $mode = self::get_active_mode();
+        $presets = self::get_dashboard_presets();
+
+        // Get labels from current mode, fallback to corporate
+        $labels = $presets[ $mode ]['taxonomy_labels'][ $taxonomy ]
+            ?? $presets['corporate']['taxonomy_labels'][ $taxonomy ]
+            ?? [];
+
+        if ( $label_key !== null ) {
+            return $labels[ $label_key ] ?? '';
+        }
+
+        return $labels;
+    }
+
+    /**
+     * Check if a field should be hidden in the current mode.
+     *
+     * @param string $field_key The field meta key (e.g., 'tm_vcard')
+     * @return bool True if field should be hidden
+     */
+    public static function is_field_hidden( $field_key ) {
+        $mode = self::get_active_mode();
+        $presets = self::get_dashboard_presets();
+
+        $hidden_fields = $presets[ $mode ]['hidden_fields'] ?? [];
+
+        return in_array( $field_key, $hidden_fields, true );
+    }
+
+    /**
+     * Get all available mode options for a dropdown.
+     *
+     * @return array Associative array of mode_key => label
+     */
+    public static function get_mode_options() {
+        $presets = self::get_dashboard_presets();
+        $options = [];
+
+        foreach ( $presets as $key => $preset ) {
+            $options[ $key ] = $preset['label'];
+        }
+
+        return $options;
+    }
+
+    /**
+     * Check if a pro global option is enabled
+     * This is for global WordPress options (not widget settings)
+     *
+     * @param string $option_name The option name to check
+     * @param string $expected_value The expected value for the option (default: 'True')
+     * @return bool True if pro is active AND option is set to expected value, false otherwise
+     */
+    public static function is_pro_option_enabled( $option_name, $expected_value = '1' ) {
+        // Always check if it's a registered pro feature
+        if ( ! self::is_pro_feature( $option_name ) ) {
+            if ( class_exists( __NAMESPACE__ . '\\Log' ) ) {
+                Log::warning( 'Checking unregistered pro option', [
+                    'option_name' => $option_name,
+                    'tip' => 'Add this feature to Helper::get_pro_features_list()'
+                ] );
+            }
+        }
+
+        // Default to false if no pro access
+        if ( ! self::is_pro_active() ) {
+            return false;
+        }
+
+        // Check option value
+        $option_value = get_option( $option_name );
+        return $option_value === $expected_value;
     }
 
     /**
@@ -143,17 +584,42 @@ class Helper {
     
     // Get the thumbnail ID once
     $thumbnail_id = get_post_thumbnail_id($post_id);
+    
+    // Check accessibility and performance settings
+    $alt_text_enabled = get_option('tm_alt_text', 1);
+    $lazy_loading = get_option('tm_lazy_loading', 0);
+    $loading_attr = ($lazy_loading == 1) ? 'lazy' : 'eager';
 
     // Return default image if no thumbnail is found
     if (!has_post_thumbnail($post_id)) {
-        $placeholder_url = plugin_dir_url(__FILE__) . 'assets/images/placeholder.png'; // ✅ Replace with actual path
-        return '<img src="' . esc_url($placeholder_url) . '" alt="' . esc_attr__('No Image', 'wp-team-manager') . '" class="' . esc_attr($class) . '" />';
+        $placeholder_url = plugin_dir_url(__FILE__) . 'assets/images/placeholder.png';
+        $alt_text = ($alt_text_enabled == 1) ? esc_attr__('Team member placeholder image', 'wp-team-manager') : esc_attr__('No Image', 'wp-team-manager');
+        return '<img src="' . esc_url($placeholder_url) . '" alt="' . $alt_text . '" class="' . esc_attr($class) . '" loading="' . esc_attr($loading_attr) . '" />';
+    }
+
+    // Prepare image attributes
+    $image_attrs = [
+        "class" => esc_attr($class),
+        "loading" => esc_attr($loading_attr)
+    ];
+    
+    // Add descriptive alt text if accessibility is enabled
+    if ($alt_text_enabled == 1) {
+        $team_name = get_the_title($post_id);
+        $job_title = get_post_meta($post_id, 'tm_jtitle', true);
+        
+        if ($job_title) {
+            $alt_text = sprintf(__('%s, %s', 'wp-team-manager'), $team_name, $job_title);
+        } else {
+            $alt_text = sprintf(__('Photo of %s', 'wp-team-manager'), $team_name);
+        }
+        $image_attrs['alt'] = esc_attr($alt_text);
     }
 
     // Return the formatted image with proper escaping for class attributes
     return apply_filters(
         'wp_team_manager_team_picture_html',
-        wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, ["class" => esc_attr($class)]),
+        wp_get_attachment_image($thumbnail_id, $thumb_image_size, false, $image_attrs),
         $post_id,
         $thumb_image_size,
         $class
@@ -186,7 +652,7 @@ class Helper {
         }
     
         if (is_null($link_window)) {
-            $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
+            $link_window = (get_option('tm_link_new_window') === '1') ? 'target="_blank"' : '';
         }
     
         // Fetch all social links in a single call to reduce DB queries
@@ -220,7 +686,6 @@ class Helper {
                 echo '<i class="' . esc_attr($data['icon']) . '"></i></a>';
             }
         }
-    
         echo '</div>';
         do_action('wp_team_manager_after_social_links', $post_id);
     
@@ -255,7 +720,7 @@ class Helper {
         }
     
         if (is_null($link_window)) {
-            $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
+            $link_window = (get_option('tm_link_new_window') === '1') ? 'target="_blank"' : '';
         }
     
         // Fetch all metadata at once (reducing database queries)
@@ -291,6 +756,9 @@ class Helper {
             'snapchat'       => ['icon' => 'fab fa-snapchat', 'title' => __('Snapchat', 'wp-team-manager')],
             'goodreads'      => ['icon' => 'fab fa-goodreads', 'title' => __('Goodreads', 'wp-team-manager')],
             'twitch'         => ['icon' => 'fab fa-twitch', 'title' => __('Twitch', 'wp-team-manager')],
+            'phone'          => ['icon' => 'fas fa-phone-alt', 'title' => __('Phone', 'wp-team-manager')],
+            'phone-app'      => ['icon' => 'fas fa-mobile-alt', 'title' => __('Phone App', 'wp-team-manager')],
+            'address'        => ['icon' => 'fas fa-address-card', 'title' => __('Business Card', 'wp-team-manager')],
             'xing'         => ['icon' => 'fab fa-xing', 'title' => __('Xing', 'wp-team-manager')],
         ];
     
@@ -307,12 +775,18 @@ class Helper {
                 $type  = sanitize_key($data['type']);
                 $icon  = esc_attr($social_media_icons[$type]['icon']);
                 $title = esc_attr($social_media_icons[$type]['title']);
-                $url   = ($type === 'email') ? 'mailto:' . sanitize_email($data['url']) : esc_url($data['url']);
-    
+                if ($type === 'email') {
+                    $url = 'mailto:' . sanitize_email($data['url']);
+                } elseif ($type === 'phone' || $type === 'phone-app') {
+                    $url = 'tel:' . preg_replace('/[^0-9+\-\s\(\)]/', '', $data['url']);
+                } else {
+                    $url = esc_url($data['url']);
+                }
+
                 ?>
-                <a class="<?php echo esc_attr($type . '-' . $social_size); ?>" href="<?php echo $url; ?>" <?php echo $link_window; ?> title="<?php echo $title; ?>">
-                    <i class="<?php echo $icon; ?>"></i>
-                </a>
+                    <a class="<?php echo esc_attr($type . '-' . $social_size); ?>" href="<?php echo $url; ?>" <?php echo $link_window; ?> title="<?php echo $title; ?>">
+                        <i class="<?php echo $icon; ?>"></i>
+                    </a>
                 <?php
             }
             ?>
@@ -340,9 +814,21 @@ class Helper {
     $is_pro = ! Helper::freemius_is_free_user();
 
     $custom_labels = get_option('tm_custom_labels', []);
-    $web_btn_text = $custom_labels['tm_web_url'] ?? __('Bio', 'wp-team-manager');
+    $web_btn_text = $custom_labels['tm_web_url'] ?? self::get_field_label('tm_web_url');
     $vcard_btn_text = $custom_labels['tm_vcard'] ?? __('Download CV', 'wp-team-manager');
     $meta = get_post_meta($post_id);
+
+    $mode = self::get_active_mode();
+
+    $jarseNumber = [];
+    $gameplayed = [];
+
+    if ($mode === 'sports') {
+        $jarseNumber = ['icon' => 'fas fa-tshirt', 'is_link' => true];
+        
+    }else{
+        $jarseNumber = ['icon' => 'fas fa-map-marker', 'is_link' => false];
+    }
 
     $fields = [
         'tm_mobile'          => !empty($meta['tm_mobile'][0]) ? sanitize_text_field($meta['tm_mobile'][0]) : '',
@@ -359,6 +845,13 @@ class Helper {
         'tm_hire_me_url'     => !empty($meta['tm_hire_me_url'][0]) ? esc_url($meta['tm_hire_me_url'][0]) : '',
     ];
 
+    // Remove hidden fields based on dashboard mode (e.g., vCard in Sports Mode)
+    foreach ( array_keys( $fields ) as $field_key ) {
+        if ( self::is_field_hidden( $field_key ) ) {
+            $fields[ $field_key ] = '';
+        }
+    }
+
     if (empty(array_filter($fields))) return '';
 
     $output = '<div class="team-member-other-info">';
@@ -367,7 +860,7 @@ class Helper {
         'tm_mobile'          => ['icon' => 'fas fa-mobile-alt', 'prefix' => 'tel:', 'is_link' => true],
         'tm_telephone'       => ['icon' => 'fas fa-phone-alt', 'prefix' => 'tel:', 'is_link' => true],
         'tm_year_experience' => ['icon' => 'fas fa-history', 'is_link' => false],
-        'tm_location'        => ['icon' => 'fas fa-map-marker', 'is_link' => false],
+        'tm_location'        => $jarseNumber,
         'tm_email'           => ['icon' => 'fas fa-envelope', 'prefix' => 'mailto:', 'is_link' => true],
         'tm_web_url'         => ['icon' => 'fas fa-link', 'prefix' => '', 'is_link' => true, 'link_text' => $web_btn_text],
         'tm_vcard'           => ['icon' => 'fas fa-download', 'prefix' => '', 'is_link' => true, 'link_text' => $vcard_btn_text],
@@ -439,7 +932,7 @@ class Helper {
 	 */
 	public static function get_pagination_markup( $query, $posts_per_page ) {
 
-        $big = 999999999; // need an unlikely integer
+        $big = '999999999'; // need an unlikely string
 
 		if ( $query->max_num_pages > 0 ) {
 			$html = "<div class='wtm-pagination-wrap dwl-team-number-pagination-container' data-total-pages='{$query->max_num_pages}' data-posts-per-page='{$posts_per_page}' data-type='pagination' >";   
@@ -831,7 +1324,7 @@ class Helper {
         $is_lightbox_selected = get_option('tm_single_team_lightbox');
         $team_image_column    = get_option( 'tm_single_gallery_column' );
 
-        if ( 'True' === $is_lightbox_selected && tmwstm_fs()->is_paying_or_trial()) {
+        if ( 1 === $is_lightbox_selected && tmwstm_fs()->is_paying_or_trial()) {
             $light_box_selector = 'wtm-image-gallery-lightbox';
         }
 
@@ -1565,13 +2058,24 @@ class Helper {
 
 public static function getTaxonomies()
 {
-    // Base taxonomy options
-    $options = [
-        'team_groups'     => __('Group', 'wp-team-manager'),
-        'team_department' => __('Department', 'wp-team-manager'),
-        'team_genders'    => __('Gender', 'wp-team-manager'),
-        'team_designation'=> __('Designation', 'wp-team-manager'),
-    ];
+    $mode = self::get_active_mode();
+    
+    if ($mode === 'sports') {
+        $options = [
+            'team_groups'     => __('Leagues', 'wp-team-manager'),
+            'team_department' => __('Teams', 'wp-team-manager'),
+            'team_genders'    => __('Gender', 'wp-team-manager'),
+            'team_designation'=> __('Positions', 'wp-team-manager'),
+        ];
+    } else {
+        $options = [
+            'team_groups'     => __('Group', 'wp-team-manager'),
+            'team_department' => __('Department', 'wp-team-manager'),
+            'team_genders'    => __('Gender', 'wp-team-manager'),
+            'team_designation'=> __('Designation', 'wp-team-manager'),
+        ];
+    }
+    
 
     // Load hidden taxonomies from option (expects array of slugs)
     $hidden_slugs = get_option('tm_taxonomy_fields') ?: [];
@@ -1585,7 +2089,98 @@ public static function getTaxonomies()
     return $options;
 }
 
+/**
+ * Generate taxonomy filters for frontend display (Pro Feature)
+ *
+ * @param array $allowed_taxonomies Optional. Array of taxonomy slugs to show. Defaults to ['team_groups'].
+ * @param array $allowed_terms Optional. Array of term slugs to filter by. If empty, shows all terms.
+ */
+public static function render_taxonomy_filters($allowed_taxonomies = ['team_groups'], $allowed_terms = []) {
+    // Pro feature check
+    if (!self::is_pro_active()) {
+        return '';
+    }
 
+    // Get option with default of 1 (enabled by default for pro users)
+    $show_filters = get_option('tm_show_taxonomy_filter', 1);
 
+    // Return empty if filters are disabled
+    if (!$show_filters || $show_filters == '0' || $show_filters === 0) {
+        return '';
+    }
+
+    $show_count = get_option('tm_show_taxonomy_count', 0);
+    $hierarchical = get_option('tm_hierarchical_taxonomy', 0);
+
+    // Filter taxonomies to only allowed ones
+    $all_taxonomies = self::getTaxonomies();
+    $taxonomies = array_intersect_key($all_taxonomies, array_flip($allowed_taxonomies));
+
+    if (empty($taxonomies)) {
+        return '';
+    }
+
+    ob_start();
+    ?>
+    <div class="wtm-taxonomy-filters">
+        <div class="wtm-filter-all">
+            <button class="wtm-filter-btn active" data-filter="*"><?php esc_html_e('All', 'wp-team-manager'); ?></button>
+        </div>
+        <?php foreach ($taxonomies as $taxonomy => $label) :
+            $term_args = array(
+                'taxonomy' => $taxonomy,
+                'hide_empty' => true,
+                'hierarchical' => $hierarchical ? true : false
+            );
+
+            // If specific terms are allowed, filter by slug
+            if (!empty($allowed_terms)) {
+                $term_args['slug'] = $allowed_terms;
+            }
+
+            $terms = get_terms($term_args);
+
+            if (!empty($terms) && !is_wp_error($terms)) : ?>
+                <div class="wtm-filter-group" data-taxonomy="<?php echo esc_attr($taxonomy); ?>">
+                    <?php foreach ($terms as $term) :
+                        $count_text = $show_count ? ' (' . $term->count . ')' : '';
+                    ?>
+                        <button class="wtm-filter-btn" data-filter=".<?php echo esc_attr($taxonomy . '-' . $term->slug); ?>">
+                            <?php echo esc_html($term->name . $count_text); ?>
+                        </button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif;
+        endforeach; ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+/**
+ * Get taxonomy classes for team member
+ */
+public static function get_team_taxonomy_classes($post_id) {
+    $show_filters = get_option('tm_show_taxonomy_filter', 1);
     
+    // Return empty if filters are disabled
+    if (!$show_filters) {
+        return '';
+    }
+    
+    $classes = array();
+    $taxonomies = self::getTaxonomies();
+    
+    foreach ($taxonomies as $taxonomy => $label) {
+        $terms = get_the_terms($post_id, $taxonomy);
+        if ($terms && !is_wp_error($terms)) {
+            foreach ($terms as $term) {
+                $classes[] = $taxonomy . '-' . $term->slug;
+            }
+        }
+    }
+    
+    return implode(' ', $classes);
+}
+
 }

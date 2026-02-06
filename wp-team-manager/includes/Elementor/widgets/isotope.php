@@ -44,12 +44,12 @@ class Isotope extends \Elementor\Widget_Base
 	}
 	public function get_style_depends()
 	{
-		return ['wp-team-font-awesome', 'wp-team-style', 'wp-team-isotope'];
+		return ['wp-team-font-awesome', 'wp-team-slick', 'wp-team-style', 'wp-team-isotope'];
 	}
 
 	public function get_script_depends()
 	{
-		return ['wtm-isotope-js', 'wp-team-isotope'];
+		return ['wtm-isotope-js', 'wp-team-isotope', 'wp-team-el-slider', 'wp-team-slick', 'magnific-popup', 'ajax-team-popup'];
 	}
 
 	protected function register_controls()
@@ -79,7 +79,11 @@ class Isotope extends \Elementor\Widget_Base
 					'style-3' => [
 						'title' => esc_html__('Style 3', 'wp-team-manager'),
 						'url' => TM_ADMIN_ASSETS . '/icons/layout/Table-1.svg',
-					]
+					],
+					// 'style-4' => [
+					// 	'title' => esc_html__('Style 3', 'wp-team-manager'),
+					// 	'url' => TM_ADMIN_ASSETS . '/icons/layout/isotope-2.svg',
+					// ]
 				],
 				'default' => 'style-1',
 			]
@@ -884,7 +888,7 @@ class Isotope extends \Elementor\Widget_Base
 			[
 				'label' => esc_html__('Border Style', 'wp-team-manager'),
 				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => '0',
+				// 'default' => '0',
 				'options' => [
 					'50%' => esc_html__('Circle', 'wp-team-manager'),
 					'15px' => esc_html__('Rounded', 'wp-team-manager'),

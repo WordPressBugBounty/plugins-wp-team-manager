@@ -1,35 +1,38 @@
-=== Team Manager - Team Member Showcase with grid, slider, table  Elementor widget & shortcode ===
+=== Dynamic Team Manager - Team Member Showcase with grid, slider, table  Elementor widget & shortcode ===
 Contributors: maidulcu,dynamicweblab
 Donate link: https://wpteammanager.com/
-Tags: team slider,our team,team,team members,team showcase
+Tags: team slider,team members,team showcase,sports roster,player roster
 Requires at least: 6.2.0
-Tested up to: 6.7.2
-Stable tag: 2.3.16
+Tested up to: 6.8
+Stable tag: 2.5.1
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Team plugin to showcase team members with grid, list, Slider, table layout. Fully customizable with Elementor widget and shortcode builder.
+Team plugin to showcase team members, sports rosters, or creative portfolios with grid, list, Slider, table layout. Supports Corporate and Sports League modes. Fully customizable with Elementor widget and shortcode builder.
 
 == Description ==
 
-[WP Team Manager](https://wpteammanager.com/) is the best free team plugin for WordPress, designed to create engaging and professional team displays effortlessly. With fully customizable layouts, responsive design, and Elementor integration, it lets you showcase team members in grid, list, slider, table or isotope pro formats. Highlight names, roles, bios, and social media links to create a dynamic and visually appealing team section. Perfect for businesses, nonprofits, and creative teams, this plugin is optimized for performance and SEO. 
-The plugin offers **five unique layout** presets and a variety of impressive styling options. With it, you can quickly and easily create a visually appealing team members section on your WordPress site. Displaying members of a team or staff is the main purpose of the plugin, it can also be used to showcase other types of content that combine images and text, allowing for creative applications!
+[WP Team Manager](https://wpteammanager.com/) helps you create professional team displays. With fully customizable layouts, responsive design, and Elementor integration, it lets you showcase team members in grid, list, slider, table or isotope pro formats. Highlight names, roles, bios, and social media links to create a team section. Suitable for businesses, nonprofits, sports teams, and creative agencies with performance and SEO optimization.
 
-It’s the perfect solution for displaying and managing the members of your staff, team, or workforce.
+**NEW: Dashboard Mode Presets** – Switch between Corporate/Business mode and Sports League mode with one click! Field labels automatically adapt to your use case (e.g., "Job Title" becomes "Position", "Location" becomes "Jersey Number", "Departments" becomes "Teams").
+
+The plugin offers five layout presets and styling options. Create team member sections on your site. Whether you're displaying corporate staff, sports rosters, or creative portfolios, the plugin adapts to your needs!
+
+For displaying and managing the members of your staff, team, sports roster, or workforce.
 
 
 👉 [Live Demo](https://wpteammanager.com/demos/) | [Documentation](https://wpteammanager.com/documentation/) | [Support](https://dynamicweblab.com/submit-a-request/) | [Go Pro](https://wpteammanager.com/pricing/) 👈
 
-🏆 **How To install WordPress Team Manager:**
+🏆 **How To install Dynamic Team Manager:**
 
 https://www.youtube.com/watch?v=AkqR6SGxcWo
 
-== Why WordPress Team Manager is Important? ==
+== Why Dynamic Team Manager is Important? ==
 
-Your visitors want to know more about the people who make up your company or organization because it matters. Showcase your amazing team members to build trust and credibility between your business and your customers. Enhance your team members page design effortlessly with WordPress Team Manager.
+Your visitors want to know more about the people who make up your company or organization because it matters. Showcase your team members to build trust and credibility between your business and your customers. Enhance your team members page design with Dynamic Team Manager.
 
-We believe that you shouldn’t need to be a programmer or hire a developer to create a beautiful team members page on your WordPress site. That’s why we built the ultimate WordPress Team Manager plugin that’s both EASY and POWERFUL. We can confidently say that this is the smartest plugin of its kind on the market.
+We believe that you shouldn’t need to be a programmer or hire a developer to create a beautiful team members page on your WordPress site. That’s why we built the ultimate WordPress Team Manager plugin that’s both EASY and POWERFUL.
 
 🏆 **How To add new team Member:**
 
@@ -37,7 +40,7 @@ https://www.youtube.com/watch?v=T-cF14_TxXE
 
 == 🏆 Fields available for input: ==
 
-- Team/Member name - Memeber Name
+- Team/Member name - Member Name
 - Short Bio – A brief description of the team member.
 - Long Bio – A detailed description of the team member with a rich text editor.
 - Job Title – The official role/designation of the team member.
@@ -47,8 +50,8 @@ https://www.youtube.com/watch?v=T-cF14_TxXE
 - Location – The geographical location or office branch of the team member.
 - Years of Experience – Number of years the team member has been in their profession.
 - Social Profile – Show all popular social profile links.
-- Memeber Skill – Show memeber skills with Skill Name and Percentage.
-- Memeber gallery – Display additiona images of a team memeber.
+- Member Skill – Show member skills with Skill Name and Percentage.
+- Member gallery – Display additional images of a team member.
 
 You can easily show/hide and customize every field.
 
@@ -56,19 +59,19 @@ You can easily show/hide and customize every field.
 
 👉 **Grid Layouts:** The WordPress Team plugin’s grid layout arranges your posts in a responsive and visually appealing grid format, making it easy for visitors to browse through multiple posts at once while maintaining a clean and organized presentation on your website.
 
-[View Demo](https://wpteammanager.com/grid/)
+[View Demo](https://wpteammanager.com/shortcode-grid-demo/)
 
-👉 **Slider Layout:** The WordPress Team plugin provides a list layout option that displays your posts in a clean and structured format, allowing readers to easily scan through titles, excerpts, and meta information in a familiar and user-friendly layout.
+👉 **Slider Layout:** The plugin provides a list layout option that displays your posts in a clean and structured format, allowing readers to easily scan through titles, excerpts, and meta information in a familiar and user-friendly layout.
 
-[View Demo](https://wpteammanager.com/slider/)
+[View Demo](https://wpteammanager.com/shortcode-slider-demo/)
 
-👉 **List Layouts:** For a visually appealing and engaging layout, the WordPress Team plugin could incorporate a slider feature that displays featured posts or categories in a rotating carousel format, allowing visitors to easily navigate through highlighted content.
+👉 **List Layouts:** For an engaging layout, the plugin incorporates a slider feature that displays featured posts or categories in a rotating carousel format, allowing visitors to easily navigate through highlighted content.
 
-[View Demo](https://wpteammanager.com/list/)
+[View Demo](https://wpteammanager.com/shortcode-list-demo/)
 
 **🏆 Elementor Widget**
 
-You can display team members with Elementor widget with lots of customization options.
+You can display team members with Elementor widget with customization options.
 
 [View Demo](https://wpteammanager.com/elementor-widget/)
 
@@ -77,7 +80,7 @@ You can display team members with Elementor widget with lots of customization op
 
 With Table layout display team members' details, such as names, photos, designations, and social media links, in an organized layout.
 
-[View Demo](https://wpteammanager.com/elementor-table-layout-demo/)
+[View Demo](https://wpteammanager.com/elementor-widget/elementor-widget-table-demo/)
 
 **🏆 Elementor Isotope layout (Pro) **
 
@@ -85,14 +88,21 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 
 [View Demo](https://wpteammanager.com/elementor-widget/elementor-widget-isotope-pro-demo/)
 
-**🏆 Features of The WordPress Team Plugin**
+**🏆 League Manager**
 
-- Create unlimited teams, members.
+You can display League Manager with customization options.
+
+[View Demo](https://wpteammanager.com/solutions/sports-league-solution/)
+
+**🏆 Features of The Team Plugin**
+
+- **NEW: Dashboard Mode Presets** - Switch between Corporate and Sports League modes instantly.
+- Create unlimited teams, members, or player rosters.
 - 5 Unique layouts (Carousel, Grid, Table, list and Isotope).
 - Fully responsive and mobile-ready.
 - Shortcode Generator.
 - Multiple team shortcodes on one page.
-- Slick, elegant, and fast.
+- Clean design and fast performance.
 - Simple and intuitive settings panel-no coding required!
 - Select Team Group
 - Control columns in different devices.
@@ -107,7 +117,7 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 - Choose the image size from the available crop sizes.
 - Photo/Image box background color.
 - Image hover effect.
-- Highly customizable.
+- Customizable options.
 - Touch enabled carousels.
 - Fully translatable 
 - Multisite supported.
@@ -139,6 +149,7 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 
 - Gutenberg
 - Elementor 
+- 
 
 
 **👉 Free AI & Automation Features:**
@@ -155,63 +166,75 @@ The Isotope layout in the WP Team Manager plugin offers a dynamic, filterable te
 
 1. Upload `wp-team-manager` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. A new tab Team will be available on the wordpress admin section
+3. A new Team tab will be available in the admin section
 
 == Frequently Asked Questions ==
 
-= Can I use Team plugin with any theme? =
+= What is Dashboard Mode / Sports Mode? =
 
-Yes you can use this plugin with any theme it will work. If face any issue mail our support we will help.
+Dashboard Mode lets you switch the plugin's field labels to match your use case. Choose **Corporate/Business** (default) for companies and organizations, or **Sports League** for sports teams and athletic rosters. When you switch modes, labels automatically change (e.g., "Job Title" becomes "Position", "Location" becomes "Jersey Number"). Your data remains unchanged - it's just a display change.
 
-= Is this Team Plugin allow slider? =
+= How do I enable Sports Mode? =
 
-Yes we added two slider layout.
+Go to **Team Manager → Settings → General** and find the **Dashboard Mode** dropdown. Select "Sports League" and save. All field labels throughout the admin and frontend will update instantly.
 
-= Is this support social profiles for team members ? =
+= Will switching modes affect my existing data? =
 
-Yes its support social profile.
+No. Switching between Corporate and Sports modes only changes the display labels. Your actual data (stored in the database) remains completely unchanged. You can switch back and forth without losing any information.
 
-= Where is the short code ? =
+= Can I customize the Sports Mode labels further? =
 
-You can create shortcode generator under Team menu.
-
-= How can i disable the details member link on the image ? =
-
-You can disable it on the team manager settings page.
-
-= Where i can see the team member id ? =
-
-You can see the id on the id column on the team memebers list.
-
-= How can i change the image size of the team member? =
-
-Team manager list all the image size on the wordpress.To change default image sizes you can do them on the Settings>media
+Yes! Developers can use the `wp_team_manager_dashboard_presets` filter to customize labels or add entirely new modes (e.g., Medical, Education, Creative Portfolio).
 
 = Can I use Team plugin with any theme? =
 
-Yes you can use this plugin with any theme it will work. If face any issue mail our support we will help.
+Yes, this plugin works with any theme. Contact our support if you face any issues.
+
+= Does this plugin support slider layouts? =
+
+Yes, we have added slider layout options.
+
+= Does this support social profiles for team members? =
+
+Yes, it supports social profile integration.
+
+= Where can I find the shortcode? =
+
+You can create shortcodes using the shortcode generator under the Team menu.
+
+= How can I disable the member detail link on images? =
+
+You can disable it in the team manager settings page.
+
+= Where can I see the team member ID? =
+
+You can see the ID in the ID column on the team members list.
+
+= How can I change the image size of team members? =
+
+Team manager lists all available image sizes. To change default image sizes, go to Settings > Media.
 
 = Is WP Team Manager support Elementor? =
 
-Yes! WP Team Manager works perfectly with the Elementor Team Member Widget, allowing you to easily design and customize your team showcase using Elementor’s drag-and-drop interface.
+Yes! WP Team Manager works perfectly with the Elementor Team Member Widget, allowing you to easily design and customize your team showcase using Elementor's drag-and-drop interface.
 
 = How do I enable the Telegram Notifier? =
 
-Go to **Team Manager → AI Agents → Telegram Notifier**.  
+Go to **Team Manager → AI Agents → Telegram Notifier**.
 Enter your **Telegram Bot Token** and **Chat ID**. You can create a bot using [@BotFather](https://core.telegram.org/bots#botfather) and get the chat ID from [@userinfobot](https://t.me/userinfobot). Once saved, new or updated team members will trigger a message to your Telegram group or channel.
 
 = How do I sync team member data to Google Sheets or Airtable? =
 
-Use the **Profile Sync Agent** (free).  
-1. Sign up for a free [n8n](https://n8n.io/) account or install it on your server.  
-2. Create a webhook workflow in n8n that sends data to Google Sheets or Airtable.  
-3. Paste the webhook URL into the Profile Sync Agent settings.  
+Use the **Profile Sync Agent** (free).
+1. Sign up for a free [n8n](https://n8n.io/) account or install it on your server.
+2. Create a webhook workflow in n8n that sends data to Google Sheets or Airtable.
+3. Paste the webhook URL into the Profile Sync Agent settings.
 Every time a team member is added or updated, the data will be sent to your automation workflow.
 
 = Do I need OpenAI API keys for all AI Agents? =
 
-No. Only AI-powered modules like the **FAQ Bot** require an OpenAI (or compatible) API key.  
-Modules such as the **Telegram Notifier** or **Profile Sync Agent** don’t require AI credits.
+No. Only AI-powered modules like the **FAQ Bot** require an OpenAI (or compatible) API key.
+Modules such as the **Telegram Notifier** or **Profile Sync Agent** don't require AI credits.
 
 = How do I upgrade to Pro? =
 
@@ -224,15 +247,15 @@ Visit [WP Team Manager Pro](https://wpteammanager.com/pricing/) to upgrade.
 
 = How can I troubleshoot if AI Agents are not working? =
 
-- Enable debug logging in **Team Manager → Settings → Advanced → Enable Debug Log**.  
-- Check the generated log file for errors (path shown in settings).  
+- Enable debug logging in **Team Manager → Settings → Advanced → Enable Debug Log**.
+- Check the generated log file for errors (path shown in settings).
 - Make sure your API keys and webhook URLs are correct.
 
 = Is WP Team Manager compatible with page builders? =
 Yes. WP Team Manager works with Gutenberg, Elementor, Beaver Builder, and other major page builders. You can use the shortcode generator to insert layouts anywhere.
 
-= Can I disable AI features if I don’t need them? =
-Yes. AI Agents are modular. Simply leave their settings blank and they won’t run.
+= Can I disable AI features if I don't need them? =
+Yes. AI Agents are modular. Simply leave their settings blank and they won't run.
 
 = Need Any Help? =
 
@@ -254,6 +277,91 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 12. AI Agent
 
 == Changelog ==
+
+= 2.5.1 =
+* social icon url issue fix
+* popup class conflicts fix
+
+
+= 2.5.0 =
+* New: Dashboard Mode Presets - Switch between Corporate/Business and Sports League modes
+* New: Sports League mode with automatic field label transformation:
+  - "Position/Job Title" → "Position"
+  - "Location" → "Jersey Number"
+  - "Years of Experience" → "Seasons / Games Played"
+  - "Short Bio" → "Player Stats"
+  - "Departments" taxonomy → "Teams"
+  - "Designations" taxonomy → "Positions"
+  - "Groups" taxonomy → "Leagues"
+* New: Automatic field hiding based on mode (vCard and Resume hidden in Sports mode)
+* New: Centralized configuration system with `wp_team_manager_dashboard_presets` filter for developers
+* New: Helper functions for mode-aware label retrieval (`get_field_label()`, `get_taxonomy_labels()`, `is_field_hidden()`)
+* Enhanced: Frontend templates now respect dashboard mode settings
+* Enhanced: Zero database changes - all existing data preserved when switching modes
+* Architecture: Implemented "Soft Renaming" strategy for backward compatibility
+* Dev: Code review and documentation updates for Dashboard Mode system
+* Dev: Refined preset configuration architecture and helper method implementations
+* Fixed: Single Team Member Pager Gallery Style Issue Fix 
+* Fixed: Single Team Member Gallery Image popup issue fix
+* popup style update.
+* fix: Corrected single member page link conditional logic in various Elementor layouts and adjusted PRO version loading.
+
+
+= 2.4.9 =
+* Fixed: Elementor isotope "Invalid nonce" error by correcting nonce name mismatch between JavaScript and PHP handler
+* Fixed: Team filter functionality issues in shortcode implementation
+* Fixed: Load More pagination not working correctly with filtered results
+* Fixed: AJAX pagination conflicts when multiple team widgets are present on same page
+* Improved: Enhanced error handling for AJAX requests with proper nonce validation
+* Security: Strengthened nonce verification across all AJAX endpoints
+
+= 2.4.8 =
+* Updated team filter for shortcode
+
+= 2.4.7 =
+* Diable FSE Support
+
+= 2.4.6 =
+* Implemented centralized pro feature validation system
+* Added server-side validation for all pro settings to prevent database manipulation
+* Fixed 40+ template files to properly validate pro feature access
+* Added pro-aware sanitizers for global settings (single_team_member_view, tm_custom_labels, team_image_size_change, tm_schema_markup, tm_meta_description)
+* Fixed critical bug in single-team_manager.php with missing enable_links parameter
+* Implemented defense-in-depth with multiple validation layers
+
+= 2.4.5 =
+* Style: Updated pricing and upgrade button styles in onboarding.
+* Security: Fixed a security issue.
+
+= 2.4.4 =
+* Security: Added sanitize_file_name() to clean template names for FSESupport
+* Security: Added path verification to prevent directory traversal for FSESupport
+* UI Improvements: Dashboard styling
+
+= 2.4.3 =
+* pricing Table button style update
+* bug fix Initial loading
+* Settings default color issue fix
+
+= 2.4.2 =
+* Enhanced: Search box design improvements for better user experience
+* New: Hover animations added for interactive elements
+* New: Live search functionality with popup display
+
+= 2.4.1 =
+* Fix Treat not found issue
+
+= 2.4.0 =
+* New: Modern Admin Dashboard with performance metrics and quick actions
+* New: Guided Onboarding Flow for new users
+* New: Performance monitoring with real-time metrics display
+* New: One-click quick actions (sample team creation, cache clearing, image optimization)
+* Enhanced: Modern admin interface with improved user experience
+* Enhanced: WordPress 6.8 compatibility
+* Improved: Admin navigation and workflow optimization
+
+= 2.3.17 =
+* Change plugin name for trademark compliance
 
 = 2.3.16 =
 * Add html support for short bio on list layout
@@ -586,7 +694,7 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 * Add telephone hyperlink
 
 = 1.6.3 =
-* Make compatible up to wordpess 4.5
+* Make compatible up to version 4.5
 * Fix translation bug
 
 = 1.6.0 =

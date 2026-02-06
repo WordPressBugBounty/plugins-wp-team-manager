@@ -9,12 +9,13 @@ get_header();
 
 /**
  * Enqueue scripts and styles for the Single Team Member page if Lightbox is enabled
+ * Pro Feature: Lightbox for gallery images
  */
-if (get_option('tm_single_team_lightbox') === 'True' && function_exists('tmwstm_fs') && tmwstm_fs()->is_paying_or_trial()) {
+$lightbox_enabled = get_option('tm_single_team_lightbox') === '1' && Helper::is_pro_active();
+if ($lightbox_enabled) {
     wp_enqueue_script('wp-team-magnific-popup');
     wp_enqueue_script('wp-team-pro');
     wp_enqueue_style('wp-team-magnific-popup');
-   
 }
 
 do_action('wtm_single_team_after_header');
@@ -57,19 +58,19 @@ $selected = Helper::generate_single_fields('frontend');
                             </div>
                         <?php endif; ?>
 
-                        <?php if (tmwstm_fs()->is_paying_or_trial()): ?>
+                        <?php
+                        // Pro feature: Skills/Progress bars
+                        if (Helper::is_pro_active() && class_exists('DWL_Wtm_Pro_Helper')):
+                        ?>
                             <div class="wtm-progress-bar">
-                            <?php
-                                if (class_exists('DWL_Wtm_Pro_Helper')) {
-
-                                    echo DWL_Wtm_Pro_Helper::display_skills_output($post_id);
-
-                                } ?>
+                                <?php echo DWL_Wtm_Pro_Helper::display_skills_output($post_id); ?>
                             </div>
                         <?php endif; ?>
 
-                        <?php 
-                            echo wp_kses_post(Helper::get_team_other_infos($post_id, $selected));
+                        <?php
+                            // Pro feature: Enable links for phone/mobile in other info
+                            $enable_links = Helper::is_pro_active() ? 'yes' : 'no';
+                            echo wp_kses_post(Helper::get_team_other_infos($post_id, $selected, $enable_links));
                             do_action('wtm_before_social_profiles', $post_id);
                             echo wp_kses_post(Helper::display_social_profile_output($post_id));
                             do_action('wtm_after_social_profiles', $post_id);

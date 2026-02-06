@@ -1,0 +1,118 @@
+/* Elementor Widget Enhancements */
+
+/* Hover Effects */
+.wtm-hover-fade .team-member-info-content {
+    transition: opacity 0.3s ease;
+}
+
+.wtm-hover-fade .team-member-info-content:hover {
+    opacity: 0.9;
+}
+
+.wtm-hover-slide .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+
+.wtm-hover-slide .team-member-info-content:hover {
+    transform: translateY(-5px);
+}
+
+.wtm-hover-zoom .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+
+.wtm-hover-zoom .team-member-info-content:hover {
+    transform: scale(1.05);
+}
+
+.wtm-hover-rotate .team-member-info-content {
+    transition: transform 0.3s ease;
+}
+
+.wtm-hover-rotate .team-member-info-content:hover {
+    transform: rotate(2deg);
+}
+
+/* Enhanced Grid Layouts */
+.dwl-team-elementor-layout-grid.wtm-enhanced {
+    display: grid;
+    gap: 20px;
+}
+
+.dwl-team-elementor-layout-grid.wtm-enhanced .team-member-info-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Improved Slider Performance */
+.slick-slider.wtm-lazy-loading .slick-slide img {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.slick-slider.wtm-lazy-loading .slick-slide img.slick-loading {
+    opacity: 0;
+}
+
+.slick-slider.wtm-lazy-loading .slick-slide img.slick-loaded {
+    opacity: 1;
+}
+
+/* Theme Builder Styles */
+.wtm-theme-builder-archive {
+    width: 100%;
+}
+
+.wtm-theme-builder-archive .team-member-info-content {
+    margin-bottom: 30px;
+}
+
+/* Accessibility Improvements */
+.wtm-focus-enabled .team-member-info-content:focus-within {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+.wtm-focus-enabled .team-member-socials a:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* Performance Optimizations */
+.wtm-performance-optimized img {
+    will-change: transform;
+}
+
+.wtm-performance-optimized .team-member-info-content {
+    contain: layout style paint;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .dwl-team-elementor-layout-grid.wtm-enhanced {
+        grid-template-columns: 1fr;
+    }
+    
+    .wtm-hover-slide .team-member-info-content:hover,
+    .wtm-hover-zoom .team-member-info-content:hover,
+    .wtm-hover-rotate .team-member-info-content:hover {
+        transform: none;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .wtm-theme-builder-archive .team-member-info-content {
+        background-color: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .wtm-theme-builder-archive .team-member-title {
+        color: #f7fafc;
+    }
+    
+    .wtm-theme-builder-archive .team-position {
+        color: #cbd5e0;
+    }
+}

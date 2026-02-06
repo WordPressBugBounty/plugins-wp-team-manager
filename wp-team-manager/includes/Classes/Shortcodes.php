@@ -102,8 +102,8 @@ public function shortcode_callback($atts) {
   // Security: Check if links should open in new window
   $link_window = (get_option('tm_link_new_window') === 'True') ? 'target="_blank"' : '';
 
-  // Security: Check if single template is disabled
-  $disable_single_template = (get_option('single_team_member_view') === 'True');
+  // Pro feature: Disable single team member view (global setting)
+  $disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
   // Generate Unique Wrapper ID
   $shortcode_id = 'dwl-team-wrapper-' . esc_attr(uniqid());
@@ -148,12 +148,12 @@ public function shortcode_callback($atts) {
 
   // Enqueue Required Assets
   wp_enqueue_style('wp-team-font-awesome');
+  wp_enqueue_script('wp-team-script');
 
   if ($settings['layout'] === 'slider') {
       wp_enqueue_style('wp-team-slick');
       wp_enqueue_style('wp-team-slick-theme');
       wp_enqueue_script('wp-team-slick');
-      wp_enqueue_script('wp-team-script');
   }
 
   if (get_option('old_team_manager_style')) {
@@ -223,6 +223,7 @@ public function shortcode_callback($atts) {
     // Filter UI settings (shortcode meta)
     $filter_enable   = Helper::get_team_setting( $post_id, 'dwl_team_filter_enable', 'false', 'string' );
     $filter_taxonomy = Helper::get_team_setting( $post_id, 'dwl_team_filter_taxonomy', 'team_groups', 'string' );
+
     // Whitelist allowed taxonomies (avoid arbitrary input)
     $allowed_tax = apply_filters( 'wtm_allowed_filter_taxonomies', [ 'team_groups', 'team_department', 'team_genders', 'team_designation' ] );
     if ( ! in_array( $filter_taxonomy, $allowed_tax, true ) ) {
@@ -253,11 +254,12 @@ public function shortcode_callback($atts) {
     $autoplay       = Helper::get_team_setting( $post_id, 'dwl_team_autoplay', false, 'bool' );
     $arrow_position = Helper::get_team_setting( $post_id, 'dwl_team_arrow_position', 'side', 'string' );
 
-    $desktop = Helper::get_team_setting( $post_id, 'dwl_team_desktop', 3, 'int' );
-    $tablet  = Helper::get_team_setting( $post_id, 'dwl_team_tablet', 2, 'int' );
-    $mobile  = Helper::get_team_setting( $post_id, 'dwl_team_mobile', 1, 'int' );
+    $desktop = Helper::get_team_setting( $post_id, 'dwl_team_desktop_columns', 3, 'int' );
+    $tablet  = Helper::get_team_setting( $post_id, 'dwl_team_tablet_columns', 2, 'int' );
+    $mobile  = Helper::get_team_setting( $post_id, 'dwl_team_mobile_columns', 1, 'int' );
 
-    $posts_per_page = Helper::get_team_setting( $post_id, 'dwl_team_show_total_members', -1, 'int' );
+    $posts_per_page = Helper::get_team_setting( $post_id, 'dwl_team_show_total_members', -1);
+
     if ( 0 === $posts_per_page ) { $posts_per_page = -1; }
 
     $all_groups_member = Helper::get_team_setting( $post_id, 'dwl_team_group_featured_cats', [], 'array' );
@@ -327,11 +329,16 @@ public function shortcode_callback($atts) {
 
     if ( $is_numbers ) {
       $args['paged'] = $paged;
+    } elseif ( $is_ajax_mode ) {
+      // For AJAX mode, always start with page 1 for initial load
+      $args['paged'] = 1;
     }
 
     if ( ! $is_random ) {
       $args['order'] = $asc_desc;
     }
+
+    
 
     // Build taxonomy filters combining: selected slugs, include IDs, exclude IDs
     $tax_parts = [];
@@ -397,12 +404,12 @@ public function shortcode_callback($atts) {
     $team_data = Helper::get_team_data($args);
 
     wp_enqueue_style('wp-team-font-awesome');
+    wp_enqueue_script('wp-team-script');
 
     if ( 'slider' === $layout ) {
       wp_enqueue_style( 'wp-team-slick' );
       wp_enqueue_style( 'wp-team-slick-theme' );
       wp_enqueue_script( 'wp-team-slick' );
-      wp_enqueue_script( 'wp-team-script' );
     }
 
     $old_team_manager_style = get_option( 'old_team_manager_style' );
@@ -432,15 +439,16 @@ public function shortcode_callback($atts) {
     $theme_radius       = Helper::get_team_setting( $post_id, 'dwl_team_theme_border_radius', '', 'string' );
     $theme_gap          = Helper::get_team_setting( $post_id, 'dwl_team_theme_gap', '', 'string' );
     $theme_shadow_key   = Helper::get_team_setting( $post_id, 'dwl_team_theme_shadow', 'sm', 'string' );
-    $theme_dark_mode    = Helper::get_team_setting( $post_id, 'dwl_team_theme_dark_mode', false, 'bool' );
+    // $theme_dark_mode    = Helper::get_team_setting( $post_id, 'dwl_team_theme_dark_mode', '', 'string' );
+
 
     // Sanitize color values
-    $theme_primary     = function_exists('sanitize_hex_color') ? ( $theme_primary ? sanitize_hex_color( $theme_primary ) : '' ) : $theme_primary;
-    $theme_background     = function_exists('sanitize_hex_color') ? ( $theme_background ? sanitize_hex_color( $theme_background ) : '' ) : $theme_background;
-    $theme_card_bg     = function_exists('sanitize_hex_color') ? ( $theme_card_bg ? sanitize_hex_color( $theme_card_bg ) : '' ) : $theme_card_bg;
-    $theme_title_color = function_exists('sanitize_hex_color') ? ( $theme_title_color ? sanitize_hex_color( $theme_title_color ) : '' ) : $theme_title_color;
-    $theme_text_color  = function_exists('sanitize_hex_color') ? ( $theme_text_color ? sanitize_hex_color( $theme_text_color ) : '' ) : $theme_text_color;
-    $social_icon_color = function_exists('sanitize_hex_color') ? ( $social_icon_color ? sanitize_hex_color( $social_icon_color ) : '' ) : $social_icon_color;
+    $theme_primary     = function_exists('sanitize_hex_color') && $theme_primary ? sanitize_hex_color( $theme_primary ) ?: $theme_primary : $theme_primary;
+    $theme_background  = function_exists('sanitize_hex_color') && $theme_background ? sanitize_hex_color( $theme_background ) ?: $theme_background : $theme_background;
+    $theme_card_bg     = function_exists('sanitize_hex_color') && $theme_card_bg ? sanitize_hex_color( $theme_card_bg ) ?: $theme_card_bg : $theme_card_bg;
+    $theme_title_color = function_exists('sanitize_hex_color') && $theme_title_color ? sanitize_hex_color( $theme_title_color ) ?: $theme_title_color : $theme_title_color;
+    $theme_text_color  = function_exists('sanitize_hex_color') && $theme_text_color ? sanitize_hex_color( $theme_text_color ) ?: $theme_text_color : $theme_text_color;
+    $social_icon_color = function_exists('sanitize_hex_color') && $social_icon_color ? sanitize_hex_color( $social_icon_color ) ?: $social_icon_color : $social_icon_color;
    
     // Validate radius & gap CSS units (px|rem|em|%)
     $unit_ok = '/^\d+(?:\.\d+)?(?:px|rem|em|%)$/';
@@ -471,7 +479,10 @@ public function shortcode_callback($atts) {
       $scoped_css .= "$scoped_id .team-member-info-content{box-shadow:0 10px 30px rgba(0,0,0,.08);}\n";
     } elseif ( 'glass' === $theme_preset ) {
       $scoped_css .= "$scoped_id .team-member-info-content{background:rgba(255,255,255,.08);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);}\n";
+    }elseif ( 'default' === $theme_preset ) {
+      $scoped_css .= "$scoped_id .team-member-info-content{''}\n";
     }
+    
     if ( $theme_background ) {
       $scoped_css .= "$scoped_id .dwl-team-wrapper--main{background-color:{$theme_background};}\n";
     }
@@ -507,9 +518,9 @@ public function shortcode_callback($atts) {
         $scoped_css .= "}\n";
     }
   
-    if ( $theme_dark_mode ) {
-      $scoped_css .= "$scoped_id{color-scheme:dark;} $scoped_id .team-member-info-content{background-color:rgba(255,255,255,.06);} $scoped_id .team-member-title{color:#fff;}";
-    }
+    // if ( $theme_dark_mode ) {
+    //   $scoped_css .= "$scoped_id{color-scheme:dark;} $scoped_id .team-member-info-content{background-color:rgba(255,255,255,.06);} $scoped_id .team-member-title{color:#fff;}";
+    // }
     
     if ( ! empty( $scoped_css ) ) {
       $enqueued = false;
@@ -523,7 +534,7 @@ public function shortcode_callback($atts) {
     }
 
     // Add a class if dark mode is enabled
-    $dark_mode_class = $theme_dark_mode ? 'wtm-dark' : '';
+    // $dark_mode_class = $theme_dark_mode ? 'wtm-dark' : '';
 
     // Visible focus ring for keyboard users (scoped to this instance)
     if ( $a11y_enable && $a11y_focus_ring ) {
@@ -538,21 +549,26 @@ public function shortcode_callback($atts) {
       <div id="<?php echo esc_attr( $shortcode_id ); ?>" class="dwl-team-wrapper wtm-container-fluid wtm-team-manager-shortcode-generator <?php echo esc_attr( $dark_mode_class ); ?>" <?php echo $a11y_enable ? ' role="region" aria-label="' . esc_attr( $a11y_region_label ) . '"' : ''; ?> data-settings="<?php echo $settings_json; ?>"
         data-pagination="<?php echo esc_attr( $pagination_mode ); ?>"
         data-query-paged="<?php echo esc_attr( $paged ); ?>"
-        data-query-ppp="<?php echo esc_attr( $posts_per_page ); ?>"
+        data-query-ppp="<?php echo esc_attr( $posts_per_page > 0 ? $posts_per_page : 3 ); ?>"
         data-filter-taxonomy="<?php echo esc_attr( $filter_taxonomy ); ?>"
       >
-      <?php if ( $filter_enable == 'on' && in_array( $pagination_mode, [ 'ajax', 'infinite' ], true ) ) : ?>
+
+      <?php if ( $filter_enable == 'on' && in_array( $pagination_mode, [ 'ajax', 'infinite' ], true ) && get_option('tm_show_taxonomy_filter', 0) && !Helper::freemius_is_free_user() ) : ?>
+        
           <?php 
             $terms = get_terms( [ 'taxonomy' => $filter_taxonomy, 'hide_empty' => true ] );
             if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) :
+              $show_count = get_option('tm_show_taxonomy_count', 0);
           ?>
             <div class="dwl-team-filters" role="tablist" aria-label="<?php echo esc_attr( ucfirst( str_replace('_',' ', $filter_taxonomy ) ) ); ?>">
               <button type="button" class="button dwl-team-filter is-active" data-term="" data-taxonomy="<?php echo esc_attr( $filter_taxonomy ); ?>">
                 <?php esc_html_e( 'All', 'wp-team-manager' ); ?>
               </button>
-              <?php foreach ( $terms as $t ) : ?>
+              <?php foreach ( $terms as $t ) : 
+                $count_text = $show_count ? ' (' . $t->count . ')' : '';
+              ?>
                 <button type="button" class="button dwl-team-filter" data-term="<?php echo esc_attr( $t->slug ); ?>" data-taxonomy="<?php echo esc_attr( $filter_taxonomy ); ?>">
-                  <?php echo esc_html( $t->name ); ?>
+                  <?php echo esc_html( $t->name . $count_text ); ?>
                 </button>
               <?php endforeach; ?>
             </div>
@@ -577,7 +593,7 @@ public function shortcode_callback($atts) {
 
           <?php Helper::renderTeamLayout( $teamplate_layout, $team_data, $style_type, $all_settings ); 
       
-          //var_dump($all_settings);
+          // var_dump($all_settings);
           ?>
           
         </div>
@@ -590,7 +606,7 @@ public function shortcode_callback($atts) {
               echo wp_kses_post( Helper::get_pagination_markup( $query_for_pagination, $posts_per_page ) );
             ?>
           <?php elseif ( $is_ajax_mode ) : ?>
-            <div class="dwl-team-pagination-ajax" data-mode="<?php echo esc_attr( $pagination_mode ); ?>" data-next-page="<?php echo esc_attr( $paged + 1 ); ?>">
+            <div class="dwl-team-pagination-ajax" data-mode="<?php echo esc_attr( $pagination_mode ); ?>" data-next-page="2" data-per-page="<?php echo esc_attr( $posts_per_page > 0 ? $posts_per_page : 3 ); ?>">
               <?php if ( 'ajax' === $pagination_mode ) : ?>
                 <button type="button" class="button dwl-team-load-more" aria-live="polite"><?php echo esc_html__( 'Load More', 'wp-team-manager' ); ?></button>
               <?php else : ?>
@@ -623,7 +639,11 @@ public function shortcode_callback($atts) {
         // Enqueue pagination script and provide AJAX config robustly
         wp_enqueue_script( 'wp-team-ajax-pagination' );
 
-
+        // Localize the script with AJAX params
+        wp_localize_script( 'wp-team-ajax-pagination', 'wtm_ajax_params', array(
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'load_more_nonce' )
+        ) );
     }
     
     if ( $a11y_enable && $a11y_list_roles ) {
@@ -676,6 +696,12 @@ public function shortcode_callback($atts) {
       })();
       </script>';
   }
+  
+    // Ensure AJAX pagination assets are loaded when needed
+    if ( $is_ajax_mode && defined('TM_PRO_URL') ) {
+        wp_enqueue_script( 'wp-team-ajax-pagination' );
+        wp_enqueue_style( 'wp-team-pagination-style' );
+    }
 
 
     return ob_get_clean();

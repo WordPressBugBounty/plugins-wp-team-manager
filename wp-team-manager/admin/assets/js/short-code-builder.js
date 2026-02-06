@@ -42,10 +42,19 @@ $jwptm(function(){
 		$jwptm.ajax({
 			url: wtm_ajax.url, // this will point to admin-ajax.php
 			type: 'POST',
-			data: data, 
+			data: data,
 			success: function (response) {
 				//console.log(response);
-				$jwptm('#wtpm_short_code_preview').empty().append(response);
+				// Sanitize response to prevent XSS
+				if (typeof response === 'string') {
+					// Remove script tags and dangerous content
+					var cleanResponse = response.replace(/<script[^>]*>.*?<\/script>/gi, '')
+											.replace(/javascript:/gi, '')
+											.replace(/on\w+\s*=/gi, '');
+					$jwptm('#wtpm_short_code_preview').empty().append(cleanResponse);
+				} else {
+					$jwptm('#wtpm_short_code_preview').empty();
+				}
 				let slider = $jwptm('#wtpm_short_code_preview').find('.dwl-team-layout-slider');
 				//console.log(slider);
 				if( slider.length == 0){
@@ -53,12 +62,16 @@ $jwptm(function(){
 				}
 
 				slider.each( function( index, element ) {
+					// Destroy existing slick instance if it exists
+					if ($jwptm(element).hasClass('slick-initialized')) {
+						$jwptm(element).slick('unslick');
+					}
 
 					$jwptm( element ).slick({
 					dots: true,
 					arrows: true,
-					nextArrow: '<button class="dwl-slide-arrow dwl-slide-next"><i class="fas fa-chevron-left"></i></button>',
-					prevArrow: '<button class="dwl-slide-arrow dwl-slide-prev"><i class="fas fa-chevron-right"></i></button>',
+					nextArrow: '<button class="dwl-slide-arrow dwl-slide-next"><i class="fas fa-chevron-right"></i></button>',
+					prevArrow: '<button class="dwl-slide-arrow dwl-slide-prev"><i class="fas fa-chevron-left"></i></button>',
 					infinite: false,
 					speed: 300,
 					slidesToShow: 4,
@@ -92,8 +105,11 @@ $jwptm(function(){
 							// instead of a settings object
 						]
 					});
-					
 				});
+			},
+			error: function(xhr, status, error) {
+				console.error('Preview request failed:', error);
+				$jwptm('#wtpm_short_code_preview').empty().append('<p>Preview unavailable</p>');
 			}
 		});
 	}

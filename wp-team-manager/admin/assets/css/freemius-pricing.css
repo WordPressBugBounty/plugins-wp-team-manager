@@ -1,0 +1,424 @@
+/* Freemius Pricing Page Customization */
+
+:root {
+    --wtm-primary: #6366f1;
+    /* Indigo 500 */
+    --wtm-primary-hover: #4f46e5;
+    /* Indigo 600 */
+    --wtm-bg: #f8fafc;
+    /* Slate 50 */
+    --wtm-surface: #ffffff;
+    --wtm-text-main: #1e293b;
+    /* Slate 800 */
+    --wtm-text-secondary: #64748b;
+    /* Slate 500 */
+    --wtm-border: #e2e8f0;
+    /* Slate 200 */
+    --wtm-success: #10b981;
+    --wtm-radius-lg: 16px;
+    --wtm-radius-md: 12px;
+    --wtm-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --wtm-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --wtm-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --wtm-font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Main Container */
+#fs_pricing_wrapper {
+    font-family: var(--wtm-font-sans) !important;
+    background-color: var(--wtm-bg) !important;
+    color: var(--wtm-text-main) !important;
+    padding: 40px 20px !important;
+}
+
+/* Header */
+.fs-app-header {
+    text-align: center !important;
+    margin-bottom: 40px !important;
+}
+
+.fs-page-title h1 {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    color: var(--wtm-text-main) !important;
+    margin-bottom: 8px !important;
+}
+
+.fs-page-title h3 {
+    font-size: 18px !important;
+    color: var(--wtm-text-secondary) !important;
+    font-weight: 400 !important;
+}
+
+.fs-plugin-title-and-logo {
+    display: none !important;
+    /* Hide redundant logo/title if desired for cleaner look */
+}
+
+/* Billing Cycle Toggle */
+.fs-billing-cycles {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    margin-bottom: 40px !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.fs-billing-cycles li {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: var(--wtm-text-secondary) !important;
+    cursor: pointer !important;
+    padding: 8px 16px !important;
+    border-radius: 999px !important;
+    transition: all 0.2s ease !important;
+    border: 1px solid transparent !important;
+}
+
+.fs-billing-cycles li.fs-selected-billing-cycle {
+    background: white !important;
+    color: var(--wtm-primary) !important;
+    border-color: var(--wtm-border) !important;
+    box-shadow: var(--wtm-shadow-sm) !important;
+}
+
+.fs-billing-cycles li span {
+    color: var(--wtm-success) !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+    background: #dcfce7 !important;
+    padding: 2px 8px !important;
+    border-radius: 999px !important;
+    margin-left: 8px !important;
+}
+
+/* Packages Grid */
+.fs-section--packages {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+.fs-packages {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 24px !important;
+    width: 100% !important;
+    position: static !important;
+    /* Override absolute positioning */
+    height: auto !important;
+}
+
+.fs-package {
+    width: 100% !important;
+    background: var(--wtm-surface) !important;
+    border: 1px solid var(--wtm-border) !important;
+    border-radius: var(--wtm-radius-lg) !important;
+    padding: 32px !important;
+    box-shadow: var(--wtm-shadow-sm) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    float: none !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.fs-package:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: var(--wtm-shadow-lg) !important;
+    border-color: var(--wtm-primary) !important;
+}
+
+/* Most Popular Badge */
+.fs-most-popular {
+    background: var(--wtm-primary) !important;
+    color: white !important;
+    position: absolute !important;
+    top: -12px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    padding: 4px 16px !important;
+    border-radius: 999px !important;
+    width: auto !important;
+}
+
+.fs-most-popular h4 {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+    color: white !important;
+}
+
+/* Package Content */
+.fs-plan-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: var(--wtm-text-main) !important;
+    margin-bottom: 8px !important;
+    text-align: center !important;
+}
+
+.fs-plan-description {
+    font-size: 14px !important;
+    color: var(--wtm-text-secondary) !important;
+    font-weight: 400 !important;
+    text-align: center !important;
+    margin-bottom: 24px !important;
+    min-height: 40px !important;
+}
+
+/* Price */
+.fs-selected-pricing-amount {
+    text-align: center !important;
+    color: var(--wtm-text-main) !important;
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    margin-bottom: 24px !important;
+}
+
+.fs-currency-symbol {
+    font-size: 24px !important;
+    vertical-align: top !important;
+}
+
+.fs-selected-pricing-amount-integer {
+    font-size: 48px !important;
+    font-weight: 800 !important;
+}
+
+.fs-selected-pricing-amount-fraction {
+    font-size: 24px !important;
+    font-weight: 600 !important;
+}
+
+.fs-selected-pricing-amount-cycle {
+    font-size: 14px !important;
+    color: var(--wtm-text-secondary) !important;
+    font-weight: 500 !important;
+}
+
+.fs-undiscounted-price {
+    text-align: center !important;
+    text-decoration: line-through !important;
+    color: var(--wtm-text-secondary) !important;
+    font-size: 14px !important;
+    margin-bottom: 4px !important;
+}
+
+/* Features List */
+.fs-plan-features {
+    margin: 24px 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.fs-plan-features li {
+    padding: 8px 0 !important;
+    border-bottom: 1px solid var(--wtm-border) !important;
+    color: var(--wtm-text-main) !important;
+    font-size: 14px !important;
+}
+
+.fs-plan-features li:last-child {
+    border-bottom: none !important;
+}
+
+/* Upgrade Button */
+.fs-upgrade-button-container {
+    margin-top: auto !important;
+}
+
+.fs-upgrade-button {
+    width: 100% !important;
+    background: var(--wtm-primary) !important;
+    color: white !important;
+    border: none !important;
+    padding: 16px !important;
+    border-radius: var(--wtm-radius-md) !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-transform: none !important;
+}
+
+.fs-upgrade-button:hover {
+    background: var(--wtm-primary-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* FAQ Section */
+
+.fs-section--faq {
+    margin-top: 80px !important;
+    max-width: 1000px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 20px !important;
+}
+
+.fs-section--faq h2 {
+    text-align: center !important;
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    color: var(--wtm-text-main) !important;
+    margin-bottom: 48px !important;
+    letter-spacing: -0.025em !important;
+}
+
+.fs-section--faq-items {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    gap: 24px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.fs-section--faq-item {
+    background: var(--wtm-surface) !important;
+    border: 1px solid var(--wtm-border) !important;
+    border-radius: var(--wtm-radius-md) !important;
+    padding: 32px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease !important;
+    height: auto !important;
+    /* Allow content to dictate height */
+    min-height: 100% !important;
+    /* Ensure equal height in grid row */
+    margin: 0 !important;
+    box-shadow: none !important;
+
+    /* Layout Resets to prevent overlap */
+    width: 100% !important;
+    max-width: none !important;
+    float: none !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    left: auto !important;
+    top: auto !important;
+}
+
+.fs-section--faq-item:hover {
+    border-color: var(--wtm-primary) !important;
+    box-shadow: var(--wtm-shadow-md) !important;
+    transform: translateY(-4px) !important;
+    z-index: 10 !important;
+    /* Ensure it sits on top */
+}
+
+/* Reset default Freemius Section Headers */
+.fs-section--faq-item h3 {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 12px 0 !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: var(--wtm-text-main) !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    line-height: 1.4 !important;
+    box-shadow: none !important;
+}
+
+/* Add a subtle icon to questions */
+.fs-section--faq-item h3::before {
+    content: '?' !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    background: #e0e7ff !important;
+    /* Indigo 100 */
+    color: var(--wtm-primary) !important;
+    border-radius: 50% !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    margin-top: 2px !important;
+}
+
+/* Reset default Freemius Paragraph styles */
+.fs-section--faq-item p {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 0 0 36px !important;
+    margin: 0 !important;
+    font-size: 15px !important;
+    color: var(--wtm-text-secondary) !important;
+    line-height: 1.6 !important;
+    box-shadow: none !important;
+}
+
+/* Links in FAQ */
+.fs-section--faq-item a {
+    color: var(--wtm-primary) !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease !important;
+}
+
+.fs-section--faq-item a:hover {
+    color: var(--wtm-primary-hover) !important;
+    text-decoration: underline !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fs-section--faq-items {
+        grid-template-columns: 1fr !important;
+    }
+
+    .fs-section--faq-item p {
+        padding-left: 0 !important;
+    }
+}
+
+/* Guarantee Section */
+.fs-section--money-back-guarantee {
+    text-align: center !important;
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+    border-radius: var(--wtm-radius-lg) !important;
+    padding: 40px !important;
+    margin: 60px auto !important;
+    max-width: 800px !important;
+}
+
+.fs-money-back-guarantee-title {
+    color: #166534 !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+}
+
+.fs-money-back-guarantee-message {
+    color: #15803d !important;
+    font-size: 16px !important;
+}
+
+/* Hide Elements */
+.fs-packages-tab,
+/* Hide tab navigation only, keep container */
+.fs-prev-package,
+.fs-next-package {
+    display: none !important;
+}
+
+.fs-packages-nav {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fs-packages {
+        grid-template-columns: 1fr !important;
+    }
+}

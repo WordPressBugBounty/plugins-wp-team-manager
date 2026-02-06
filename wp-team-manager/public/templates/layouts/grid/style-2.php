@@ -20,20 +20,24 @@ $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
 $tm_single_fields = is_array($tm_single_fields) ? $tm_single_fields : ['tm_jtitle'];
 
 // Determine if the single template should be disabled (strict comparison)
-$disable_single_template = get_option('single_team_member_view') === 'True';
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 // Retrieve column settings with default values and ensure they are integers
-$desktop_column = absint($settings['dwl_team_desktop'][0] ?? 4);
-$tablet_column = absint($settings['dwl_team_tablet'][0] ?? 3);
-$mobile_column = absint($settings['dwl_team_mobile'][0] ?? 1);
+$desktop_column = absint($settings['dwl_team_desktop_columns'][0] ?? 3);
+$tablet_column = absint($settings['dwl_team_tablet_columns'][0] ?? 2);
+$mobile_column = absint($settings['dwl_team_mobile_columns'][0] ?? 1);
 
 $bootstrap_class = Helper::get_grid_layout_bootstrap_class($desktop_column, $tablet_column, $mobile_column);
 
+
+
 foreach ($data['posts'] as $teamInfo) {
     $job_title = sanitize_text_field(get_post_meta($teamInfo->ID, 'tm_jtitle', true));
+    $taxonomy_classes = Helper::get_team_taxonomy_classes($teamInfo->ID);
     ?>
 
-<div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class)); ?>>
+<div <?php post_class("team-member-info-wrap m-0 p-2 " . esc_attr($bootstrap_class) . " " . esc_attr($taxonomy_classes)); ?> data-post-id="<?php echo esc_attr($teamInfo->ID); ?>">
         <div class="team-member-info-content">
             <div class="team-member-grid-style-two">
                 <div class="grid-team-inner">
@@ -44,8 +48,15 @@ foreach ($data['posts'] as $teamInfo) {
                             <div class="team-member-grid-content-overlay"></div>
                             <div class="team-member-grid-content">
                                 <div class="team-member-grid-info">
-                                    <h2 class="team-member-title"><?php echo esc_html($teamInfo->post_title); ?></h2>
-                                    <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
+                                    <?php if (!$disable_single_template): ?>
+                                        <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
+                                    <?php endif; ?>
+                                        <h2 class="team-member-title"><?php echo esc_html($teamInfo->post_title); ?></h2>
+                                    <?php if (!$disable_single_template): ?>
+                                        </a>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($job_title) && !$hide_team_show_position): ?>
                                         <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                                     <?php endif; ?>
                                     <div class="team-member-grid-arrow">

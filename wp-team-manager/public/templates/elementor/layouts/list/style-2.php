@@ -7,12 +7,16 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
     $image_size = isset( $settings['image_size'] ) ? sanitize_text_field( $settings['image_size'] ) : 'thumbnail';
     $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
-    $disable_single_template = ( false !== get_option('single_team_member_view')  && 'True' == get_option('single_team_member_view') ) ? true : false;
+    // Pro feature: Disable single team member view (global setting)
+    $disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? sanitize_textarea_field( $settings['team_show_short_bio'] ) : '';
 
-    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
-    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
-    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+    // Pro feature: Popup functionality
+    $show_popup = Helper::is_pro_feature_enabled( $settings, 'popup_bar_show' );
+    $popup_settings = $show_popup ? "true" : 'false';
+
+    // Pro feature: Disable single member
+    $disable_single_member = Helper::is_pro_feature_enabled( $settings, 'disable_single_member' );
 
     $allowed_tags = array_merge(
         wp_kses_allowed_html( 'post' ), // All default post tags
@@ -37,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
             <header class="wtm-col-12 wtm-col-lg-4 wtm-col-md-6">
             <div class="dwl-team-overlay-container">
               <?php if("yes" == $settings['show_image']): ?>
-                <?php if($disable_single_member) : ?>
+                <?php if(!$disable_single_member) : ?>
                     <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
                 <?php endif; ?>
                 <?php if($show_popup): ?>
@@ -50,7 +54,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                 <?php if($show_popup): ?>
                     </div>
                 <?php endif; ?>
-                <?php if($disable_single_member) : ?>
+                <?php if(!$disable_single_member) : ?>
                     </a>
                 <?php endif; ?>
             <?php endif;?>
@@ -59,7 +63,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
           <div class="team-member-desc wtm-col-12 wtm-col-lg-8 wtm-col-md-6">
             <?php if('yes'== $settings['show_title']  ): ?>
-              <?php if($disable_single_member) : ?>
+              <?php if(!$disable_single_member) : ?>
                     <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
                 <?php endif; ?>
                 <?php if($show_popup): ?>
@@ -69,7 +73,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                 <?php if($show_popup): ?>
                     </div>
                 <?php endif; ?>
-                <?php if($disable_single_member) : ?>
+                <?php if(!$disable_single_member) : ?>
                     </a>
                 <?php endif; ?>
             <?php endif;?>
@@ -92,11 +96,12 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
                 </div>
             <?php endif; ?>
                <?php if(!empty($settings['show_other_info']) && $settings['show_other_info'] === 'yes'): ?>
-                        <?php 
-                            $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
+                        <?php
+                            // Pro feature: Other info links
+                            $enable_links = Helper::is_pro_feature_enabled( $settings, 'other_info_link' ) ? 'yes' : 'no';
                             echo wp_kses_post(
                                 Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'], $enable_links)
-                            ); 
+                            );
                         ?>
                     <?php endif; ?>
                     

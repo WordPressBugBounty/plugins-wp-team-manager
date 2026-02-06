@@ -10,11 +10,8 @@ $post_meta = get_post_meta( $teamInfo->ID );
 $job_title = isset( $post_meta['tm_jtitle'][0] ) ? sanitize_text_field( $post_meta['tm_jtitle'][0] ) : '';
 $short_bio = isset( $post_meta['tm_short_bio'][0] ) ? sanitize_textarea_field( $post_meta['tm_short_bio'][0] ) : '';
 
-// Store option value in a variable for better performance
-$single_team_member_view = get_option('single_team_member_view');
-
-// Validate and sanitize the option value for the template disable flag
-$disable_single_template = ( false !== $single_team_member_view && filter_var( $single_team_member_view, FILTER_VALIDATE_BOOLEAN ) ) ? true : false;
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 ?>
     <div class="team-member-info-content"> 

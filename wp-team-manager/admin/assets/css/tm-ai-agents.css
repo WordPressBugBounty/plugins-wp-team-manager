@@ -1,0 +1,539 @@
+:root {
+   --wtm-primary: #4a5568;
+    --wtm-primary-dark: #2d3748;
+    --wtm-primary-light: #718096;
+    --wtm-secondary: #a0aec0;
+    --wtm-accent: #cbd5e0;
+    --wtm-success: #718096;
+    --wtm-warning: #ecc94b;
+    --wtm-danger: #e53e3e;
+    --wtm-surface: #ffffff;
+    --wtm-surface-alt: #f7fafc;
+    --wtm-border: #e2e8f0;
+    --wtm-text: #2d3748;
+    --wtm-text-muted: #718096;
+    --wtm-shadow-sm: 0 1px 2px 0 rgb(45 80 22 / 0.05);
+    --wtm-shadow-md: 0 4px 6px -1px rgb(45 80 22 / 0.1), 0 2px 4px -2px rgb(45 80 22 / 0.1);
+    --wtm-shadow-lg: 0 10px 15px -3px rgb(45 80 22 / 0.1), 0 4px 6px -4px rgb(45 80 22 / 0.1);
+    --wtm-radius: 12px;
+    --wtm-radius-sm: 8px;
+}
+
+/* Main Container */
+.wtm-ai-agents-wrap {
+    max-width: 1200px;
+    margin: 0;
+}
+
+.wtm-ai-agents-wrap h1 {
+    color: var(--wtm-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* AI Agents Grid */
+.wtm-ai-agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Agent Card */
+.wtm-agent-card {
+    background: var(--wtm-surface);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.wtm-agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.wtm-agent-card:hover {
+    box-shadow: var(--wtm-shadow-lg);
+    border-color: var(--wtm-primary);
+    transform: translateY(-2px);
+}
+
+.wtm-agent-card:hover::before {
+    transform: scaleY(1);
+}
+
+/* Agent Card Header */
+.wtm-agent-header {
+    padding: 1.5rem;
+    background: var(--wtm-surface-alt);
+    border-bottom: 1px solid var(--wtm-border);
+    position: relative;
+}
+
+.wtm-agent-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 0.5rem;
+}
+
+.wtm-agent-icon {
+    font-size: 1.5rem;
+    width: auto;
+    height: auto;
+}
+
+.wtm-agent-title h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--wtm-text);
+}
+
+.wtm-pro-badge {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.wtm-agent-description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--wtm-text-muted);
+    line-height: 1.4;
+}
+
+/* Agent Status */
+.wtm-agent-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.wtm-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ccc;
+}
+
+.wtm-status-indicator.active {
+    background: #00a32a;
+    box-shadow: 0 0 8px rgba(0, 163, 42, 0.4);
+}
+
+.wtm-status-indicator.error {
+    background: #d63638;
+    box-shadow: 0 0 8px rgba(214, 54, 56, 0.4);
+}
+
+.wtm-status-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--wtm-text-muted);
+}
+
+/* Agent Card Body */
+.wtm-agent-body {
+    padding: 1.5rem;
+}
+
+/* Agent Toggle */
+.wtm-agent-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--wtm-surface-alt);
+    border-radius: var(--wtm-radius-sm);
+    border: 1px solid var(--wtm-border);
+}
+
+.wtm-toggle-label {
+    font-weight: 600;
+    color: var(--wtm-text);
+    margin: 0;
+}
+
+.wtm-toggle-switch {
+    position: relative;
+}
+
+.wtm-toggle-switch input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.wtm-toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    background: #ccc;
+    border-radius: 26px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wtm-toggle-slider:before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: var(--wtm-shadow-sm);
+}
+
+.wtm-toggle-switch input:checked + .wtm-toggle-slider {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+}
+
+.wtm-toggle-switch input:checked + .wtm-toggle-slider:before {
+    transform: translateX(24px);
+}
+
+
+
+/* Agent Settings */
+.wtm-agent-settings {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--wtm-border);
+}
+
+.wtm-agent-settings.active {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+.wtm-agent-settings.hidden {
+    display: none !important;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.wtm-setting-group {
+    margin-bottom: 1rem;
+}
+
+.wtm-setting-group:last-child {
+    margin-bottom: 0;
+}
+
+.wtm-setting-label {
+    display: block;
+    font-weight: 500;
+    color: var(--wtm-text);
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.wtm-setting-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--wtm-border);
+    border-radius: var(--wtm-radius-sm);
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    background: var(--wtm-surface);
+    color: var(--wtm-text);
+}
+
+.wtm-setting-input:focus {
+    outline: none;
+    border-color: var(--wtm-primary);
+    box-shadow: 0 0 0 3px rgba(45, 80, 22, 0.1);
+}
+
+.wtm-setting-input:disabled {
+    background: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.wtm-setting-textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+}
+
+.wtm-setting-description {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--wtm-text-muted);
+    line-height: 1.4;
+}
+
+.wtm-setting-description a {
+    color: var(--wtm-primary);
+    text-decoration: none;
+}
+
+.wtm-setting-description a:hover {
+    text-decoration: underline;
+}
+
+/* Action Buttons */
+.wtm-agent-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--wtm-border);
+}
+
+.wtm-test-btn {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--wtm-secondary) 0%, var(--wtm-accent) 100%);
+    color: var(--wtm-text);
+    border: none;
+    border-radius: var(--wtm-radius-sm);
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.wtm-test-btn:hover {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--wtm-shadow-sm);
+}
+
+.wtm-test-btn:disabled,
+.wtm-test-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.wtm-upgrade-btn {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--wtm-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.wtm-upgrade-btn:hover {
+    background: linear-gradient(135deg, var(--wtm-primary-dark) 0%, var(--wtm-primary) 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--wtm-shadow-md);
+    color: white;
+    text-decoration: none;
+}
+
+.wtm-upgrade-btn.pulse-animation {
+    animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(45, 80, 22, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(45, 80, 22, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(45, 80, 22, 0); }
+}
+
+/* Disabled checkbox styling */
+.wtm-toggle-switch input:disabled + .wtm-toggle-slider {
+    opacity: 0.5;
+    cursor: pointer; /* Keep clickable for upgrade prompt */
+    background: #e0e0e0;
+    position: relative;
+}
+
+.wtm-toggle-switch input:disabled + .wtm-toggle-slider:before {
+    background: #f5f5f5;
+}
+
+/* Add visual indicator for Pro features */
+.wtm-toggle-switch input:disabled + .wtm-toggle-slider:after {
+    content: '🔒';
+    position: absolute;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* Hover effect for disabled toggles */
+.wtm-toggle-switch input:disabled + .wtm-toggle-slider:hover {
+    opacity: 0.7;
+    background: #d0d0d0;
+}
+
+/* Agent Icons */
+.wtm-agent-card .dashicons-superhero-alt {
+    color: #d63638;
+}
+
+.wtm-agent-card .dashicons-email-alt {
+    color: #0073aa;
+}
+
+.wtm-agent-card .dashicons-update {
+    color: #00a32a;
+}
+
+.wtm-agent-card .dashicons-welcome-learn-more {
+    color: #f56e28;
+}
+
+.wtm-agent-card .dashicons-bell {
+    color: #dba617;
+}
+
+.wtm-agent-card .dashicons-chart-line {
+    color: #8c8f94;
+}
+
+/* Notices */
+.wtm-agent-notice {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: var(--wtm-radius-sm);
+    border-left: 4px solid;
+}
+
+.wtm-agent-notice.error {
+    background: rgba(214, 54, 56, 0.1);
+    border-color: #d63638;
+    color: #d63638;
+}
+
+.wtm-agent-notice.success {
+    background: rgba(0, 163, 42, 0.1);
+    border-color: #00a32a;
+    color: #00a32a;
+}
+
+/* Submit Button */
+.wtm-ai-submit {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--wtm-border);
+    text-align: center;
+}
+
+.wtm-ai-submit .button-primary {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%) !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.875rem 2rem !important;
+    border-radius: var(--wtm-radius-sm) !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.3s ease !important;
+    box-shadow: var(--wtm-shadow-sm) !important;
+}
+
+.wtm-ai-submit .button-primary:hover {
+    background: linear-gradient(135deg, var(--wtm-primary-dark) 0%, var(--wtm-primary) 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--wtm-shadow-md) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wtm-ai-agents-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .wtm-agent-header,
+    .wtm-agent-body {
+        padding: 1rem;
+    }
+    
+    .wtm-agent-actions {
+        flex-direction: column;
+    }
+    
+    .wtm-agent-status {
+        position: static;
+        margin-top: 1rem;
+        justify-content: flex-start;
+    }
+}
+
+/* Footer Styles */
+.wtm-footer {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--wtm-surface-alt) 0%, var(--wtm-surface) 100%);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.wtm-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 50%, var(--wtm-secondary) 100%);
+}
+
+.wtm-footer p {
+    margin: 0;
+    color: var(--wtm-text);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.wtm-footer a {
+    color: var(--wtm-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.wtm-footer a:hover {
+    color: var(--wtm-primary-light);
+    text-decoration: underline;
+}

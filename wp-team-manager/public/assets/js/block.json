@@ -1,0 +1,149 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "wp-team-manager/team-block",
+    "version": "2.4.0",
+    "title": "Team Manager",
+    "category": "widgets",
+    "icon": "groups",
+    "description": "Display team members in various layouts with customizable options.",
+    "keywords": ["team", "staff", "members", "employees", "people"],
+    "textdomain": "wp-team-manager",
+    "supports": {
+        "align": ["wide", "full"],
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "blockGap": true
+        },
+        "color": {
+            "background": true,
+            "text": true,
+            "gradients": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true,
+            "fontFamily": true,
+            "fontWeight": true
+        },
+        "html": false,
+        "multiple": true,
+        "reusable": true,
+        "inserter": true
+    },
+    "attributes": {
+        "orderby": {
+            "type": "string",
+            "default": "menu_order"
+        },
+        "layout": {
+            "type": "string",
+            "default": "grid",
+            "enum": ["grid", "list", "slider", "table"]
+        },
+        "style": {
+            "type": "string",
+            "default": "style-1"
+        },
+        "postsPerPage": {
+            "type": "number",
+            "default": -1
+        },
+        "category": {
+            "type": "string",
+            "default": "0"
+        },
+        "showSocial": {
+            "type": "boolean",
+            "default": true
+        },
+        "showOtherInfo": {
+            "type": "boolean",
+            "default": true
+        },
+        "showReadMore": {
+            "type": "boolean",
+            "default": true
+        },
+        "imageSize": {
+            "type": "string",
+            "default": "medium"
+        },
+        "columns": {
+            "type": "number",
+            "default": 3,
+            "minimum": 1,
+            "maximum": 6
+        },
+        "gap": {
+            "type": "string",
+            "default": "medium",
+            "enum": ["small", "medium", "large"]
+        },
+        "alignment": {
+            "type": "string",
+            "default": "center"
+        }
+    },
+    "providesContext": {
+        "wp-team-manager/layout": "layout",
+        "wp-team-manager/style": "style",
+        "wp-team-manager/columns": "columns"
+    },
+    "usesContext": ["postId", "postType"],
+    "example": {
+        "attributes": {
+            "layout": "grid",
+            "style": "style-1",
+            "columns": 3,
+            "showSocial": true,
+            "showOtherInfo": true,
+            "postsPerPage": 6
+        }
+    },
+    "variations": [
+        {
+            "name": "grid-classic",
+            "title": "Classic Grid",
+            "description": "Traditional grid layout with basic styling",
+            "icon": "grid-view",
+            "attributes": {
+                "layout": "grid",
+                "style": "style-1",
+                "columns": 3
+            },
+            "scope": ["inserter"]
+        },
+        {
+            "name": "list-detailed",
+            "title": "Detailed List",
+            "description": "Comprehensive list with full information",
+            "icon": "list-view",
+            "attributes": {
+                "layout": "list",
+                "style": "style-1",
+                "showSocial": true,
+                "showOtherInfo": true,
+                "showReadMore": true
+            },
+            "scope": ["inserter"]
+        },
+        {
+            "name": "slider-showcase",
+            "title": "Team Showcase",
+            "description": "Dynamic slider for team presentation",
+            "icon": "slides",
+            "attributes": {
+                "layout": "slider",
+                "style": "style-1",
+                "columns": 3,
+                "postsPerPage": 8
+            },
+            "scope": ["inserter"]
+        }
+    ],
+    "editorScript": "file:./block.js",
+    "editorStyle": "file:./block.css",
+    "style": "file:../css/wp-team-style.css"
+}

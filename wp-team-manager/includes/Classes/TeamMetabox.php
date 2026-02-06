@@ -32,6 +32,7 @@ class TeamMetabox {
         \add_action( 'cmb2_init', [$this, 'create_wp_team_manager_metaboxes'] );
         \add_action( 'cmb2_init', [$this, 'create_meta_for_dwl_team_generator_post_type'] );
         \add_action( 'cmb2_init', [$this, 'create_member_information_metabox'] );
+        \add_action( 'admin_enqueue_scripts', [$this, 'enqueue_responsive_grid_assets'] );
 
         $this->proLink = '';
         if ( Helper::freemius_is_free_user() ) {
@@ -39,6 +40,15 @@ class TeamMetabox {
             $this->proLink = '<span class="wptm-pro-text">' . __( ' Pro', 'wp-team-manager' ) . '</span> <a class="wptm-pro-link" href="' . esc_url(tmwstm_fs()->get_upgrade_url()) . '">'  . __('Upgrade Now!', 'wp-team-manager') . '</a>';
         }
 
+    }
+
+    public function enqueue_responsive_grid_assets($hook) {
+        if ('post.php' === $hook || 'post-new.php' === $hook) {
+            global $post_type;
+            if ('dwl_team_generator' === $post_type) {
+                wp_enqueue_style('wtm-responsive-grid', TM_ADMIN_ASSETS . '/css/responsive-grid.css', [], '1.0.0');
+            }
+        }
     }
 
 private function pagination_options( $box ) {
@@ -231,14 +241,14 @@ private function pagination_options( $box ) {
         $dwl_layout->add_field( 
 			array(
 				'name'           => __( 'Layout Type', 'wp-team-manager' ),
-				'desc'           => __( 'Select Layout type', 'wp-team-manager' ),
+				'desc'           => __( 'Choose how your team members will be displayed. Each layout offers different visual styles and information density.', 'wp-team-manager' ),
 				'id'             => $this->prefix . 'layout_option',
 				'type'           => 'radio_image',
 				'options'        => array(
-					'grid'        => __('Grid', 'wp-team-manager'),
-					'list'        => __('List', 'wp-team-manager'),
-					'slider'      => __('Slider', 'wp-team-manager'),
-                    'table'      => __('Table', 'wp-team-manager'),
+					'grid'        => __('Grid - Card-based layout perfect for showcasing team photos and key info', 'wp-team-manager'),
+					'list'        => __('List - Detailed horizontal layout ideal for comprehensive member profiles', 'wp-team-manager'),
+					'slider'      => __('Slider - Interactive carousel great for highlighting featured team members', 'wp-team-manager'),
+                    'table'      => __('Table - Structured format excellent for comparing member details', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
@@ -248,7 +258,25 @@ private function pagination_options( $box ) {
                     'table'  => 'icons/Table.svg',
 				),
 				'default'        => 'grid',
-                'classes'        => 'col-12',
+                'classes'        => 'col-12 wtm-layout-selector',
+                'after_row'      => '<div class="wtm-layout-tips">
+                    <div class="wtm-tip" data-layout="grid">
+                        <span class="dashicons dashicons-info"></span>
+                        <strong>Grid Layout:</strong> Best for teams of 6+ members. Responsive and mobile-friendly.
+                    </div>
+                    <div class="wtm-tip" data-layout="list">
+                        <span class="dashicons dashicons-info"></span>
+                        <strong>List Layout:</strong> Perfect for detailed bios and contact information. Great for small teams.
+                    </div>
+                    <div class="wtm-tip" data-layout="slider">
+                        <span class="dashicons dashicons-info"></span>
+                        <strong>Slider Layout:</strong> Engaging for featured members or leadership teams. Auto-play available.
+                    </div>
+                    <div class="wtm-tip" data-layout="table">
+                        <span class="dashicons dashicons-info"></span>
+                        <strong>Table Layout:</strong> Ideal for comparing skills, experience, or contact details side-by-side.
+                    </div>
+                </div>',
         	) 
 		);
 
@@ -265,6 +293,7 @@ private function pagination_options( $box ) {
                     'style-3'        => __('Style Three', 'wp-team-manager'),
                     'style-4'        => __('Style Three', 'wp-team-manager'),
                     'style-5'        => __('Style Five', 'wp-team-manager'),
+                    // 'style-6'        => __('Style Six', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
@@ -273,6 +302,7 @@ private function pagination_options( $box ) {
 					'style-3'     => 'icons/short-code-layout/grid-3.svg',
                     'style-4'     => 'icons/short-code-layout/grid-4.svg',
                     'style-5'     => 'icons/short-code-layout/grid-5.svg',
+                    // 'style-6'     => 'icons/short-code-layout/grid-5.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => Helper::freemius_is_free_user() ? 'col-12 pro-locked' : 'col-12',
@@ -338,6 +368,7 @@ private function pagination_options( $box ) {
                     'style-4'        => __('Style Four', 'wp-team-manager'),
                     'style-5'        => __('Style Five', 'wp-team-manager'),
                     'style-6'        => __('Style Six', 'wp-team-manager'),
+                    // 'style-7'        => __('Style Seven', 'wp-team-manager'),
 				),
 				'images_path'    => TM_ADMIN_ASSETS,
 				'images'         => array(
@@ -347,6 +378,7 @@ private function pagination_options( $box ) {
                     'style-4'     => 'icons/short-code-layout/Slider-4.svg',
                     'style-5'     => 'icons/short-code-layout/Slider-5.svg',
                     'style-6'     => 'icons/short-code-layout/Slider-6.svg',
+                    // 'style-7'     => 'icons/short-code-layout/Slider-5.svg',
 				),
 				'default'        => 'style-1',
                 'classes'        => Helper::freemius_is_free_user() ? 'col-12 pro-locked' : 'col-12',
@@ -389,61 +421,61 @@ private function pagination_options( $box ) {
         	) 
 		);
 
+        // Responsive Grid Settings - Mobile
         $dwl_layout->add_field( array(
-            'name'    => __( 'Mobile', 'wp-team-manager' ),
-            'id'      =>  $this->prefix . 'mobile',
-            'desc' => __( 'Columns per row on phones.', 'wp-team-manager' ),
+            'name'    => __( 'Mobile Columns', 'wp-team-manager' ),
+            'desc'    => __( 'Number of columns on mobile devices (< 768px)', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'mobile_columns',
             'type'    => 'select',
             'default' => '1',
             'options' => array(
-                '1'          => __( '1 Column', 'wp-team-manager' ),
-                '2'          => __( '2 Column', 'wp-team-manager' ),
-                '3'          => __( '3 Column', 'wp-team-manager' ),
-                '4'          => __( '4 Column', 'wp-team-manager' ),
+                '1' => __( '1 Column', 'wp-team-manager' ),
+                '2' => __( '2 Columns', 'wp-team-manager' ),
             ),
-            'attributes'                 => array(
+            'attributes' => array(
                 'data-conditional-id'    => $this->prefix . 'layout_option',
-                'data-conditional-value' => wp_json_encode( array( 'grid','slider' ) ),
+                'data-conditional-value' => wp_json_encode( array( 'grid', 'list', 'slider' ) ),
             ),
-            'classes'        => 'dwl-meta-item col-md-4',
+            'classes' => 'col-md-4',
         ) );
 
+        // Responsive Grid Settings - Tablet
         $dwl_layout->add_field( array(
-            'name'    => __( 'Tablet', 'wp-team-manager' ),
-            'id'      =>  $this->prefix . 'tablet',
-            'desc' => __( 'Columns per row on tablets.', 'wp-team-manager' ),
-            'default' => '2',
+            'name'    => __( 'Tablet Columns', 'wp-team-manager' ),
+            'desc'    => __( 'Number of columns on tablet devices (768px - 1024px)', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'tablet_columns',
             'type'    => 'select',
+            'default' => '2',
             'options' => array(
-                '1'       => __( '1 Column', 'wp-team-manager' ),
-                '2'       => __( '2 Column', 'wp-team-manager' ),
-                '3'       => __( '3 Column', 'wp-team-manager' ),
-                '4'       => __( '4 Column', 'wp-team-manager' ),
+                '1' => __( '1 Column', 'wp-team-manager' ),
+                '2' => __( '2 Columns', 'wp-team-manager' ),
+                '3' => __( '3 Columns', 'wp-team-manager' ),
             ),
-            'attributes'                 => array(
+            'attributes' => array(
                 'data-conditional-id'    => $this->prefix . 'layout_option',
-                'data-conditional-value' => wp_json_encode( array( 'grid','slider' ) ),
+                'data-conditional-value' => wp_json_encode( array( 'grid', 'list', 'slider' ) ),
             ),
-            'classes'        => 'dwl-meta-item col-md-4',
+            'classes' => 'col-md-4',
         ) );
 
+        // Responsive Grid Settings - Desktop
         $dwl_layout->add_field( array(
-            'name'    => __( 'Desktop', 'wp-team-manager' ),
-            'id'      =>  $this->prefix . 'desktop',
-            'desc' => __( 'Columns per row on desktop screens.', 'wp-team-manager' ),
+            'name'    => __( 'Desktop Columns', 'wp-team-manager' ),
+            'desc'    => __( 'Number of columns on desktop devices (> 1024px)', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'desktop_columns',
             'type'    => 'select',
             'default' => '3',
             'options' => array(
-                '1'       => __( '1 Column', 'wp-team-manager' ),
-                '2'       => __( '2 Column', 'wp-team-manager' ),
-                '3'       => __( '3 Column', 'wp-team-manager' ),
-                '4'       => __( '4 Column', 'wp-team-manager' ),
+                '1' => __( '1 Column', 'wp-team-manager' ),
+                '2' => __( '2 Columns', 'wp-team-manager' ),
+                '3' => __( '3 Columns', 'wp-team-manager' ),
+                '4' => __( '4 Columns', 'wp-team-manager' ),
             ),
-            'attributes'                 => array(
+            'attributes' => array(
                 'data-conditional-id'    => $this->prefix . 'layout_option',
-               'data-conditional-value' => wp_json_encode( array( 'grid','slider' ) ),
+                'data-conditional-value' => wp_json_encode( array( 'grid', 'list', 'slider' ) ),
             ),
-            'classes'        => 'dwl-meta-item col-md-4',
+            'classes' => 'col-md-4',
         ) );
 
 
@@ -544,53 +576,61 @@ private function pagination_options( $box ) {
                 'vertical_tabs' => false,
                 'tabs' => array(
                     array(
-                        'id'    => 'dwl_general_setting',
+                        'id'    => 'dwl_content_query',
                         'icon' => 'dashicons-admin-site',
-                        'title' => __( 'General Settings', 'wp-team-manager' ),
+                        'title' => __( 'Content & Query', 'wp-team-manager' ),
                         'fields' => array(
-                            $this->prefix. 'show_total_members',
-                            $this->prefix. 'team_order',
-                            $this->prefix . 'team_order_by',
                             $this->prefix . 'group_featured_cats',
-                             // NEW: Query & Filtering
+                            $this->prefix. 'show_total_members',
+                            $this->prefix. 'team_order_by',
+                            $this->prefix. 'team_order',
+                            $this->prefix.'show_team_member_by_ids',
+                            $this->prefix.'remove_team_members_by_ids',
+                        ),
+                    ),
+                    array(
+                        'id'    => 'dwl_advanced_filters',
+                        'icon' => 'dashicons-filter',
+                        'title' => __( 'Advanced Filters', 'wp-team-manager' ),
+                        'fields' => array(
                             $this->prefix.'tax_relation',
                             $this->prefix.'tax_include',
                             $this->prefix.'tax_exclude',
                             $this->prefix.'keyword',
                             $this->prefix.'date_from',
                             $this->prefix.'date_to',
-                            $this->prefix . 'layout_option',
-                            $this->prefix.'show_team_member_by_ids',
-                            $this->prefix.'remove_team_members_by_ids',
-                            $this->prefix.'desktop',
-                            $this->prefix.'tablet',
-                            $this->prefix.'mobile',
                         ),
                     ),
 
+
                     array(
                         'id'    => 'dwl_display_setting',
-                        'icon' => 'dashicons-align-left',
+                        'icon' => 'dashicons-visibility',
                         'title' => __( 'Display Options', 'wp-team-manager' ),
                         'fields' => array(
-                         
+                            $this->prefix . 'team_show_position',
+                            $this->prefix . 'hide_short_bio',
                             $this->prefix . 'team_show_other_info',
-                            $this->prefix . 'team_link_mobile_phone',
                             $this->prefix . 'team_show_social',
                             $this->prefix . 'show_progress_bar',
-                            $this->prefix . 'hide_short_bio',
-                            $this->prefix . 'show_pagination',
+                            $this->prefix . 'team_show_read_more',
+                            $this->prefix . 'team_link_mobile_phone',
+                        ),
+                    ),
+                    array(
+                        'id'    => 'dwl_pagination_filters',
+                        'icon' => 'dashicons-admin-page',
+                        'title' => __( 'Pagination & Filters', 'wp-team-manager' ),
+                        'fields' => array(
                             $this->prefix . 'pagination_type',
                             $this->prefix . 'filter_enable',
-                            $this->prefix . 'team_show_position',
-                            $this->prefix . 'team_show_read_more',
                         ),
                     ),
 
                     array(
                         'id'    => 'dwl_image_setting',
                         'icon' => 'dashicons-format-image',
-                        'title' => __( 'Image Settings', 'wp-team-manager' ),
+                        'title' => __( 'Images', 'wp-team-manager' ),
                         'fields' => array(
                             $this->prefix . 'select_image_size',
                             $this->prefix . 'image_style',
@@ -609,7 +649,9 @@ private function pagination_options( $box ) {
                             $this->prefix . 'theme_title_color',
                             $this->prefix . 'theme_text_color',
                             $this->prefix . 'theme_border_radius',
+                            $this->prefix . 'theme_border_radius_custom',
                             $this->prefix . 'theme_gap',
+                            $this->prefix . 'theme_gap_custom',
                             $this->prefix . 'theme_shadow',
                             $this->prefix . 'theme_dark_mode',
                             $this->prefix . 'theme_custom_css',
@@ -621,15 +663,77 @@ private function pagination_options( $box ) {
             ) 
         );
 
-        // General Setting
-        $dwl_team_metabox->add_field( 
-            array(
-				'name'       =>  esc_html__( 'Select Team Group(s)', 'wp-team-manager' ),
-				'id'         =>  $this->prefix . 'group_featured_cats',
-				'type'       => 'multicheck',
-				'options_cb' => 'wptm_get_taxonomy_terms'
-            )
-        );
+        // === Content & Query ===
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Team Groups', 'wp-team-manager' ),
+            'desc'       => __( 'Select specific team groups to display. Leave empty to show all groups.', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'group_featured_cats',
+            'type'       => 'multicheck',
+            'options_cb' => 'wptm_get_taxonomy_terms',
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Total Members', 'wp-team-manager' ),
+            'desc'       => __( 'Maximum number of team members to display. Use -1 for unlimited.', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'show_total_members',
+            'type'       => 'text',
+            'default'    => '-1',
+            'attributes' => array(
+                'type'        => 'number',
+                'min'         => '-1',
+                'step'        => '1',
+                'placeholder' => '-1',
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Sort By', 'wp-team-manager' ),
+            'desc'    => __( 'Choose how to order the team members.', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'team_order_by',
+            'type'    => 'select',
+            'default' => 'title',
+            'options' => array(
+                'title'    => __( 'Name (Alphabetical)', 'wp-team-manager' ),
+                'date'     => __( 'Date Added', 'wp-team-manager' ),
+                'modified' => __( 'Last Modified', 'wp-team-manager' ),
+                'rand'     => __( 'Random Order', 'wp-team-manager' ),
+                'menu_order' => __( 'Custom Order (Drag & Drop)', 'wp-team-manager' ),
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Sort Direction', 'wp-team-manager' ),
+            'desc'    => __( 'Choose ascending or descending order.', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'team_order',
+            'type'    => 'select',
+            'default' => 'ASC',
+            'options' => array(
+                'ASC'  => __( 'Ascending (A-Z, Oldest First)', 'wp-team-manager' ),
+                'DESC' => __( 'Descending (Z-A, Newest First)', 'wp-team-manager' ),
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Include Specific IDs', 'wp-team-manager' ),
+            'desc'       => __( 'Show only these team members by their post IDs (comma-separated).', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'show_team_member_by_ids',
+            'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '1, 2, 3',
+                'pattern'     => '^[0-9,\\s]*$',
+            ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Exclude Specific IDs', 'wp-team-manager' ),
+            'desc'       => __( 'Hide these team members by their post IDs (comma-separated).', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'remove_team_members_by_ids',
+            'type'       => 'text',
+            'attributes' => array(
+                'placeholder' => '4, 5, 6',
+                'pattern'     => '^[0-9,\\s]*$',
+            ),
+        ) );
 
         // === Query & Filtering ===
         $dwl_team_metabox->add_field( array(
@@ -698,73 +802,7 @@ private function pagination_options( $box ) {
             ),
         ) );
 
-        $dwl_team_metabox->add_field( 
-            array(
-				'name'    => __( 'Order By', 'wp-team-manager' ),
-				'desc'    => __( 'Select an order by option.', 'wp-team-manager' ),
-				'id'      => $this->prefix . 'team_order_by',
-				'type'    => 'select',
-				'default' => 'title',
-				'options' => array(
-					'title'    => __( 'Name ', 'wp-team-manager' ),
-					'date'     => __( 'Date', 'wp-team-manager' ),
-					'modified' => __( 'Modified', 'wp-team-manager' ),
-					'rand'     => __( 'Random', 'wp-team-manager' ), 
-				),
-            )
-        );
 
-        $dwl_team_metabox->add_field( 
-            array(
-				'name'    => __( 'Order', 'wp-team-manager' ),
-				'desc'    => __( 'Select an order option.', 'wp-team-manager' ),
-				'id'      => $this->prefix . 'team_order',
-				'type'    => 'select',
-				'default' => 'ASC',
-				'options' => array(
-					'ASC'    => __( 'ASC ', 'wp-team-manager' ),
-					'DESC'   => __( 'DESC', 'wp-team-manager' ),
-				),				
-            )
-        );
-
-        $dwl_team_metabox->add_field( array(
-            'name'       => __( 'Total Member(s) To Display', 'wp-team-manager' ),
-            'desc'       => __( 'Number of total members to show.', 'wp-team-manager' ),
-            'id'         => $this->prefix.'show_total_members',
-            'type'       => 'text',
-            'attributes' => array(
-                'type'   => 'text',
-            ),
-                'attributes' => array(
-                'type'        => 'number',
-                'min'         => '-1',
-                'step'        => '1',
-                'placeholder' => '-1',
-            ),
-        ) );
-
-        $dwl_team_metabox->add_field( array(
-            'name'       => __( 'Show this ids only (Example:1, 2, 3):', 'wp-team-manager' ),
-            'desc'       => __( 'Only show specific team members.', 'wp-team-manager' ),
-            'id'         => $this->prefix.'show_team_member_by_ids',
-            'type'       => 'text',
-            'attributes' => array(
-                'placeholder' => '1, 2, 3',
-                'pattern'     => '^[0-9,\\s]*$'
-            ),
-        ) );
-
-        $dwl_team_metabox->add_field( array(
-            'name'       => __( 'Remove ids from list (Example:4, 5, 6):', 'wp-team-manager' ),
-            'desc'       => __( 'Hide specific team members.', 'wp-team-manager' ),
-            'id'         => $this->prefix.'remove_team_members_by_ids',
-            'type'       => 'text',
-            'attributes' => array(
-                'placeholder' => '4, 5, 6',
-                'pattern'     => '^[0-9,\\s]*$'
-            ),
-        ) );
 
         
 
@@ -927,6 +965,7 @@ private function pagination_options( $box ) {
         'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
         ) );
 
+
   // Image Setting
         $dwl_team_metabox->add_field( 
             array(
@@ -961,10 +1000,12 @@ private function pagination_options( $box ) {
 
         // === Styling & Theming ===
         $preset_options = array(
-            'default'     => __( 'Default', 'wp-team-manager' ),
-            'minimal'     => __( 'Minimal', 'wp-team-manager' ),
-            'soft-card'   => __( 'Soft Card', 'wp-team-manager' ),
-            'glass'       => __( 'Glassmorphism', 'wp-team-manager' ),
+            'default'     => __( 'Default - Standard card styling', 'wp-team-manager' ),
+            'minimal'     => __( 'Minimal - Clean borders, subtle shadows', 'wp-team-manager' ),
+            'soft-card'   => __( 'Soft Card - Elevated with soft shadows', 'wp-team-manager' ),
+            'glass'       => __( 'Glass - Modern glassmorphism effect', 'wp-team-manager' ),
+            'modern'      => __( 'Modern - Bold shadows and rounded corners', 'wp-team-manager' ),
+            'flat'        => __( 'Flat - No shadows, clean design', 'wp-team-manager' ),
         );
 
         $dwl_team_metabox->add_field( array(
@@ -973,88 +1014,140 @@ private function pagination_options( $box ) {
             'type'    => 'select',
             'default' => 'default',
             'options' => $preset_options,
-            'desc'    => __( 'Quickly apply a preset style to cards.', 'wp-team-manager' ),
+            'desc'    => __( 'Choose a preset style that will be applied to all team cards.', 'wp-team-manager' ),
         ) );
-    $dwl_team_metabox->add_field( array(
+        $dwl_team_metabox->add_field( array(
             'name'       => __( 'Card Shadow', 'wp-team-manager' ),
             'id'         => $this->prefix . 'theme_shadow',
             'type'       => 'select',
-            'default'    => 'sm',
+            'default'    => 'none',
             'options'    => array(
-                'none' => __( 'None', 'wp-team-manager' ),
-                'sm'   => __( 'Small', 'wp-team-manager' ),
-                'md'   => __( 'Medium', 'wp-team-manager' ),
-                'lg'   => __( 'Large', 'wp-team-manager' ),
+                'none' => __( 'None - Flat design', 'wp-team-manager' ),
+                'sm'   => __( 'Small - Subtle elevation', 'wp-team-manager' ),
+                'md'   => __( 'Medium - Moderate depth', 'wp-team-manager' ),
+                'lg'   => __( 'Large - Strong elevation', 'wp-team-manager' ),
+                'xl'   => __( 'Extra Large - Maximum depth', 'wp-team-manager' ),
             ),
+            'desc'       => __( 'Add depth and elevation to team cards.', 'wp-team-manager' ),
             'show_on_cb' => array( $this, 'hide_on_slider_layout' ),
         ) );
-        // Display Option
-        $dwl_team_metabox->add_field( 
-			array(
-				'name'    => __( 'Background Color', 'wp-team-manager' ),
-				'id'      => $this->prefix . 'team_background_color',
-				'type'    => 'colorpicker',
-                'default' => '',
-			)
-		);
+        // Color Scheme
         $dwl_team_metabox->add_field( array(
             'name'    => __( 'Primary Color', 'wp-team-manager' ),
             'id'      => $this->prefix . 'theme_primary_color',
             'type'    => 'colorpicker',
+            // 'default' => '#4258d6',
+            'desc'    => __( 'Main brand color for buttons, links, and accents.', 'wp-team-manager' ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Background Color', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'team_background_color',
+            'type'    => 'colorpicker',
             'default' => '',
-            'desc'    => __( 'Links, buttons and accents.', 'wp-team-manager' ),
+            'desc'    => __( 'Overall background color for the team section.', 'wp-team-manager' ),
         ) );
 
         $dwl_team_metabox->add_field( array(
             'name'    => __( 'Card Background', 'wp-team-manager' ),
             'id'      => $this->prefix . 'theme_card_bg',
             'type'    => 'colorpicker',
-            'default' => '',
+            // 'default' => '#ffffff',
+            'desc'    => __( 'Background color for individual team member cards.', 'wp-team-manager' ),
         ) );
 
         $dwl_team_metabox->add_field( array(
             'name'    => __( 'Title Color', 'wp-team-manager' ),
             'id'      => $this->prefix . 'theme_title_color',
             'type'    => 'colorpicker',
-            'default' => '',
+            // 'default' => '#1a1a1a',
+            'desc'    => __( 'Color for team member names and titles.', 'wp-team-manager' ),
         ) );
 
         $dwl_team_metabox->add_field( array(
-            'name'    => __( 'Body Text Color', 'wp-team-manager' ),
+            'name'    => __( 'Text Color', 'wp-team-manager' ),
             'id'      => $this->prefix . 'theme_text_color',
             'type'    => 'colorpicker',
-            'default' => '',
+            // 'default' => '#666666',
+            'desc'    => __( 'Color for descriptions, bio text, and other content.', 'wp-team-manager' ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'    => __( 'Social Icon Color', 'wp-team-manager' ),
+            'id'      => $this->prefix . 'social_icon_color',
+            'type'    => 'colorpicker',
+            // 'default' => '#fff',
+            'desc'    => __( 'Color for social media icons and links.', 'wp-team-manager' ),
         ) );
 
         $dwl_team_metabox->add_field( array(
             'name'       => __( 'Card Border Radius', 'wp-team-manager' ),
             'id'         => $this->prefix . 'theme_border_radius',
+            'type'       => 'select',
+            'default'    => '',
+            'options'    => array(
+                ''    => __( 'Default', 'wp-team-manager' ),
+                '0px'    => __( 'None (0px)', 'wp-team-manager' ),
+                '4px'    => __( 'Small (4px)', 'wp-team-manager' ),
+                '8px'    => __( 'Medium (8px)', 'wp-team-manager' ),
+                '12px'   => __( 'Large (12px)', 'wp-team-manager' ),
+                '16px'   => __( 'Extra Large (16px)', 'wp-team-manager' ),
+                '50%'    => __( 'Rounded (50%)', 'wp-team-manager' ),
+                'custom' => __( 'Custom Value', 'wp-team-manager' ),
+            ),
+            'desc'       => __( 'Choose preset or custom CSS value.', 'wp-team-manager' ),
+        ) );
+
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Custom Border Radius', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'theme_border_radius_custom',
             'type'       => 'text_small',
             'attributes' => array(
-                'placeholder' => '12px',
+                'placeholder' => '20px',
+                'pattern'     => '^\\d+(?:\\.\\d+)?(?:px|rem|em|%)$',
+                'data-conditional-id' => $this->prefix . 'theme_border_radius',
+                'data-conditional-value' => 'custom',
             ),
-            'desc'       => __( 'Accepts CSS units (e.g., 8px, 0.5rem).', 'wp-team-manager' ),
+            'desc'       => __( 'Enter custom value (e.g., 20px, 1.5rem).', 'wp-team-manager' ),
         ) );
 
         $dwl_team_metabox->add_field( array(
             'name'       => __( 'Grid Gap', 'wp-team-manager' ),
             'id'         => $this->prefix . 'theme_gap',
-            'type'       => 'text_small',
-            'attributes' => array(
-                'placeholder' => '16px',
+            'type'       => 'select',
+            'default'    => '16px',
+            'options'    => array(
+                '0px'    => __( 'None (0px)', 'wp-team-manager' ),
+                '8px'    => __( 'Small (8px)', 'wp-team-manager' ),
+                '16px'   => __( 'Medium (16px)', 'wp-team-manager' ),
+                '24px'   => __( 'Large (24px)', 'wp-team-manager' ),
+                '32px'   => __( 'Extra Large (32px)', 'wp-team-manager' ),
+                'custom' => __( 'Custom Value', 'wp-team-manager' ),
             ),
             'desc'       => __( 'Space between team cards.', 'wp-team-manager' ),
         ) );
 
-        $dwl_team_metabox->add_field( 
-            array(
-                'name'    => __( 'Social Icon Color', 'wp-team-manager' ),
-                'desc'    => __( 'Set color for social icon.', 'wp-team-manager' ),
-                'id'      => $this->prefix . 'social_icon_color',
-                'type'    => 'colorpicker',
-                'default' => '',
-            )
-        );
+        $dwl_team_metabox->add_field( array(
+            'name'       => __( 'Custom Grid Gap', 'wp-team-manager' ),
+            'id'         => $this->prefix . 'theme_gap_custom',
+            'type'       => 'text_small',
+            'attributes' => array(
+                'placeholder' => '20px',
+                'pattern'     => '^\\d+(?:\\.\\d+)?(?:px|rem|em)$',
+                'data-conditional-id' => $this->prefix . 'theme_gap',
+                'data-conditional-value' => 'custom',
+            ),
+            'desc'       => __( 'Enter custom gap value (e.g., 20px, 1.5rem).', 'wp-team-manager' ),
+        ) );
+
+        // $dwl_team_metabox->add_field( array(
+        //     'name' => __( 'Dark Mode', 'wp-team-manager' ),
+        //     'id'   => $this->prefix . 'theme_dark_mode',
+        //     'type' => 'checkbox',
+        //     'desc' => __( 'Enable dark theme styling.', 'wp-team-manager' ),
+        // ) );
+
+
 
         $custom_css_field = array(
             'name' => __( 'Custom CSS (scoped)', 'wp-team-manager' ),
@@ -1063,8 +1156,13 @@ private function pagination_options( $box ) {
             'desc' => __( 'CSS will be scoped to this team block wrapper on the front‑end.', 'wp-team-manager' ),
         );
 
-        $custom_css_field['desc'] .= ' ' . wp_kses_post( $this->proLink );
-        $custom_css_field['attributes'] = array( 'disabled' => true );
+        if ( Helper::freemius_is_free_user() ) {
+            $custom_css_field['desc'] .= ' ' . wp_kses_post( $this->proLink );
+            $custom_css_field['attributes'] = array( 'disabled' => true );
+            $custom_css_field['sanitization_cb'] = function( $val ) {
+                return ''; // Always return empty for free users
+            };
+        }
 
         $dwl_team_metabox->add_field( $custom_css_field );
 
@@ -1095,33 +1193,36 @@ private function pagination_options( $box ) {
          * Short Bio
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Short Bio', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Short Bio of this team member', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_short_bio' ) ),
+            'desc'       => esc_html__( 'Brief description or stats for this member', 'wp-team-manager' ),
             'id'         => 'tm_short_bio',
             'type'       => 'textarea',
             'classes'    => 'col-12',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'A brief description of the team member (1-2 sentences). This appears in grid and list layouts.', 'wp-team-manager' ) . '">?</div>',
         ) );
 
         /**
          * Long Bio
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Long Bio', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Long Bio of this team member', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_long_bio' ) ),
+            'desc'       => esc_html__( 'Detailed biography for this member', 'wp-team-manager' ),
             'id'         => 'tm_long_bio',
             'type'       => 'wysiwyg',
             'classes'    => 'col-12',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Detailed biography with rich text formatting. Displayed on single member pages and detailed views.', 'wp-team-manager' ) . '">?</div>',
         ) );
 
         /**
-         * Job Title
+         * Job Title / Position
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Position/Job Title', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Job title of this team member', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_jtitle' ) ),
+            'desc'       => esc_html__( 'Title or position of this member', 'wp-team-manager' ),
             'id'         => 'tm_jtitle',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Professional title or role (e.g., Senior Developer, Marketing Manager).', 'wp-team-manager' ) . '">?</div>',
         ) );
         
         
@@ -1129,11 +1230,12 @@ private function pagination_options( $box ) {
          * Email
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Email Address', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Provide the official email address of this team member.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_email' ) ),
+            'desc'       => esc_html__( 'Provide the official email address of this member.', 'wp-team-manager' ),
             'id'         => 'tm_email',
             'type'       => 'text_email',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Business email address. Will be displayed as a clickable mailto link.', 'wp-team-manager' ) . '">?</div>',
         ) );
 
 
@@ -1141,45 +1243,49 @@ private function pagination_options( $box ) {
          * Telephone
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Telephone (Office)', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Enter the office telephone number.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_telephone' ) ),
+            'desc'       => esc_html__( 'Enter the telephone number.', 'wp-team-manager' ),
             'id'         => 'tm_telephone',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Office phone number with area code (e.g., +1-555-123-4567).', 'wp-team-manager' ) . '">?</div>',
         ) );
 
          /**
          * Mobile
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Mobile (Personal)', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Enter the personal mobile phone number.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_mobile' ) ),
+            'desc'       => esc_html__( 'Enter the mobile phone number.', 'wp-team-manager' ),
             'id'         => 'tm_mobile',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Personal mobile number. Can be made clickable in Pro version.', 'wp-team-manager' ) . '">?</div>',
         ) );
        
 
         /**
-         * Location
+         * Location / Jersey Number
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Location', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Specify the team member\'s current location or office.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_location' ) ),
+            'desc'       => esc_html__( 'Location or jersey number', 'wp-team-manager' ),
             'id'         => 'tm_location',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'City, state/country or office location (e.g., New York, NY or Remote).', 'wp-team-manager' ) . '">?</div>',
         ) );
 
         /**
-         * Years of Experience
+         * Years of Experience / Seasons
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Years of Experience', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Total years of professional experience.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_year_experience' ) ),
+            'desc'       => esc_html__( 'Experience or seasons played', 'wp-team-manager' ),
             'id'         => 'tm_year_experience',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Number of years in their profession (e.g., 5+ years or 10 years).', 'wp-team-manager' ) . '">?</div>',
         ) );
 
 
@@ -1187,11 +1293,12 @@ private function pagination_options( $box ) {
          * Web URL
          */
         $dwl_team_general->add_field( array(
-            'name'       => esc_html__( 'Web URL', 'wp-team-manager' ),
-            'desc'       => esc_html__( 'Official personal or company website URL.', 'wp-team-manager' ),
+            'name'       => esc_html( Helper::get_field_label( 'tm_web_url' ) ),
+            'desc'       => esc_html__( 'Official website URL.', 'wp-team-manager' ),
             'id'         => 'tm_web_url',
             'type'       => 'text',
             'classes'    => 'col-md-4',
+            'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Personal website, portfolio, or company page URL (include https://).', 'wp-team-manager' ) . '">?</div>',
         ) );
 
         /**
@@ -1213,22 +1320,23 @@ private function pagination_options( $box ) {
 
 
         /**
-         * Resume URL (Pro)
+         * Resume URL (Pro) - Hidden in Sports Mode
          */
+        if ( ! Helper::is_field_hidden( 'tm_resume_url' ) ) {
+            $resume_url = array(
+                'name'       => esc_html( Helper::get_field_label( 'tm_resume_url' ) ) . wp_kses_post( $this->proLink ),
+                'desc'       => esc_html__( 'Link to the member\'s resume or CV (PDF or web page).', 'wp-team-manager' ),
+                'id'         => 'tm_resume_url',
+                'type'       => 'text_url',
+                'classes'    => 'col-md-4',
+            );
 
-        $resume_url = array(
-            'name'       => esc_html__( 'Resume URL', 'wp-team-manager' ) . wp_kses_post( $this->proLink ),
-            'desc'       => esc_html__( 'Link to the member\'s resume or CV (PDF or web page).', 'wp-team-manager' ),
-            'id'         => 'tm_resume_url',
-            'type'       => 'text_url',
-            'classes'    => 'col-md-4',
-        );
+            if ( Helper::freemius_is_free_user() ) {
+                $resume_url['attributes'] = array( 'disabled' => true );
+            }
 
-        if ( Helper::freemius_is_free_user() ) {
-            $resume_url['attributes'] = array( 'disabled' => true );
+            $dwl_team_general->add_field( $resume_url );
         }
-
-        $dwl_team_general->add_field( $resume_url );
 
         /**
          * Hire Me URL (Pro)
@@ -1248,22 +1356,24 @@ private function pagination_options( $box ) {
         $dwl_team_general->add_field( $hire_me_url );
 
         /**
-         * Image
+         * vCard File - Hidden in Sports Mode
          */
-        $dwl_team_general->add_field( array(
-            'name'    => 'Add vCard File',
-            'desc'    => 'Upload a vCard (.vcf) file containing contact information.',
-            'id'      => 'tm_vcard',
-            'type'    => 'file',
-            'classes'    => 'col-md-4',
-            'options' => array(
-                'url' => true, // Hide the text input for the url
-            ),
-            'text'    => array(
-                'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
-            ),
-        ), 
-        );
+        if ( ! Helper::is_field_hidden( 'tm_vcard' ) ) {
+            $dwl_team_general->add_field( array(
+                'name'    => esc_html( Helper::get_field_label( 'tm_vcard' ) ),
+                'desc'    => esc_html__( 'Upload a vCard (.vcf) file containing contact information.', 'wp-team-manager' ),
+                'id'      => 'tm_vcard',
+                'type'    => 'file',
+                'classes'    => 'col-md-4',
+                'options' => array(
+                    'url' => true, // Hide the text input for the url
+                ),
+                'text'    => array(
+                    'add_upload_file_text' => esc_html__( 'Add File', 'wp-team-manager' ) // Change upload button text
+                ),
+                'after'      => '<div class="cmb2-tooltip" title="' . esc_attr__( 'Upload a .vcf file that visitors can download to add contact info to their address book.', 'wp-team-manager' ) . '">?</div>',
+            ) );
+        }
 
         // General information end
 
@@ -1317,6 +1427,8 @@ private function pagination_options( $box ) {
             'snapchat'       => __( 'Snapchat', 'wp-team-manager' ),
             'goodreads'      => __( 'Goodreads', 'wp-team-manager' ),
             'twitch'         => __( 'Twitch', 'wp-team-manager' ),
+            'phone'          => __( 'Phone', 'wp-team-manager' ),
+            'address'        => __( 'Business Card', 'wp-team-manager' ),
             'xing'         => __( 'Xing', 'wp-team-manager' ),
         );
         

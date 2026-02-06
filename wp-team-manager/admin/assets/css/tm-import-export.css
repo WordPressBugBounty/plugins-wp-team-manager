@@ -1,0 +1,399 @@
+:root {
+   --wtm-primary: #4a5568;
+    --wtm-primary-dark: #2d3748;
+    --wtm-primary-light: #718096;
+    --wtm-secondary: #a0aec0;
+    --wtm-accent: #cbd5e0;
+    --wtm-success: #718096;
+    --wtm-warning: #ecc94b;
+    --wtm-danger: #e53e3e;
+    --wtm-surface: #ffffff;
+    --wtm-surface-alt: #f7fafc;
+    --wtm-border: #e2e8f0;
+    --wtm-text: #2d3748;
+    --wtm-text-muted: #718096;
+    --wtm-shadow-sm: 0 1px 2px 0 rgb(45 80 22 / 0.05);
+    --wtm-shadow-md: 0 4px 6px -1px rgb(45 80 22 / 0.1), 0 2px 4px -2px rgb(45 80 22 / 0.1);
+    --wtm-shadow-lg: 0 10px 15px -3px rgb(45 80 22 / 0.1), 0 4px 6px -4px rgb(45 80 22 / 0.1);
+    --wtm-radius: 12px;
+    --wtm-radius-sm: 8px;
+    --wtm-spacing: 1.5rem;
+}
+
+/* Main Container */
+.wtm-import-export-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+/* Page Header */
+.wtm-page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.wtm-page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--wtm-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.wtm-page-title .dashicons {
+    font-size: 2rem;
+    color: var(--wtm-primary);
+    width: 20px;
+    height: 30px;
+}
+
+.wtm-page-description {
+    font-size: 1rem;
+    color: var(--wtm-text-muted);
+    max-width: 600px;
+    margin: 12px auto;
+    line-height: 1.6;
+}
+
+/* Stats Bar */
+.wtm-stats-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.wtm-stat-item {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: var(--wtm-radius);
+    text-align: center;
+    box-shadow: var(--wtm-shadow-md);
+}
+
+.wtm-stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.wtm-stat-label {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+/* Import/Export Grid */
+.wtm-import-export-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Section Cards */
+.wtm-section-card {
+    background: var(--wtm-surface);
+    border-radius: var(--wtm-radius);
+    box-shadow: var(--wtm-shadow-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid var(--wtm-border);
+}
+
+.wtm-section-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgb(45 80 22 / 0.1), 0 10px 10px -5px rgb(45 80 22 / 0.04);
+}
+
+/* Card Header */
+.wtm-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--wtm-surface-alt) 0%, #f1f5f9 100%);
+    border-bottom: 1px solid var(--wtm-border);
+}
+
+.wtm-card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.wtm-export-icon {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+}
+
+.wtm-import-icon {
+    background: linear-gradient(135deg, var(--wtm-secondary) 0%, var(--wtm-accent) 100%);
+}
+
+.wtm-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--wtm-text);
+    margin: 0 0 0.25rem;
+}
+
+.wtm-card-subtitle {
+    color: var(--wtm-text-muted);
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Card Content */
+.wtm-card-content {
+    padding: 2rem;
+}
+
+/* Feature List */
+.wtm-feature-list {
+    margin-bottom: 2rem;
+}
+
+.wtm-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--wtm-text-muted);
+}
+
+.wtm-feature-item .dashicons {
+    color: var(--wtm-success);
+    font-size: 1rem;
+}
+
+/* Buttons */
+.wtm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--wtm-radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    width: 100%;
+    justify-content: center;
+}
+
+.wtm-btn-primary {
+    background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    color: white;
+}
+
+.wtm-btn-primary:hover {
+    background: linear-gradient(135deg, var(--wtm-primary-dark) 0%, var(--wtm-primary) 100%);
+    transform: translateY(-2px);
+}
+
+.wtm-btn-secondary {
+    background: linear-gradient(135deg, var(--wtm-secondary) 0%, var(--wtm-accent) 100%);
+    color: white;
+}
+
+.wtm-btn-secondary:hover {
+   background: linear-gradient(135deg, var(--wtm-primary) 0%, var(--wtm-primary-light) 100%);
+    transform: translateY(-2px);
+}
+
+/* Import Instructions */
+.wtm-import-instructions {
+    margin-bottom: 2rem;
+}
+
+.wtm-import-instructions h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--wtm-text);
+    margin-bottom: 0.75rem;
+}
+
+.wtm-csv-format {
+    background: var(--wtm-surface-alt);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius-sm);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.wtm-csv-format code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--wtm-text);
+    word-break: break-all;
+}
+
+.wtm-format-note {
+    font-size: 0.8rem;
+    color: var(--wtm-text-muted);
+    margin: 0;
+}
+
+/* File Upload Area */
+.wtm-file-upload-area {
+    border: 2px dashed var(--wtm-border);
+    border-radius: var(--wtm-radius-sm);
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.wtm-file-upload-area:hover {
+    border-color: var(--wtm-secondary);
+    background: var(--wtm-surface-alt);
+}
+
+.wtm-file-upload-content .dashicons {
+    font-size: 3rem;
+    color: var(--wtm-text-muted);
+    margin-bottom: 1rem;
+}
+
+.wtm-file-upload-content p {
+    color: var(--wtm-text-muted);
+    margin-bottom: 1rem;
+}
+
+.wtm-file-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.wtm-file-label {
+    background: var(--wtm-surface);
+    border: 1px solid var(--wtm-border);
+    padding: 0.5rem 1rem;
+    border-radius: var(--wtm-radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+}
+
+.wtm-file-label:hover {
+    background: var(--wtm-surface-alt);
+    border-color: var(--wtm-secondary);
+}
+
+/* Help Section */
+.wtm-help-section {
+    margin-bottom: 3rem;
+}
+
+.wtm-help-card {
+    background: var(--wtm-surface);
+    border: 1px solid var(--wtm-border);
+    border-radius: var(--wtm-radius);
+    padding: 2rem;
+    box-shadow: var(--wtm-shadow-sm);
+}
+
+.wtm-help-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--wtm-text);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.wtm-help-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.wtm-help-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.wtm-help-item .dashicons {
+    font-size: 1.5rem;
+    color: var(--wtm-primary);
+    margin-top: 0.25rem;
+}
+
+.wtm-help-item h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--wtm-text);
+    margin: 0 0 0.5rem;
+}
+
+.wtm-help-item p {
+    font-size: 0.875rem;
+    color: var(--wtm-text-muted);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wtm-import-export-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .wtm-page-title {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .wtm-card-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .wtm-help-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .wtm-card-content,
+    .wtm-card-header {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .wtm-import-export-wrap {
+        padding: 1rem 0;
+    }
+    
+    .wtm-page-title {
+        font-size: 1.75rem;
+    }
+    
+    .wtm-card-content,
+    .wtm-card-header {
+        padding: 1rem;
+    }
+    
+    .wtm-file-upload-area {
+        padding: 1.5rem;
+    }
+}

@@ -7,10 +7,13 @@ if(!empty($data)):
     $team_read_more = !empty( $settings['read_more_text'] ) ? sanitize_text_field( $settings['read_more_text'] ) : 'Read More';
     $show_shortBio = !empty( $settings['team_show_short_bio'] ) ? sanitize_text_field( $settings['team_show_short_bio'] ) : '';
     $team_arrow_position = isset( $settings['team_arrow_position'] ) && ( $settings['team_arrow_position'] === 'side' ) ? 'team-arrow-postion-side' : '';
-    
-    $popup_settings = !empty( $settings['popup_bar_show'] ) && $settings['popup_bar_show'] === 'yes' ? "true" : 'false';
-    $show_popup = isset($settings['popup_bar_show']) && $settings['popup_bar_show'] === 'yes';
-    $disable_single_member = isset($settings['disable_single_member']) && $settings['disable_single_member'] === 'yes';
+
+    // Pro feature: Popup functionality
+    $show_popup = Helper::is_pro_feature_enabled( $settings, 'popup_bar_show' );
+    $popup_settings = $show_popup ? "true" : 'false';
+
+    // Pro feature: Disable single member
+    $disable_single_member = Helper::is_pro_feature_enabled( $settings, 'disable_single_member' );
 
     $allowed_tags = array_merge(
         wp_kses_allowed_html( 'post' ), // All default post tags
@@ -34,7 +37,7 @@ if(!empty($data)):
 <div class="team-member-info-content"> 
     <?php if("yes" == $settings['show_image']): ?>
         <div class="team-member-thumbnail">
-            <?php if ( $disable_single_member ) : ?>
+            <?php if ( !$disable_single_member ) : ?>
                 <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>">
             <?php endif; ?>
             <?php if($show_popup): ?>
@@ -44,14 +47,14 @@ if(!empty($data)):
             <?php if($show_popup): ?>
                 </div>
             <?php endif; ?>
-            <?php if ( $disable_single_member ) : ?>
+            <?php if ( !$disable_single_member ) : ?>
                 </a>
             <?php endif; ?>
         </div>
     <?php endif;?>
     <div class="team-member-head">
         <?php if('yes'== $settings['show_title']  ): ?>
-            <?php if ( $disable_single_member ) : ?>
+            <?php if ( !$disable_single_member ) : ?>
                 <a href="<?php echo esc_url( get_the_permalink( $teamInfo->ID ) ); ?>">
             <?php endif; ?>
             <?php if($show_popup): ?>
@@ -61,7 +64,7 @@ if(!empty($data)):
             <?php if($show_popup): ?>
                 </div>
             <?php endif; ?>
-            <?php if ( $disable_single_member ) : ?>
+            <?php if ( !$disable_single_member ) : ?>
                 </a>
             <?php endif; ?>
         <?php endif;?>
@@ -76,21 +79,22 @@ if(!empty($data)):
                    <?php echo apply_filters('wtm_team_short_bio_output', wp_strip_all_tags($short_bio), $short_bio, $teamInfo->ID); ?>
                 <?php else: ?>
                     <?php 
-                                $post_content = !empty($teamInfo->post_excerpt) 
-                                    ? $teamInfo->post_excerpt 
-                                    : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
+                        $post_content = !empty($teamInfo->post_excerpt) 
+                            ? $teamInfo->post_excerpt 
+                            : wp_trim_words(strip_tags($teamInfo->post_content), 40, '...');
 
-                                echo esc_html($post_content);
-                                ?>
+                        echo esc_html($post_content);
+                    ?>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
          <?php if(!empty($settings['show_other_info']) && $settings['show_other_info'] === 'yes'): ?>
-                        <?php 
-                            $enable_links = isset($settings['other_info_link']) ? $settings['other_info_link'] : 'no';
+                        <?php
+                            // Pro feature: Other info links
+                            $enable_links = Helper::is_pro_feature_enabled( $settings, 'other_info_link' ) ? 'yes' : 'no';
                             echo wp_kses_post(
                                 Helper::get_team_other_infos($teamInfo->ID, $settings['other_info_elements'], $enable_links)
-                            ); 
+                            );
                         ?>
                     <?php endif; ?>
                     <?php if (tmwstm_fs()->is_paying_or_trial()): ?>

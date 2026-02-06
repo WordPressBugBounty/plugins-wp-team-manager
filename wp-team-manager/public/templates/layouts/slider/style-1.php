@@ -15,7 +15,8 @@ $hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
 
 
 // Determine if the single template should be disabled
-$disable_single_template = get_option('single_team_member_view') === 'True';
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 // Get team member fields with a default value
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -32,6 +33,16 @@ if (!empty($data['posts'])) {
         $job_title = isset($post_meta['tm_jtitle'][0]) ? sanitize_text_field($post_meta['tm_jtitle'][0]) : '';
         $short_bio = $post_meta['tm_short_bio'][0] ?? '';
 
+        $allowed_tags = array_merge(
+            wp_kses_allowed_html( 'post' ),
+            array(
+                'progress' => array(
+                    'value' => true,
+                    'max'   => true,
+                    'style' => true,
+                ),
+            )
+        );
         ?>
 
         <div <?php post_class('team-member-info-wrap m-0 p-2 '); ?>>
@@ -48,9 +59,15 @@ if (!empty($data['posts'])) {
             </header>
 
             <div class="team-member-desc team-member-info-content">
-                <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                <?php if (!$disable_single_template): ?>
+                    <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
+                <?php endif; ?>
+                    <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                <?php if (!$disable_single_template): ?>
+                    </a>
+                <?php endif; ?>
 
-                <?php if (!empty($job_title) && in_array('tm_jtitle', $tm_single_fields) && !$hide_team_show_position): ?>
+                <?php if (!empty($job_title) && !$hide_team_show_position): ?>
                     <h4 class="team-position"><?php echo esc_html($job_title); ?></h4>
                 <?php endif; ?>
                 <?php if (!$hide_short_bio_control): ?>
@@ -79,7 +96,7 @@ if (!empty($data['posts'])) {
                         <?php
                                     if (class_exists('DWL_Wtm_Pro_Helper')) {
 
-                                        echo DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID);
+                                        echo wp_kses(DWL_Wtm_Pro_Helper::display_skills_output($teamInfo->ID), $allowed_tags);
 
                                     } ?>
                             </div>

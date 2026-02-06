@@ -14,7 +14,8 @@ $hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
 
 
 // Determine if the single template should be disabled
-$disable_single_template = get_option('single_team_member_view') === 'True';
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 // Get team member fields with a default value
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -59,7 +60,13 @@ if(!empty($data['posts'])): ?>
                                     <?php if (!$disable_single_template): ?>
                                         </a>
                                     <?php endif; ?>
-                                    <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                                    <?php if (!$disable_single_template): ?>
+                                        <a href="<?php echo esc_url(get_the_permalink($teamInfo->ID)); ?>">
+                                    <?php endif; ?>
+                                        <h2 class="team-member-title"><?php echo esc_html(get_the_title($teamInfo->ID)); ?></h2>
+                                    <?php if (!$disable_single_template): ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                             

@@ -1,0 +1,178 @@
+/* Block Editor Styles */
+.wp-team-manager-block-preview {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.wp-team-manager-block-preview:hover {
+    border-color: #007cba;
+    background-color: #f0f8ff;
+}
+
+/* Block Wrapper Styles */
+.wp-block-wp-team-manager-team-block {
+    margin: 1em 0;
+}
+
+.wp-block-wp-team-manager-team-block.alignwide {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+}
+
+.wp-block-wp-team-manager-team-block.alignfull {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    max-width: none;
+    width: 100vw;
+}
+
+/* Gap Variations */
+.wp-team-manager-block.gap-small .team-member {
+    margin-bottom: 1rem;
+}
+
+.wp-team-manager-block.gap-medium .team-member {
+    margin-bottom: 2rem;
+}
+
+.wp-team-manager-block.gap-large .team-member {
+    margin-bottom: 3rem;
+}
+
+/* Grid Layout Enhancements */
+.wp-team-manager-grid {
+    display: grid;
+    gap: var(--wp-team-gap, 2rem);
+    grid-template-columns: repeat(var(--wp-team-columns, 3), 1fr);
+}
+
+.wp-team-manager-grid.columns-1 { --wp-team-columns: 1; }
+.wp-team-manager-grid.columns-2 { --wp-team-columns: 2; }
+.wp-team-manager-grid.columns-3 { --wp-team-columns: 3; }
+.wp-team-manager-grid.columns-4 { --wp-team-columns: 4; }
+.wp-team-manager-grid.columns-5 { --wp-team-columns: 5; }
+.wp-team-manager-grid.columns-6 { --wp-team-columns: 6; }
+
+.wp-team-manager-grid.gap-small { --wp-team-gap: 1rem; }
+.wp-team-manager-grid.gap-medium { --wp-team-gap: 2rem; }
+.wp-team-manager-grid.gap-large { --wp-team-gap: 3rem; }
+
+/* Responsive Grid */
+@media (max-width: 768px) {
+    .wp-team-manager-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .wp-team-manager-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Block Variations Preview */
+.block-editor-block-variation-picker__variation {
+    position: relative;
+}
+
+.block-editor-block-variation-picker__variation .block-editor-block-variation-picker__variation-label {
+    font-weight: 500;
+}
+
+/* Inspector Controls Enhancements */
+.components-panel__body .components-base-control__label {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.components-toggle-control .components-base-control__field {
+    margin-bottom: 16px;
+}
+
+/* FSE Theme Support */
+.wp-site-blocks .wp-block-wp-team-manager-team-block {
+    margin-top: var(--wp--preset--spacing--50, 2rem);
+    margin-bottom: var(--wp--preset--spacing--50, 2rem);
+}
+
+/* Block Alignment */
+.wp-team-manager-block.alignment-left {
+    text-align: left;
+}
+
+.wp-team-manager-block.alignment-center {
+    text-align: center;
+}
+
+.wp-team-manager-block.alignment-right {
+    text-align: right;
+}
+
+/* Loading State */
+.wp-team-manager-block-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    opacity: 0.6;
+}
+
+.wp-team-manager-block-loading::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-top: 2px solid #007cba;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Block Pattern Previews */
+.block-editor-block-patterns-list__item .block-editor-block-preview__container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Enhanced Block Controls */
+.wp-block-wp-team-manager-team-block .block-editor-block-toolbar {
+    border-radius: 4px;
+}
+
+/* Color Support */
+.wp-team-manager-block.has-background {
+    padding: var(--wp--preset--spacing--40, 1.5rem);
+    border-radius: 8px;
+}
+
+.wp-team-manager-block.has-text-color .team-member-name,
+.wp-team-manager-block.has-text-color .team-member-title {
+    color: inherit;
+}
+
+/* Typography Support */
+.wp-team-manager-block.has-large-font-size .team-member-name {
+    font-size: var(--wp--preset--font-size--large, 1.25rem);
+}
+
+.wp-team-manager-block.has-medium-font-size .team-member-name {
+    font-size: var(--wp--preset--font-size--medium, 1.125rem);
+}
+
+/* Spacing Support */
+.wp-team-manager-block[style*="padding"] {
+    box-sizing: border-box;
+}
+
+.wp-team-manager-block[style*="margin"] {
+    box-sizing: border-box;
+}

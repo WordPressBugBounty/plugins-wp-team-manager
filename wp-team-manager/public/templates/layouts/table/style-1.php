@@ -11,10 +11,9 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
     $show_progress_bar = !empty($settings['dwl_team_show_progress_bar'][0]);
     $hide_short_bio_control = !empty($settings['dwl_team_hide_short_bio'][0]);
     $hide_team_show_position = !empty($settings['dwl_team_team_show_position'][0]);
-    $disable_single_template = get_option('single_team_member_view') === 'True';
 
-// Determine if the single template should be disabled
-$disable_single_template = get_option('single_team_member_view') === 'True';
+// Pro feature: Disable single team member view (global setting)
+$disable_single_template = Helper::is_pro_option_enabled( 'single_team_member_view' );
 
 // Get team member fields with a default value
 $tm_single_fields = get_option('tm_single_fields', ['tm_jtitle']);
@@ -27,7 +26,7 @@ $context = isset($settings['context']) ? $settings['context'] : '';
         <div class="dwl-team-elementor-layout-table">
             <div class="dwl-team-table-responsive team-table-style-1">
                 <table class="table">
-                  <?php if(!$context == 'ajax'): ?> 
+                  <?php if($context !== 'ajax'): ?> 
                 <thead>
                         <tr>
                             <th scope="col"><?php esc_html_e( "Image", "wp-team-manager" )?></th>
@@ -79,7 +78,13 @@ $context = isset($settings['context']) ? $settings['context'] : '';
 
                                             <td class="dwl-table-data">
                                                 <div class="team-member-head">
-                                                    <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
+                                                    <?php if (!$disable_single_template): ?>
+                                                        <a href="<?php echo esc_url( get_the_permalink($teamInfo->ID) ); ?>">
+                                                    <?php endif;?>
+                                                        <h2 class="team-member-title"><?php echo esc_html( get_the_title($teamInfo->ID) ); ?></h2>
+                                                    <?php if (!$disable_single_template): ?>
+                                                        </a>
+                                                    <?php endif;?>
                                                 </div>
                                             </td>
 
@@ -115,7 +120,7 @@ $context = isset($settings['context']) ? $settings['context'] : '';
                                             <td class="dwl-table-data">
                                                 <div class="team-member-info">
                                                     <?php if (!$show_other_info): ?>
-                                                        <a href="mailto:<?php echo esc_html($tm_email) ?>" target="_blank">
+                                                        <a href="mailto:<?php echo esc_attr($tm_email) ?>" target="_blank">
                                                             <i class="fas fa-envelope"></i>
                                                             <?php echo esc_html($tm_email) ?>
                                                         </a>

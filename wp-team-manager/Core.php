@@ -3,7 +3,7 @@ use DWL\Wtm\Classes as ControllerClass;
 use DWL\Wtm\Elementor as ElementorClass;
 
 /**
- * This is mane class for the plugin
+ * This is main class for the plugin
  */
 final class Wp_Team_Manager {
 
@@ -14,7 +14,7 @@ final class Wp_Team_Manager {
 	 *
 	 * @var string
 	 */
-	const version = '2.3.16';
+	const version = '2.4.9';
 
 	/**
 	 * Class init.
@@ -29,7 +29,14 @@ final class Wp_Team_Manager {
 		\add_action( 'admin_init', [ $this, 'handle_css_generator_and_remove' ] );
 		\add_action( 'wp_enqueue_scripts', [ $this, 'wp_team_assets' ] );
 		\add_action( 'admin_enqueue_scripts', [ $this, 'wp_team_admin_assets' ] );
-		\add_action( 'init', [ $this, 'migration_old_cmb_social_fields' ] );
+		
+		// Migration hook - only check on admin pages
+		if ( is_admin() ) {
+			\add_action( 'admin_init', [ $this, 'check_and_schedule_migration' ] );
+		}
+		
+		// Background migration hook
+		\add_action( 'wtm_run_social_fields_migration', [ $this, 'run_social_fields_migration' ] );
 
 		
 	}
@@ -72,6 +79,8 @@ final class Wp_Team_Manager {
 			ControllerClass\ShortcodeGenerator::class,
 			ControllerClass\Shortcodes::class,
 			ControllerClass\PublicAssets::class,
+			ControllerClass\LiveSearch::class,
+			ControllerClass\SearchWidget::class,
 			DWL\Wtm\AI\Admin\AdminUI::class,
 		];
 
@@ -83,10 +92,13 @@ final class Wp_Team_Manager {
 			$controllers[] = ControllerClass\Admin::class;
 			$controllers[] = ControllerClass\AdminAssets::class;
 			$controllers[] = ControllerClass\AdminSettings::class;
-			$controllers[] = ControllerClass\Tools::class;
+			$controllers[] = ControllerClass\UnifiedTools::class;
 			$controllers[] = ControllerClass\ImportExportTools::class;
 			$controllers[] = ControllerClass\MigrationTools::class;
-			$controllers[] = ControllerClass\GetHelp::class;
+			$controllers[] = ControllerClass\Dashboard::class;
+			$controllers[] = ControllerClass\Onboarding::class;
+			$controllers[] = ControllerClass\SearchSettings::class;
+            $controllers[] = ControllerClass\FreemiusConfig::class;
 		}
 
 		if ( did_action( 'elementor/loaded' ) ) {
@@ -109,44 +121,83 @@ final class Wp_Team_Manager {
 	 * @access public
 	 */
 	public function plugins_loaded() {
-		new \DWL\Wtm\AI\AI_Manager();
+		// Initialize AI Manager (stored to prevent memory leaks)
+		$ai_manager = new \DWL\Wtm\AI\AI_Manager();
 		require_once TM_PATH . '/lib/cmb2/init.php';
 		require_once TM_PATH . '/lib/cmb2-radio-image/cmb2-radio-image.php';
 		require_once TM_PATH . '/lib/cmb2-tabs/cmb2-tabs.php';
 		require_once TM_PATH . '/includes/functions.php';
 		require_once TM_PATH . '/includes/Classes/GutenbergBlock.php';
+		require_once TM_PATH . '/includes/Classes/BlockPatterns.php';
+		require_once TM_PATH . '/includes/Classes/FSESupport.php';
+		
+
 	}
 
 	/**
-	* Migration old social meta
-	*/
-
-	public function migration_old_cmb_social_fields(){
-
+	 * Check if migration is needed and schedule it
+	 * Runs only once per version update
+	 *
+	 * @since 2.4.4
+	 */
+	public function check_and_schedule_migration() {
 		$current_version = get_option( 'wp_team_manager_version' );
-
-		if ( version_compare( $current_version, '2.1.14', '==' ) ) {
-
-			$migration_completed = get_option( 'team_migration_completed' );
-
-			if ( !$migration_completed ){
-				$args = array(
-					'post_type'      => 'team_manager',
-					'posts_per_page' => -1,
-					'fields'         => 'ids'
-				);
-
-				$team_member_ids = get_posts( $args );
-
-				if (!empty( $team_member_ids )) {
-					foreach ( $team_member_ids as $team_member_id ) {
-						ControllerClass\Helper::team_social_icon_migration( $team_member_id );
-					}
-					update_option('team_migration_completed', true);
-				}
+		$migration_completed = get_option( 'team_migration_completed' );
+		
+		// Only run migration if:
+		// 1. User is upgrading from version < 2.1.14
+		// 2. Migration hasn't been completed yet
+		if ( ! $migration_completed && version_compare( $current_version, '2.1.14', '<' ) ) {
+			// Check if migration is already scheduled
+			if ( ! wp_next_scheduled( 'wtm_run_social_fields_migration' ) ) {
+				// Schedule migration to run in 30 seconds (gives time for plugin to fully load)
+				wp_schedule_single_event( time() + 30, 'wtm_run_social_fields_migration' );
 			}
 		}
+	}
 
+	/**
+	 * Run social fields migration in background
+	 * Processes team members in batches to avoid timeouts
+	 *
+	 * @since 2.4.4
+	 */
+	public function run_social_fields_migration() {
+		// Double-check migration hasn't already completed
+		if ( get_option( 'team_migration_completed' ) ) {
+			return;
+		}
+		
+		// Get batch offset
+		$batch_offset = get_option( 'team_migration_batch_offset', 0 );
+		$batch_size = 50; // Process 50 members at a time
+		
+		$args = array(
+			'post_type'      => 'team_manager',
+			'posts_per_page' => $batch_size,
+			'offset'         => $batch_offset,
+			'fields'         => 'ids',
+			'post_status'    => 'any', // Include all statuses
+		);
+
+		$team_member_ids = get_posts( $args );
+
+		if ( ! empty( $team_member_ids ) ) {
+			// Process this batch
+			foreach ( $team_member_ids as $team_member_id ) {
+				ControllerClass\Helper::team_social_icon_migration( $team_member_id );
+			}
+			
+			// Update offset for next batch
+			update_option( 'team_migration_batch_offset', $batch_offset + $batch_size );
+			
+			// Schedule next batch
+			wp_schedule_single_event( time() + 10, 'wtm_run_social_fields_migration' );
+		} else {
+			// Migration complete
+			update_option( 'team_migration_completed', true );
+			delete_option( 'team_migration_batch_offset' );
+		}
 	}
 
 	/**
@@ -186,30 +237,42 @@ final class Wp_Team_Manager {
 	 */
 	public function handle_css_generator_and_remove(){
 		add_action( 'save_post', [ $this, 'add_generated_css_after_save_post' ], 10, 3 );
-		add_action( 'before_delete_post', [ $this, 'remove_generated_css_after_delete_post' ], 10, 2 );
+		add_action( 'before_delete_post', [ $this, 'remove_generated_css_after_delete_post' ], 10, 1 );
 	}
 
 	/**
 	 * Save generated CSS after saving a post of type `dwl_team_generator`
 	 * 
-	 * @param int    $post_id   The ID of the post being saved.
-	 * @param object $post      The post object being saved.
-	 * @param bool   $update    Whether the post is being updated or not.
+	 * @param int    $post_id The ID of the post being saved.
+	 * @param object $post    The post object being saved.
+	 * @param bool   $update  Whether the post is being updated or not.
 	 *
 	 * @return void
 	 * 
 	 * @since 1.0.0
 	 */
 	public function add_generated_css_after_save_post( $post_id, $post, $update ) {
-		
-		if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE ) {
-            return false;
-        }
-
-		if( 'dwl_team_generator' !== $post->post_type ) {
-			return false;
+		// Bail if autosave
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
 		}
-
+		
+		// Bail if revision
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		
+		// Bail if not the correct post type
+		if ( 'dwl_team_generator' !== $post->post_type ) {
+			return;
+		}
+		
+		// Bail if user doesn't have permission to edit
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+		
+		// Generate CSS
 		ControllerClass\Helper::generatorShortcodeCss( $post_id );
 	}
 
@@ -220,18 +283,21 @@ final class Wp_Team_Manager {
 	 * and if it matches `dwl_team_generator`, it calls the helper function to remove the associated
 	 * custom CSS.
 	 *
-	 * @param int    $post_id The ID of the post being deleted.
-	 * @param object $post    The post object being deleted.
+	 * @param int $post_id The ID of the post being deleted.
 	 *
-	 * @return int The post ID if the post type does not match.
+	 * @return void
 	 *
 	 * @since 1.0.0
 	 */
-
-	public function remove_generated_css_after_delete_post( $post_id, $post ) {
-		if( 'dwl_team_generator' !== $post->post_type ){
-			return $post_id;
+	public function remove_generated_css_after_delete_post( $post_id ) {
+		// Get the post object (before_delete_post only passes post_id)
+		$post = get_post( $post_id );
+		
+		// Check if post exists and is the correct type
+		if ( ! $post || 'dwl_team_generator' !== $post->post_type ) {
+			return;
 		}
+		
 		ControllerClass\Helper::removeGeneratorShortcodeCss( $post_id );
 	}
 
