@@ -188,7 +188,7 @@ class EnhancedSearch {
             return;
         }
 
-        if (!current_user_can('read')) {
+        if (!current_user_can('edit_posts')) {
             wp_send_json_error(__('Insufficient permissions', 'wp-team-manager'));
             return;
         }
@@ -214,11 +214,7 @@ class EnhancedSearch {
             $presets = [];
         }
 
-        // Limit number of presets per user
-        if (count($presets) >= 20 && !isset($presets[$name])) {
-            wp_send_json_error(__('Maximum 20 presets allowed. Please delete some first.', 'wp-team-manager'));
-            return;
-        }
+
 
         $presets[$name] = $filters;
         update_user_meta($user_id, 'wtm_filter_presets', $presets);
@@ -237,6 +233,11 @@ class EnhancedSearch {
             return;
         }
 
+        if (!current_user_can('edit_posts')) {
+            wp_send_json_error(__('Insufficient permissions', 'wp-team-manager'));
+            return;
+        }
+
         $user_id = get_current_user_id();
         $name = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
 
@@ -252,6 +253,8 @@ class EnhancedSearch {
 
         wp_send_json_success($presets[$name]);
     }
+
+
 
     /**
      * Perform enhanced search with multiple criteria

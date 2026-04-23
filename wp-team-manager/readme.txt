@@ -4,7 +4,7 @@ Donate link: https://wpteammanager.com/
 Tags: team slider,team members,team showcase,sports roster,player roster
 Requires at least: 6.2.0
 Tested up to: 6.8
-Stable tag: 2.5.1
+Stable tag: 2.5.2
 Requires PHP: 8.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -277,6 +277,9 @@ Please email us at dynamicweblab@gmail.com or [Submit a request](https://dynamic
 12. AI Agent
 
 == Changelog ==
+
+= 2.5.2 =
+* Fix Broken Access Control
 
 = 2.5.1 =
 * social icon url issue fix

@@ -9,7 +9,7 @@
  * Plugin Name:       Dynamic Team Manager
  * Plugin URI:        https://wpteammanager.com/
  * Description:       Showcase your team members, sports rosters, or creative portfolios with grid, list and Carousel layout. Fully customizable with Elementor and shortcode builder. Supports Corporate, Sports League, and more modes.
- * Version:           2.5.1
+ * Version:           2.5.2
  * Author:            DynamicWebLab
  * Author URI:        https://dynamicweblab.com/
  * License:           GPL-2.0+
@@ -79,7 +79,7 @@ if ( function_exists( 'tmwstm_fs' ) ) {
         } );
         return;
     }
-    define( 'TM_VERSION', '2.4.9' );
+    define( 'TM_VERSION', '2.5.2' );
     define( 'TM_PHP_MIN_VERSION', '8.0.0' );
     define( 'TM_FILE', __FILE__ );
     define( 'TM_PATH', __DIR__ );
